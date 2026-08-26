@@ -9,10 +9,10 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-white/5 py-8 text-center">
-      <p className="font-mono text-xs text-slate-600">
-        {t.pre} <span className="text-slate-400">{name}</span> {t.suf} · © {new Date().getFullYear()}
+      <p className="font-mono text-xs text-slate-500">
+        {t.pre} <span className="text-slate-300">{name}</span> {t.suf} · © {new Date().getFullYear()}
       </p>
-      <p className="mt-2 font-mono text-xs text-slate-700">{t.stack}</p>
+      <p className="mt-2 font-mono text-xs text-slate-500">{t.stack}</p>
     </footer>
   )
 }
