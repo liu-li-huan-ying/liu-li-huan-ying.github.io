@@ -6,6 +6,7 @@ import { profile } from '../data/profile'
 import { ArrowRightIcon, ChevronDownIcon, MapPinIcon } from './Icons'
 import SocialLinks from './SocialLinks'
 import Magnetic from './Magnetic'
+import StatusBadge from './StatusBadge'
 
 const HeroScene = lazy(() => import('./HeroScene'))
 
@@ -116,18 +117,7 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-16 px-6 pb-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 font-mono text-xs text-emerald-300"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            {data.status}
-          </motion.p>
+          <StatusBadge />
 
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
