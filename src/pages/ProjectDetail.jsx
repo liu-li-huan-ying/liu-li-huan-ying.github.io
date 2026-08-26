@@ -1,6 +1,6 @@
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
-import { goSection } from '../hooks/useHashRoute'
+import { navigate } from '../hooks/useHashRoute'
 import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import GitHubStats from '../components/GitHubStats'
 
@@ -16,7 +16,7 @@ export default function ProjectDetail({ project, index, projects }) {
     <article className="mx-auto max-w-4xl px-6 pb-24 pt-32">
       <button
         type="button"
-        onClick={() => goSection('projects')}
+        onClick={() => navigate('/projects')}
         data-cursor-label="BACK"
         className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
       >

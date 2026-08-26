@@ -11,7 +11,9 @@ import ParticleBackground from './components/ParticleBackground'
 import CustomCursor from './components/CustomCursor'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import BlogList from './pages/BlogList'
 import BlogPost from './pages/BlogPost'
+import ProjectList from './pages/ProjectList'
 import ProjectDetail from './pages/ProjectDetail'
 import NotFound from './pages/NotFound'
 import Footer from './components/Footer'
@@ -40,6 +42,10 @@ function RoutedView() {
 
   if (route === '/') {
     view = <Home />
+  } else if (route === '/projects') {
+    view = <ProjectList />
+  } else if (route === '/blog') {
+    view = <BlogList />
   } else if (blogMatch) {
     const index = data.posts.findIndex((p) => p.slug === blogMatch[1])
     view =

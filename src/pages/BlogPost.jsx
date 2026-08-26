@@ -1,6 +1,6 @@
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
-import { goSection } from '../hooks/useHashRoute'
+import { navigate } from '../hooks/useHashRoute'
 
 function Block({ block }) {
   switch (block.t) {
@@ -42,7 +42,7 @@ export default function BlogPost({ post, index, posts }) {
     <article className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <button
         type="button"
-        onClick={() => goSection('blog')}
+        onClick={() => navigate('/blog')}
         data-cursor-label="BACK"
         className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
       >

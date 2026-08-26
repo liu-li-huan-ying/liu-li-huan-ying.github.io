@@ -13,7 +13,13 @@ export default function Blog() {
 
   return (
     <section id="blog" className="relative mx-auto max-w-4xl px-6 py-28">
-      <SectionHeader index={s.index} eyebrow={s.eyebrow} title={s.title} />
+      <SectionHeader
+        index={s.index}
+        eyebrow={s.eyebrow}
+        title={s.title}
+        more="#/blog"
+        moreLabel={s.more}
+      />
 
       <div>
         {posts.map((post, i) => (

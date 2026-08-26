@@ -4,7 +4,7 @@ import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { navLinks, profile } from '../data/profile'
 import { reveal } from '../utils/secret'
-import { goSection } from '../hooks/useHashRoute'
+import { goSection, navigate } from '../hooks/useHashRoute'
 
 export default function CommandPalette() {
   const { lang, toggle } = useLang()
@@ -36,9 +36,12 @@ export default function CommandPalette() {
     ...navLinks.map((link) => ({
       id: link.id,
       label: `${pal.go} ${nav[link.id]}`,
-      hint: 'section',
+      hint: link.id === 'projects' || link.id === 'blog' ? 'page' : 'section',
       keywords: nav[link.id],
-      run: () => actions.scrollTo(link.id),
+      run: () =>
+        link.id === 'projects' || link.id === 'blog'
+          ? navigate(`/${link.id}`)
+          : actions.scrollTo(link.id),
     })),
     { id: 'email', label: pal.copyEmail, hint: 'action', keywords: 'mail contact email', run: actions.copyEmail },
     { id: 'top', label: pal.top, hint: 'action', keywords: 'scroll home top', run: actions.goTop },

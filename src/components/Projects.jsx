@@ -20,7 +20,13 @@ export default function Projects() {
 
   return (
     <section id="projects" className="relative mx-auto max-w-6xl px-6 py-28">
-      <SectionHeader index={s.index} eyebrow={s.eyebrow} title={s.title} />
+      <SectionHeader
+        index={s.index}
+        eyebrow={s.eyebrow}
+        title={s.title}
+        more="#/projects"
+        moreLabel={s.more}
+      />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, i) => (
