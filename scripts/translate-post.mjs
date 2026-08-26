@@ -24,13 +24,54 @@ function findTargetFile(arg) {
   return fuzzy ?? null
 }
 
-async function translateViaFetch(url) {
+function splitChunks(text, max = 450) {
+  if (text.length <= max) return [text]
+  const parts = []
+  let buffer = ''
+  for (const segment of text.split(/(?<=[。！？；!?;.;])/)) {
+    if ((buffer + segment).length > max && buffer) {
+      parts.push(buffer)
+      buffer = segment
+    } else {
+      buffer += segment
+    }
+  }
+  if (buffer) parts.push(buffer)
+  return parts
+}
+
+async function translateViaMyMemory(text) {
+  const translatedParts = []
+  for (const chunk of splitChunks(text)) {
+    const url =
+      'https://api.mymemory.translated.net/get?langpair=zh-CN|en-GB&de=luchang0829@163.com&q=' +
+      encodeURIComponent(chunk)
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = await res.json()
+    const translated = json?.responseData?.translatedText ?? ''
+    if (!translated || translated.includes('MYMEMORY WARNING')) {
+      throw new Error('mymemory quota or invalid response')
+    }
+    translatedParts.push(translated)
+  }
+  return translatedParts.join(' ')
+}
+
+async function translateViaGoogleFetch(text) {
+  const url =
+    'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh&tl=en&dt=t&q=' +
+    encodeURIComponent(text)
   const res = await fetch(url, {
     headers: { 'User-Agent': 'Mozilla/5.0' },
     signal: AbortSignal.timeout(20000),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.text()
+  const payload = await res.text()
+  const json = JSON.parse(payload)
+  const joined = (json?.[0] ?? []).map((seg) => seg?.[0] ?? '').join('')
+  if (!joined.trim()) throw new Error('empty translation')
+  return joined
 }
 
 function translateViaCurl(url, proxy) {
@@ -63,47 +104,45 @@ function detectProxy() {
 
 let cachedProxy
 
+async function translateViaGoogleCurl(text) {
+  cachedProxy ??= detectProxy()
+  const url =
+    'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh&tl=en&dt=t&q=' +
+    encodeURIComponent(text)
+  let payload = null
+  if (cachedProxy) {
+    try {
+      payload = translateViaCurl(url, cachedProxy)
+    } catch {
+      payload = null
+    }
+  }
+  if (!payload) payload = translateViaCurl(url, null)
+  const json = JSON.parse(payload)
+  const joined = (json?.[0] ?? []).map((seg) => seg?.[0] ?? '').join('')
+  if (!joined.trim()) throw new Error('empty translation')
+  return joined
+}
+
 async function translateText(text) {
   const trimmed = text.trim()
   if (!trimmed) return text
 
-  const url =
-    'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh&tl=en&dt=t&q=' +
-    encodeURIComponent(trimmed)
-
-  let payload = null
   try {
-    payload = await translateViaFetch(url)
+    return await translateViaMyMemory(trimmed)
   } catch {
-    cachedProxy ??= detectProxy()
-    if (cachedProxy) {
-      try {
-        payload = translateViaCurl(url, cachedProxy)
-      } catch {
-        payload = null
-      }
-    }
-    if (!payload) {
-      try {
-        payload = translateViaCurl(url, null)
-      } catch {
-        payload = null
-      }
-    }
-  }
-
-  if (!payload) {
-    console.warn('  ! segment unreachable (network/proxy off), keeping original')
-    return trimmed
+    console.warn('  · mymemory unavailable, trying google route…')
   }
 
   try {
-    const json = JSON.parse(payload)
-    const joined = (json?.[0] ?? []).map((seg) => seg?.[0] ?? '').join('')
-    return joined.trim() || trimmed
+    return await translateViaGoogleFetch(trimmed)
   } catch {
-    console.warn('  ! translation parse failed, keeping original')
-    return trimmed
+    try {
+      return await translateViaGoogleCurl(trimmed)
+    } catch {
+      console.warn('  ! all translation routes failed, keeping original')
+      return trimmed
+    }
   }
 }
 
