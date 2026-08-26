@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import 'highlight.js/styles/github-dark.css'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { navigate } from '../hooks/useHashRoute'
@@ -5,6 +7,41 @@ import { navigate } from '../hooks/useHashRoute'
 export default function BlogPost({ post, index, posts }) {
   const { lang } = useLang()
   const t = ui[lang].post
+  const bodyRef = useRef(null)
+
+  useEffect(() => {
+    const container = bodyRef.current
+    if (!container) return undefined
+
+    let cancelled = false
+    async function highlight() {
+      try {
+        const [{ default: hljs }, go, bash, javascript, xml] = await Promise.all([
+          import('highlight.js/lib/core'),
+          import('highlight.js/lib/languages/go'),
+          import('highlight.js/lib/languages/bash'),
+          import('highlight.js/lib/languages/javascript'),
+          import('highlight.js/lib/languages/xml'),
+        ])
+        if (cancelled) return
+        hljs.registerLanguage('go', go)
+        hljs.registerLanguage('bash', bash)
+        hljs.registerLanguage('javascript', javascript)
+        hljs.registerLanguage('xml', xml)
+        container.querySelectorAll('pre code:not([data-hl])').forEach((code) => {
+          hljs.highlightElement(code)
+          code.dataset.hl = '1'
+        })
+      } catch (err) {
+        void err
+      }
+    }
+
+    highlight()
+    return () => {
+      cancelled = true
+    }
+  }, [post.html])
 
   const newer = index > 0 ? posts[index - 1] : null
   const older = index < posts.length - 1 ? posts[index + 1] : null
@@ -44,10 +81,7 @@ export default function BlogPost({ post, index, posts }) {
         <h1 className="mt-6 text-3xl font-bold leading-tight text-white md:text-5xl">{post.title}</h1>
       </header>
 
-      <div
-        className="md-body mt-12"
-        dangerouslySetInnerHTML={{ __html: post.html }}
-      />
+      <div ref={bodyRef} className="md-body mt-12" dangerouslySetInnerHTML={{ __html: post.html }} />
 
       <nav className="mt-16 flex items-center justify-between gap-4 border-t border-white/10 pt-8 font-mono text-sm">
         {newer ? (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { LangProvider } from './i18n/lang-provider'
 import { useLang } from './i18n/use-lang'
 import { useHashRoute } from './hooks/useHashRoute'
@@ -27,10 +27,34 @@ import Analytics from './components/Analytics'
 const NOISE =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
+const DEFAULT_TITLE = '琉璃幻影 · Glazed Mirage — Full Stack Developer'
+
+function usePageTitle(route) {
+  const { lang } = useLang()
+  const data = profile[lang]
+
+  useEffect(() => {
+    const blogMatch = route.match(/^\/blog\/(.+)$/)
+    const projMatch = route.match(/^\/projects\/(.+)$/)
+
+    if (blogMatch) {
+      const post = data.posts.find((p) => p.slug === blogMatch[1])
+      document.title = post ? `${post.title} · ${data.name}` : DEFAULT_TITLE
+    } else if (projMatch) {
+      const project = data.projects.find((p) => p.id === projMatch[1])
+      document.title = project ? `${project.title} · ${data.name}` : DEFAULT_TITLE
+    } else {
+      document.title = DEFAULT_TITLE
+    }
+  }, [route, data])
+}
+
 function RoutedView() {
   const route = useHashRoute()
   const { lang } = useLang()
   const data = profile[lang]
+
+  usePageTitle(route)
 
   useEffect(() => {
     if (route !== '/') window.scrollTo({ top: 0 })
@@ -142,7 +166,9 @@ function Shell() {
 export default function App() {
   return (
     <LangProvider>
-      <Shell />
+      <MotionConfig reducedMotion="user">
+        <Shell />
+      </MotionConfig>
     </LangProvider>
   )
 }
