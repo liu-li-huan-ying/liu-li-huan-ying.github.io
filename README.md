@@ -86,6 +86,19 @@ readTime: 7             # 可选，缺省按字数自动估算
 - 英文版文件命名为 `<同名>.en.md`；没有英文版时英文界面自动回退中文并标注「原文」
 - 正文渲染为 `.md-body` 排版（标题/列表/引用/代码块均已适配暗色主题）
 
+### 🌐 自动翻译英文版
+
+懒得手写英文？对着中文稿一键生成 `.en.md` 初稿：
+
+```bash
+npm run translate -- my-new-post        # 指定文章（slug 或文件名片段）
+npm run translate                       # 不带参数 = 自动挑选最新一篇缺英文版的
+```
+
+- 调用 Google 翻译接口，**代码块原样跳过**、标题/列表逐行保留格式
+- 需要能访问谷歌的网络：脚本会自动探测本地代理（7897/7890/10809），或设置 `HTTPS_PROXY` 环境变量
+- 机器翻译仅为初稿，建议推送前润色；网络不通时会保留中文原文并给出警告
+
 ---
 
 © 2026 [琉璃幻影 · Liu-Li-Huan-Ying](https://github.com/liu-li-huan-ying) · Built with React and too much curiosity
