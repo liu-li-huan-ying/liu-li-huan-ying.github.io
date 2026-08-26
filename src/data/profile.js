@@ -36,6 +36,29 @@ export const profile = {
     ],
     projects: [
       {
+        id: 'phantom-video',
+        letter: 'P',
+        title: 'Phantom Video',
+        desc: 'A hand-built Windows video player: libmpv core with D3D11VA zero-copy hardware decoding and a fully self-drawn SDL2 transparent UI.',
+        tags: ['C++17', 'Win32', 'libmpv', 'D3D11VA', 'SDL2'],
+        github: 'https://github.com/liu-li-huan-ying/phantom-video',
+        live: '',
+        gradient: ['#8b5cf6', '#ec4899'],
+        detail: {
+          role: 'Solo Developer',
+          year: '2026',
+          body: [
+            'Built because existing players were either bloated or looked a decade old. The architecture separates concerns cleanly: libmpv handles demuxing and decoding while every pixel of the interface is drawn by my own code on top of Win32.',
+            'The hardest part was the render pipeline. Instead of letting decoded frames travel through CPU memory, D3D11VA outputs directly to GPU surfaces that are composited straight to the screen — a zero-copy path that keeps 4K playback light. The UI layer uses SDL2 with UpdateLayeredWindow for per-pixel transparency, so the window itself can be any shape.',
+          ],
+          highlights: [
+            'D3D11VA zero-copy hardware decoding, smooth 4K playback',
+            'Per-pixel alpha transparent UI via SDL2 UpdateLayeredWindow',
+            'Pure C++17 / Win32, no third-party UI framework',
+          ],
+        },
+      },
+      {
         id: 'gojidb',
         letter: 'G',
         title: 'GojiDB',
@@ -236,6 +259,29 @@ export const profile = {
     ],
     skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Node.js', 'Python', 'Go', 'C', 'C++'],
     projects: [
+      {
+        id: 'phantom-video',
+        letter: 'P',
+        title: 'Phantom Video',
+        desc: '自研 Windows 视频播放器：libmpv 解码内核 + D3D11VA 零拷贝硬解，SDL2 逐像素透明 UI 全部自绘。',
+        tags: ['C++17', 'Win32', 'libmpv', 'D3D11VA', 'SDL2'],
+        github: 'https://github.com/liu-li-huan-ying/phantom-video',
+        live: '',
+        gradient: ['#8b5cf6', '#ec4899'],
+        detail: {
+          role: '独立开发者',
+          year: '2026',
+          body: [
+            '做这个播放器，是因为市面上的产品要么臃肿要么 UI 停留在十年前。架构上做了干净的分层：libmpv 负责封装解析与解码，而界面的每一个像素都由自己的代码在 Win32 之上绘制。',
+            '最难啃的是渲染管线。解码帧不经过 CPU 内存拷贝，而是由 D3D11VA 直接输出到 GPU 表面并合成上屏——零拷贝路径让 4K 播放依然轻快。UI 层基于 SDL2 的 UpdateLayeredWindow 实现逐像素透明，窗口形状完全自由。',
+          ],
+          highlights: [
+            'D3D11VA 零拷贝硬件解码，4K 播放流畅轻快',
+            'SDL2 ULW 逐像素透明异形窗口，UI 完全自绘',
+            '纯 C++17 / Win32 实现，零第三方 UI 框架依赖',
+          ],
+        },
+      },
       {
         id: 'gojidb',
         letter: 'G',
