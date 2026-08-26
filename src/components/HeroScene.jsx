@@ -1,9 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Float, MeshDistortMaterial, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
+import { useLang } from '../i18n/use-lang'
 
 const COUNT = 2600
+
+const PLANET_QUOTES = {
+  en: [
+    'You found the planet ✦',
+    'Gravity = curiosity',
+    'GojiDB awaits below ↓',
+    'Keep building, keep exploring',
+    'Powered by Three.js & caffeine',
+  ],
+  zh: [
+    '你发现了这颗星球 ✦',
+    '引力 = 好奇心',
+    'GojiDB 在下面等你 ↓',
+    '持续构建，持续探索',
+    '由 Three.js 与咖啡因驱动',
+  ],
+}
 
 function buildSphereData() {
   const positions = new Float32Array(COUNT * 3)
@@ -99,6 +118,23 @@ export default function HeroScene() {
   const wrapRef = useRef(null)
   const [active, setActive] = useState(true)
   const [isDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
+  const [bubble, setBubble] = useState(null)
+  const { lang } = useLang()
+  const quotes = PLANET_QUOTES[lang]
+
+  useEffect(() => {
+    if (!bubble) return undefined
+    const timer = setTimeout(() => setBubble(null), 2400)
+    return () => clearTimeout(timer)
+  }, [bubble])
+
+  const onPlanetClick = (e) => {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)]
+    setBubble({ text: quote, x: e.clientX ?? 0, y: e.clientY ?? 0, key: Date.now() })
+    window.dispatchEvent(
+      new CustomEvent('planet-burst', { detail: { x: e.clientX ?? 0, y: e.clientY ?? 0 } })
+    )
+  }
 
   useEffect(() => {
     const el = wrapRef.current
@@ -116,7 +152,7 @@ export default function HeroScene() {
     <div
       ref={wrapRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 opacity-40 lg:opacity-100"
+      className="absolute inset-0 opacity-40 lg:opacity-100"
     >
       <Canvas
         camera={{ position: [1.6, 0.2, 5], fov: 48 }}
@@ -125,7 +161,7 @@ export default function HeroScene() {
         frameloop={active ? 'always' : 'never'}
       >
         <Rig>
-          <group position={[0.6, 0.1, 0]}>
+          <group position={[0.6, 0.1, 0]} onClick={onPlanetClick}>
             <Float speed={1.6} rotationIntensity={0.35} floatIntensity={0.9}>
               <CoreShape />
             </Float>
@@ -134,6 +170,22 @@ export default function HeroScene() {
           </group>
         </Rig>
       </Canvas>
+
+      <AnimatePresence>
+        {bubble && (
+          <motion.div
+            key={bubble.key}
+            initial={{ opacity: 0, y: 10, scale: 0.85 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+            style={{ left: bubble.x, top: bubble.y - 20 }}
+            className="glass pointer-events-none fixed z-[75] -translate-x-1/2 -translate-y-full rounded-xl px-4 py-2 font-mono text-xs text-neon-cyan shadow-lg shadow-neon-violet/30"
+          >
+            {bubble.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

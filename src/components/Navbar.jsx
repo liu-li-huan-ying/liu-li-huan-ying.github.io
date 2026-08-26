@@ -24,7 +24,7 @@ export default function Navbar() {
   const onNavClick = (e, id) => {
     e.preventDefault()
     setOpen(false)
-    if (id === 'projects' || id === 'blog') {
+    if (id === 'projects' || id === 'blog' || id === 'about') {
       navigate(`/${id}`)
     } else {
       goSection(id)

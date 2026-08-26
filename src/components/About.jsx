@@ -21,7 +21,13 @@ export default function About() {
   return (
     <section id="about" className="relative py-28">
       <div className="mx-auto max-w-6xl px-6">
-        <SectionHeader index={s.index} eyebrow={s.eyebrow} title={s.title} />
+        <SectionHeader
+          index={s.index}
+          eyebrow={s.eyebrow}
+          title={s.title}
+          more="#/about"
+          moreLabel={s.more}
+        />
 
         <div className="grid items-start gap-14 lg:grid-cols-2">
           <FadeIn>

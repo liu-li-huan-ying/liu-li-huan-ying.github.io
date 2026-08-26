@@ -15,6 +15,7 @@ import BlogList from './pages/BlogList'
 import BlogPost from './pages/BlogPost'
 import ProjectList from './pages/ProjectList'
 import ProjectDetail from './pages/ProjectDetail'
+import AboutPage from './pages/AboutPage'
 import NotFound from './pages/NotFound'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
@@ -43,6 +44,8 @@ function usePageTitle(route) {
     } else if (projMatch) {
       const project = data.projects.find((p) => p.id === projMatch[1])
       document.title = project ? `${project.title} · ${data.name}` : DEFAULT_TITLE
+    } else if (route === '/about') {
+      document.title = `${data.name} — About`
     } else {
       document.title = DEFAULT_TITLE
     }
@@ -70,6 +73,8 @@ function RoutedView() {
     view = <ProjectList />
   } else if (route === '/blog') {
     view = <BlogList />
+  } else if (route === '/about') {
+    view = <AboutPage />
   } else if (blogMatch) {
     const index = data.posts.findIndex((p) => p.slug === blogMatch[1])
     view =

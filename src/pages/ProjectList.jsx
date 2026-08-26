@@ -8,12 +8,8 @@ import FadeIn from '../components/FadeIn'
 import SectionHeader from '../components/SectionHeader'
 import TiltCard from '../components/TiltCard'
 import GitHubStats from '../components/GitHubStats'
+import { coverWipeNavigate } from '../utils/pageTransition'
 import Magnetic from '../components/Magnetic'
-
-function openProject(id) {
-  window.history.pushState(null, '', `#/projects/${id}`)
-  window.dispatchEvent(new HashChangeEvent('hashchange'))
-}
 
 export default function ProjectList() {
   const { lang } = useLang()
@@ -32,6 +28,11 @@ export default function ProjectList() {
     activeTag === pl.all ? projects : projects.filter((p) => p.tags.includes(activeTag))
 
   const chips = [pl.all, ...tagPool]
+
+  const openProject = (event, id) => {
+    const cover = event?.currentTarget?.querySelector('[data-cover]') ?? null
+    coverWipeNavigate(navigate, `/projects/${id}`, cover)
+  }
 
   return (
     <section className="relative mx-auto max-w-6xl px-6 pb-24 pt-32">
@@ -84,16 +85,17 @@ export default function ProjectList() {
                   role="link"
                   tabIndex={0}
                   data-cursor-label="VIEW"
-                  onClick={() => openProject(project.id)}
+                  onClick={(e) => openProject(e, project.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      openProject(project.id)
+                      openProject(e, project.id)
                     }
                   }}
                   className="group glass relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-neon-violet/40 hover:shadow-[0_24px_60px_-16px_rgba(129,140,248,0.35)]"
                 >
                   <div
+                    data-cover
                     className="relative h-52 overflow-hidden"
                     style={{
                       background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,

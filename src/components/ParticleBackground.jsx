@@ -35,6 +35,9 @@ export default function ParticleBackground() {
     }
 
     const draw = () => {
+      const now = performance.now()
+      while (bursts.length && now - bursts[0].start > 700) bursts.shift()
+
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
       for (const p of particles) {
@@ -55,6 +58,19 @@ export default function ParticleBackground() {
           glow = (1 - md / 150) * 0.35
           p.x += (dx / md) * 0.6
           p.y += (dy / md) * 0.6
+        }
+
+        for (const burst of bursts) {
+          const bx = p.x - burst.x
+          const by = p.y - burst.y
+          const bd = Math.hypot(bx, by)
+          if (bd < 260 && bd > 0.01) {
+            const age = (now - burst.start) / 700
+            const force = (1 - bd / 260) * (1 - age) * 4
+            p.x += (bx / bd) * force
+            p.y += (by / bd) * force
+            glow += (1 - age) * 0.5
+          }
         }
 
         const alpha = 0.25 + Math.abs(Math.sin(p.tw)) * 0.45 + glow
@@ -82,6 +98,7 @@ export default function ParticleBackground() {
     }
 
     let running = false
+    const bursts = []
 
     const startLoop = () => {
       if (reduced || running || document.hidden) return
@@ -114,6 +131,11 @@ export default function ParticleBackground() {
       else startLoop()
     }
 
+    const onPlanetBurst = (e) => {
+      bursts.push({ x: e.detail.x, y: e.detail.y, start: performance.now() })
+      if (reduced || !running) startLoop()
+    }
+
     resize()
     if (reduced) {
       draw()
@@ -124,14 +146,16 @@ export default function ParticleBackground() {
     window.addEventListener('resize', resize)
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseout', onLeave)
+    window.addEventListener('planet-burst', onPlanetBurst)
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       stopLoop()
-      window.removeEventListener('resize', resize)
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mouseout', onLeave)
-      document.removeEventListener('visibilitychange', onVisibility)
+    window.removeEventListener('resize', resize)
+    window.removeEventListener('mousemove', onMove)
+    window.removeEventListener('mouseout', onLeave)
+    window.removeEventListener('planet-burst', onPlanetBurst)
+    document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 

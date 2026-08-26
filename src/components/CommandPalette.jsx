@@ -39,7 +39,7 @@ export default function CommandPalette() {
       hint: link.id === 'projects' || link.id === 'blog' ? 'page' : 'section',
       keywords: nav[link.id],
       run: () =>
-        link.id === 'projects' || link.id === 'blog'
+        link.id === 'projects' || link.id === 'blog' || link.id === 'about'
           ? navigate(`/${link.id}`)
           : actions.scrollTo(link.id),
     })),

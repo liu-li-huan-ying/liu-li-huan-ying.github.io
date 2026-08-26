@@ -1,4 +1,5 @@
 import { navigate } from '../hooks/useHashRoute'
+import { coverWipeNavigate } from '../utils/pageTransition'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { githubProfileUrl, profile } from '../data/profile'
@@ -14,8 +15,9 @@ export default function Projects() {
   const p2 = ui[lang].proj
   const projects = profile[lang].projects
 
-  const openProject = (id) => {
-    navigate(`/projects/${id}`)
+  const openProject = (event, id) => {
+    const cover = event?.currentTarget?.querySelector('[data-cover]') ?? null
+    coverWipeNavigate(navigate, `/projects/${id}`, cover)
   }
 
   return (
@@ -36,16 +38,17 @@ export default function Projects() {
                 role="link"
                 tabIndex={0}
                 data-cursor-label="VIEW"
-                onClick={() => openProject(project.id)}
+                onClick={(e) => openProject(e, project.id)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
-                    openProject(project.id)
+                    openProject(e, project.id)
                   }
                 }}
                 className="group glass relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-neon-violet/40 hover:shadow-[0_24px_60px_-16px_rgba(129,140,248,0.35)]"
               >
                 <div
+                  data-cover
                   className="relative h-44 overflow-hidden"
                   style={{
                     background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,
