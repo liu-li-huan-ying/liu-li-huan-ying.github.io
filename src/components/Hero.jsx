@@ -86,6 +86,7 @@ export default function Hero() {
   const roles = ROLES_BY_LANG[lang]
   const typed = useTypewriter(roles)
   const codeLines = useCodeLines(data.name, lang === 'zh' ? '全栈与分布式系统' : 'fullstack & systems')
+  const [show3D] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
 
   const sectionRef = useRef(null)
   const mx = useMotionValue(0.5)
@@ -111,9 +112,11 @@ export default function Hero() {
       onMouseMove={onMouseMove}
       className="relative flex min-h-screen items-center overflow-hidden pt-24"
     >
-      <Suspense fallback={null}>
-        <HeroScene />
-      </Suspense>
+      {show3D && (
+        <Suspense fallback={null}>
+          <HeroScene />
+        </Suspense>
+      )}
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-16 px-6 pb-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
