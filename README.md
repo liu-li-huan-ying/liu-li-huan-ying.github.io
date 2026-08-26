@@ -58,6 +58,34 @@ src/
 推送到 `main` 分支即自动构建发布（GitHub Actions → GitHub Pages）。
 Every push to `main` triggers an automatic build & deploy via GitHub Actions.
 
+## ✍️ 写文章 Adding Posts
+
+文章是 `src/content/posts/` 下的 **Markdown 文件**，放进去即自动收录（按日期倒序、双语自动配对）。
+
+最快方式：
+
+```bash
+npm run newpost -- my-new-post "我的新文章"
+```
+
+会生成中文主文件 `YYYY-MM-DD-my-new-post.md` 和可选英文骨架 `*.en.md`，填好内容 push 即上线。
+
+Frontmatter 参考：
+
+```md
+---
+title: 文章标题
+date: 2026-08-26        # YYYY-MM-DD，决定排序
+tags: Go, 存储          # 逗号分隔
+summary: 一句话摘要     # 列表页展示
+readTime: 7             # 可选，缺省按字数自动估算
+---
+正文支持 GFM Markdown：标题、列表、引用、围栏代码块、链接、图片。
+```
+
+- 英文版文件命名为 `<同名>.en.md`；没有英文版时英文界面自动回退中文并标注「原文」
+- 正文渲染为 `.md-body` 排版（标题/列表/引用/代码块均已适配暗色主题）
+
 ---
 
 © 2026 [琉璃幻影 · Liu-Li-Huan-Ying](https://github.com/liu-li-huan-ying) · Built with React and too much curiosity

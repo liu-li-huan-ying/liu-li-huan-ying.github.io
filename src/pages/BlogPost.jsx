@@ -2,35 +2,6 @@ import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { navigate } from '../hooks/useHashRoute'
 
-function Block({ block }) {
-  switch (block.t) {
-    case 'h2':
-      return <h2 className="mt-12 text-xl font-bold text-white md:text-2xl">{block.text}</h2>
-    case 'quote':
-      return (
-        <blockquote className="border-l-2 border-neon-violet/60 pl-5 italic leading-8 text-slate-400">
-          {block.text}
-        </blockquote>
-      )
-    case 'code':
-      return (
-        <pre className="glass overflow-x-auto rounded-xl p-5 font-mono text-sm leading-6 text-slate-300">
-          <code>{block.text}</code>
-        </pre>
-      )
-    case 'list':
-      return (
-        <ul className="list-disc space-y-2 pl-6 leading-8 text-slate-400 marker:text-neon-violet">
-          {block.items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      )
-    default:
-      return <p className="leading-8 text-slate-400">{block.text}</p>
-  }
-}
-
 export default function BlogPost({ post, index, posts }) {
   const { lang } = useLang()
   const t = ui[lang].post
@@ -64,15 +35,19 @@ export default function BlogPost({ post, index, posts }) {
               {tag}
             </span>
           ))}
+          {post.originalLang && (
+            <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-amber-300">
+              原文 · {post.originalLang}
+            </span>
+          )}
         </div>
         <h1 className="mt-6 text-3xl font-bold leading-tight text-white md:text-5xl">{post.title}</h1>
       </header>
 
-      <div className="mt-12 space-y-6">
-        {post.content.map((block, i) => (
-          <Block key={i} block={block} />
-        ))}
-      </div>
+      <div
+        className="md-body mt-12"
+        dangerouslySetInnerHTML={{ __html: post.html }}
+      />
 
       <nav className="mt-16 flex items-center justify-between gap-4 border-t border-white/10 pt-8 font-mono text-sm">
         {newer ? (

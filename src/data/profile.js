@@ -1,3 +1,8 @@
+import { postsFor } from './mdPosts'
+
+const postsEn = postsFor('en')
+const postsZh = postsFor('zh')
+
 export const profile = {
   en: {
     name: 'Glazed Mirage',
@@ -23,17 +28,7 @@ export const profile = {
       { icon: 'zap', title: 'Performance', desc: 'Benchmark-driven, measured always' },
       { icon: 'rocket', title: 'Open Source', desc: 'Building in public, shipping often' },
     ],
-    skills: [
-      'JavaScript',
-      'TypeScript',
-      'React',
-      'Vue',
-      'Node.js',
-      'Python',
-      'Go',
-      'C',
-      'C++',
-    ],
+    skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Node.js', 'Python', 'Go', 'C', 'C++'],
     projects: [
       {
         id: 'phantom-video',
@@ -64,7 +59,7 @@ export const profile = {
         title: 'GojiDB',
         desc: 'A high-performance, lightweight KV store based on LSM-Tree with WAL and TTL support.',
         tags: ['Go', 'LSM-Tree', 'WAL', 'TTL', 'Benchmark'],
-        github: 'https://github.com/liu-li-huan-ying/GojiDB',
+        github: 'https://github.com/liu-li-huan-ying/gojidb',
         live: '',
         gradient: ['#22d3ee', '#6366f1'],
         detail: {
@@ -90,147 +85,7 @@ export const profile = {
         desc: 'Graduated. Core coursework: data structures, database systems, distributed computing and large-scale data processing.',
       },
     ],
-    posts: [
-      {
-        slug: 'lsm-tree',
-        date: '2026-08-15',
-        title: 'Understanding LSM-Tree in Go',
-        summary:
-          'The write-optimized storage structure behind RocksDB and GojiDB — memtables, SSTables and the compaction dance explained by building one.',
-        tags: ['Go', 'Storage'],
-        readTime: 7,
-        content: [
-          {
-            t: 'p',
-            text: 'B-trees optimize reads; LSM-Trees optimize writes. That single trade-off explains most modern KV stores. Instead of writing in place, an LSM-Tree appends everything to an in-memory table and periodically flushes it to disk as immutable files.',
-          },
-          { t: 'h2', text: 'The write path' },
-          {
-            t: 'p',
-            text: 'A write hits the WAL first, then the memtable. When the memtable fills up, it freezes into an SSTable — a sorted string table — and a fresh memtable takes over. Reads check the memtable, then SSTables from newest to oldest, with a Bloom filter per file skipping the ones that cannot possibly contain your key.',
-          },
-          {
-            t: 'code',
-            lang: 'go',
-            text: 'func (db *DB) Put(key, value []byte) error {\n    if err := db.wal.Append(key, value); err != nil {\n        return err\n    }\n    return db.memtable.Set(key, value)\n}',
-          },
-          { t: 'h2', text: 'Compaction: paying debt down' },
-          {
-            t: 'list',
-            items: [
-              'Size-tiered: merge similarly-sized tables — great write bursts, worse space amplification',
-              'Leveled: each level is 10x the previous, overlapping runs merged downward — predictable reads, more write amplification',
-              'GojiDB uses leveled compaction with per-level Bloom filters to keep read amplification bounded',
-            ],
-          },
-          {
-            t: 'quote',
-            text: 'Every storage engine is a bet on which cost your workload can afford: write amplification, read amplification, or space.',
-          },
-        ],
-      },
-      {
-        slug: 'wal-design',
-        date: '2026-07-02',
-        title: 'WAL Design for Embedded KV Stores',
-        summary:
-          'Crash safety without sacrificing throughput: record formats, fsync strategies and recovery replay for a hand-written WAL.',
-        tags: ['Go', 'Durability'],
-        readTime: 6,
-        content: [
-          {
-            t: 'p',
-            text: 'A write-ahead log is the difference between "my database lost your data" and "my database restarted". Before any mutation touches the memtable, it must be durable somewhere recoverable. Designing that somewhere well is mostly about three decisions.',
-          },
-          { t: 'h2', text: 'Decision one: what counts as durable' },
-          {
-            t: 'list',
-            items: [
-              'fsync per write: bulletproof, brutally slow — only for money',
-              'Group commit: batch many writes behind one fsync — the default choice',
-              'OS flush only: fast, loses a window of writes on power loss — fine for caches',
-            ],
-          },
-          {
-            t: 'h2', text: 'Decision two: the record format' },
-          {
-            t: 'code',
-            lang: 'text',
-            text: '| len(4B) | crc32(4B) | type(1B) | key | value |',
-          },
-          {
-            t: 'p',
-            text: 'A length prefix lets you skip torn tails, a CRC catches partial writes, and a type byte distinguishes puts from deletions during replay. Recovery is then just: read records until CRC fails, truncate there, rebuild the memtable.',
-          },
-          {
-            t: 'quote',
-            text: 'Torn writes are not an edge case. On real disks they are Tuesday.',
-          },
-        ],
-      },
-      {
-        slug: 'go-benchmark',
-        date: '2026-05-18',
-        title: 'Benchmarking Go Databases Honestly',
-        summary:
-          'YCSB workloads, benchstat and the lies your own benchmark tells you when you are not careful.',
-        tags: ['Go', 'Performance'],
-        readTime: 5,
-        content: [
-          {
-            t: 'p',
-            text: 'Every database README quotes heroic numbers. Few explain the machine, the workload distribution, or whether GC pauses were counted. An honest benchmark is mostly about removing the ways you might fool yourself.',
-          },
-          { t: 'h2', text: 'Start from YCSB, not from vibes' },
-          {
-            t: 'list',
-            items: [
-              'Workload A: 50/50 read/write — the classic mixed OLTP shape',
-              'Workload B: 95/5 read-heavy — closer to most production caches',
-              'Workload F: read-modify-write — exposes lock contention early',
-            ],
-          },
-          {
-            t: 'code',
-            lang: 'bash',
-            text: 'go test -bench=BenchmarkPut -benchtime=10s -count=10 .\nbenchstat old.txt new.txt',
-          },
-          {
-            t: 'p',
-            text: 'Run each benchmark at least ten times and compare distributions with benchstat, never eyeball single runs. Pin goroutine counts, log GC metrics alongside throughput, and always report the hardware — a number without a machine spec is marketing, not measurement.',
-          },
-        ],
-      },
-      {
-        slug: 'open-source-journey',
-        date: '2026-03-06',
-        title: 'From College Project to Open Source',
-        summary:
-          'How a coursework idea became GojiDB: scoping it down, writing the docs first and surviving your first public issue.',
-        tags: ['Open Source', 'Career'],
-        readTime: 4,
-        content: [
-          {
-            t: 'p',
-            text: 'GojiDB started as a scaled-down course assignment: build any storage system with a durability guarantee. The first working version was ugly but complete — and completeness turned out to be the whole trick.',
-          },
-          { t: 'h2', text: 'What made it survivable' },
-          {
-            t: 'list',
-            items: [
-              'Cut scope until only the LSM core remained; TTL came months later',
-              'Write the readme and a quickstart before polishing internals',
-              'Add benchmarks early — they became the project\'s best documentation',
-              'Treat the first public issue as a gift, not an attack',
-            ],
-          },
-          {
-            t: 'quote',
-            text: 'Open source is not publishing code. It is publishing a place where other people can think with you.',
-          },
-        ],
-      },
-    ],
+    posts: postsEn,
   },
 
   zh: {
@@ -288,7 +143,7 @@ export const profile = {
         title: 'GojiDB',
         desc: '基于 LSM-Tree 的高性能轻量级 KV 数据库，支持 WAL 与 TTL。',
         tags: ['Go', 'LSM-Tree', 'WAL', 'TTL', 'Benchmark'],
-        github: 'https://github.com/liu-li-huan-ying/GojiDB',
+        github: 'https://github.com/liu-li-huan-ying/gojidb',
         live: '',
         gradient: ['#22d3ee', '#6366f1'],
         detail: {
@@ -314,142 +169,7 @@ export const profile = {
         desc: '已毕业，主修数据结构、数据库系统、分布式计算与大数据处理。',
       },
     ],
-    posts: [
-      {
-        slug: 'lsm-tree',
-        date: '2026-08-15',
-        title: '用 Go 理解 LSM-Tree',
-        summary: 'RocksDB 与 GojiDB 背后的写优化存储结构——通过亲手实现一个来讲透内存表、SSTable 与压缩机制。',
-        tags: ['Go', '存储'],
-        readTime: 7,
-        content: [
-          {
-            t: 'p',
-            text: 'B 树为读优化，LSM-Tree 为写优化——这一个取舍几乎解释了所有现代 KV 数据库的存在形态。LSM-Tree 不做原地写入，而是把所有变更先追加进内存表，再周期性地刷成磁盘上的不可变文件。',
-          },
-          { t: 'h2', text: '写入路径' },
-          {
-            t: 'p',
-            text: '一次写入先落 WAL，再进内存表。内存表写满后冻结为一个 SSTable（有序字符串表），新的内存表接棒。读取则依次查内存表和由新到旧的 SSTable，每个文件配备布隆过滤器，快速排除"绝不可能包含该键"的文件。',
-          },
-          {
-            t: 'code',
-            lang: 'go',
-            text: 'func (db *DB) Put(key, value []byte) error {\n    if err := db.wal.Append(key, value); err != nil {\n        return err\n    }\n    return db.memtable.Set(key, value)\n}',
-          },
-          { t: 'h2', text: '压缩：偿还欠下的债' },
-          {
-            t: 'list',
-            items: [
-              '大小分层：合并尺寸相近的表——写突发友好，空间放大较重',
-              '分层合并（Leveled）：每层是上一层的 10 倍、向下归并——读放大可控，写放大更高',
-              'GojiDB 采用 Leveled 压缩 + 每层布隆过滤器，把读放大限制在常数级',
-            ],
-          },
-          {
-            t: 'quote',
-            text: '每一个存储引擎都是在下注：赌你的负载承受得起写放大、读放大还是空间放大。',
-          },
-        ],
-      },
-      {
-        slug: 'wal-design',
-        date: '2026-07-02',
-        title: '嵌入式 KV 存储的 WAL 设计',
-        summary: '不牺牲吞吐的崩溃安全：记录格式、fsync 策略与恢复重放，手写一个 WAL 的完整思考。',
-        tags: ['Go', '可靠性'],
-        readTime: 6,
-        content: [
-          {
-            t: 'p',
-            text: 'WAL 是「数据库弄丢了你的数据」和「数据库只是重启了一次」之间的那道墙。任何变更触碰内存表之前，必须先在某个可恢复的地方落地。把这个地方设计好，本质上就是三个决策。',
-          },
-          { t: 'h2', text: '决策一：什么才算持久化成功' },
-          {
-            t: 'list',
-            items: [
-              '每次写入都 fsync：绝对可靠但极慢——只属于金融场景',
-              '组提交：多个写入共享一次 fsync——默认的正确选择',
-              '只交给操作系统刷盘：快，断电丢一个窗口的数据——缓存类场景可接受',
-            ],
-          },
-          { t: 'h2', text: '决策二：记录格式' },
-          {
-            t: 'code',
-            lang: 'text',
-            text: '| 长度(4B) | CRC32(4B) | 类型(1B) | key | value |',
-          },
-          {
-            t: 'p',
-            text: '长度前缀让你能跳过残缺的尾部；CRC 校验捕获半截写入；类型字节在重放时区分 put 和 delete。于是恢复过程变得朴素：逐条读到 CRC 失败为止，在那里截断文件，重建内存表，完事。',
-          },
-          {
-            t: 'quote',
-            text: '撕裂写不是边界情况。在真实的磁盘上，它就是每个普通的星期二。',
-          },
-        ],
-      },
-      {
-        slug: 'go-benchmark',
-        date: '2026-05-18',
-        title: '诚实地给 Go 数据库做基准测试',
-        summary: 'YCSB 负载模型、benchstat 对比实验，以及你自己的基准测试是如何骗过你的。',
-        tags: ['Go', '性能'],
-        readTime: 5,
-        content: [
-          {
-            t: 'p',
-            text: '每个数据库的 README 都写着英雄数字，却很少说明测试机器、负载分布、GC 停顿算没算进吞吐。一份诚实的基准测试，核心工作是穷尽"自己骗自己"的可能性。',
-          },
-          { t: 'h2', text: '从 YCSB 开始，而不是凭感觉' },
-          {
-            t: 'list',
-            items: [
-              '负载 A：读写各半——经典的混合 OLTP 形态',
-              '负载 B：读占 95%——更接近大多数生产缓存的真实压力',
-              '负载 F：读-改-写——最早暴露锁竞争问题',
-            ],
-          },
-          {
-            t: 'code',
-            lang: 'bash',
-            text: 'go test -bench=BenchmarkPut -benchtime=10s -count=10 .\nbenchstat old.txt new.txt',
-          },
-          {
-            t: 'p',
-            text: '每组基准至少跑十次，用 benchstat 比较分布，永远不要肉眼对比单次结果。固定协程数、把 GC 指标与吞吐一起记录，并且永远附上硬件规格——没有机器型号的数字是广告，不是测量。',
-          },
-        ],
-      },
-      {
-        slug: 'open-source-journey',
-        date: '2026-03-06',
-        title: '从课程项目到开源项目',
-        summary: '一个课程作业如何长成 GojiDB：砍需求、先写文档，以及挺过第一个公开 issue。',
-        tags: ['开源', '职业'],
-        readTime: 4,
-        content: [
-          {
-            t: 'p',
-            text: 'GojiDB 最初是一个缩小版的课程作业：做一个带持久化保证的存储系统。第一版能跑的代码很丑，但它完整——而"完整"恰恰是全部秘诀所在。',
-          },
-          { t: 'h2', text: '让它活下来的几件事' },
-          {
-            t: 'list',
-            items: [
-              '把范围砍到只剩 LSM 内核；TTL 是几个月后才加的',
-              '在打磨内部实现之前，先写好 README 和快速上手',
-              '尽早加基准测试——它们后来成了项目最好的文档',
-              '把第一个公开 issue 当作礼物，而不是攻击',
-            ],
-          },
-          {
-            t: 'quote',
-            text: '开源不是发布代码，而是发布一个能让别人和你一起思考的地方。',
-          },
-        ],
-      },
-    ],
+    posts: postsZh,
   },
 }
 

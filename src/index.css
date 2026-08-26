@@ -90,6 +90,97 @@ section[id] {
   scroll-margin-top: 5rem;
 }
 
+.md-body {
+  color: #a3aec4;
+}
+
+.md-body h2 {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 2.75rem 0 1rem;
+}
+
+.md-body h3 {
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 2rem 0 0.75rem;
+}
+
+.md-body p {
+  line-height: 2;
+  margin-bottom: 1.25rem;
+}
+
+.md-body ul,
+.md-body ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.md-body ul {
+  list-style: disc;
+}
+
+.md-body ol {
+  list-style: decimal;
+}
+
+.md-body li {
+  line-height: 1.9;
+  margin-bottom: 0.5rem;
+}
+
+.md-body ul ::marker,
+.md-body ol ::marker {
+  color: #818cf8;
+}
+
+.md-body blockquote {
+  border-left: 2px solid rgba(129, 140, 248, 0.6);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.md-body pre {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  padding: 1.25rem;
+}
+
+.md-body pre code {
+  background: none;
+  color: #cbd5e1;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85rem;
+  padding: 0;
+}
+
+.md-body :not(pre) > code {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 0.35em;
+  color: #7dd3fc;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85em;
+  padding: 0.15em 0.45em;
+}
+
+.md-body a {
+  color: #22d3ee;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.md-body strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
 @media (pointer: fine) {
   body,
   a,
