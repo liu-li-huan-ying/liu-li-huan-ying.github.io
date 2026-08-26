@@ -2,6 +2,7 @@ import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { goSection } from '../hooks/useHashRoute'
 import { ExternalIcon, GitHubIcon } from '../components/Icons'
+import GitHubStats from '../components/GitHubStats'
 
 export default function ProjectDetail({ project, index, projects }) {
   const { lang } = useLang()
@@ -36,6 +37,14 @@ export default function ProjectDetail({ project, index, projects }) {
 
       <h1 className="mt-10 text-3xl font-bold text-white md:text-5xl">{project.title}</h1>
       <p className="mt-4 leading-relaxed text-slate-400">{project.desc}</p>
+      {(() => {
+        const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
+        return m ? (
+          <div className="mt-4">
+            <GitHubStats repo={`${m[1]}/${m[2]}`} />
+          </div>
+        ) : null
+      })()}
 
       <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
         <div>

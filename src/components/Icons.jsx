@@ -161,6 +161,26 @@ export function EyeIcon(props) {
   )
 }
 
+export function StarIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </svg>
+  )
+}
+
+export function ForkIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...stroke} {...props}>
+      <circle cx="12" cy="18" r="3" />
+      <circle cx="6" cy="6" r="3" />
+      <circle cx="18" cy="6" r="3" />
+      <path d="M18 9v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9" />
+      <line x1="12" y1="12" x2="12" y2="15" />
+    </svg>
+  )
+}
+
 export function QQIcon(props) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...stroke} {...props}>

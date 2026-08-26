@@ -6,6 +6,7 @@ import { ExternalIcon, FolderIcon, GitHubIcon } from './Icons'
 import FadeIn from './FadeIn'
 import SectionHeader from './SectionHeader'
 import TiltCard from './TiltCard'
+import GitHubStats from './GitHubStats'
 
 export default function Projects() {
   const { lang } = useLang()
@@ -81,6 +82,11 @@ export default function Projects() {
                     {project.title}
                   </h3>
                   <p className="flex-1 text-sm leading-relaxed text-slate-400">{project.desc}</p>
+
+                  {(() => {
+                    const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
+                    return m ? <GitHubStats repo={`${m[1]}/${m[2]}`} /> : null
+                  })()}
 
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
