@@ -129,11 +129,11 @@ export default function HeroScene() {
   }, [bubble])
 
   const onPlanetClick = (e) => {
+    const x = e.clientX ?? e.nativeEvent?.clientX ?? window.innerWidth / 2
+    const y = e.clientY ?? e.nativeEvent?.clientY ?? window.innerHeight / 3
     const quote = quotes[Math.floor(Math.random() * quotes.length)]
-    setBubble({ text: quote, x: e.clientX ?? 0, y: e.clientY ?? 0, key: Date.now() })
-    window.dispatchEvent(
-      new CustomEvent('planet-burst', { detail: { x: e.clientX ?? 0, y: e.clientY ?? 0 } })
-    )
+    setBubble({ text: quote, x, y, key: Date.now() })
+    window.dispatchEvent(new CustomEvent('planet-burst', { detail: { x, y } }))
   }
 
   useEffect(() => {
@@ -161,11 +161,19 @@ export default function HeroScene() {
         frameloop={active ? 'always' : 'never'}
       >
         <Rig>
-          <group position={[0.6, 0.1, 0]} onClick={onPlanetClick}>
+          <group
+            position={[0.6, 0.1, 0]}
+            onClick={onPlanetClick}
+            onPointerDown={onPlanetClick}
+          >
             <Float speed={1.6} rotationIntensity={0.35} floatIntensity={0.9}>
               <CoreShape />
             </Float>
             <ParticleSphere />
+            <mesh onClick={onPlanetClick} onPointerDown={onPlanetClick}>
+              <sphereGeometry args={[2.05, 16, 16]} />
+              <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+            </mesh>
             <Sparkles count={90} scale={[6.5, 4.5, 2.5]} size={2.2} speed={0.35} color="#22d3ee" opacity={0.6} />
           </group>
         </Rig>
