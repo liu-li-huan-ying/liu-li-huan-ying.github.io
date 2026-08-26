@@ -88,6 +88,49 @@ export default function KanbanMusume() {
             ],
           },
         })
+
+        setTimeout(() => {
+          try {
+            const stage = [...document.body.children].find(
+              (el) => el instanceof HTMLDivElement && el.querySelector(':scope > canvas')
+            )
+            if (!stage) return
+
+            stage.style.pointerEvents = 'none'
+            const canvas = stage.querySelector('canvas')
+            if (canvas) canvas.style.pointerEvents = 'none'
+
+            stage.querySelectorAll('button, a, input, [role="button"]').forEach((el) => {
+              el.style.pointerEvents = 'auto'
+            })
+
+            const hitbox = document.createElement('div')
+            hitbox.className = 'kanban-hitbox'
+            hitbox.style.cssText = [
+              `position:fixed`,
+              `right:0`,
+              `bottom:0`,
+              `width:${Math.round(stage.offsetWidth * 0.92)}px`,
+              `height:${Math.round(stage.offsetHeight * 0.62)}px`,
+              `z-index:${Number.parseInt(stage.style.zIndex || '9999', 10) - 1}`,
+              `pointer-events:auto`,
+            ].join(';')
+            hitbox.addEventListener('click', () => {
+              if (!canvas) return
+              const r = canvas.getBoundingClientRect()
+              canvas.dispatchEvent(
+                new MouseEvent('click', {
+                  bubbles: true,
+                  clientX: r.left + r.width / 2,
+                  clientY: r.top + r.height * 0.6,
+                })
+              )
+            })
+            document.body.appendChild(hitbox)
+          } catch (err) {
+            void err
+          }
+        }, 300)
       } catch (err) {
         void err
       }
