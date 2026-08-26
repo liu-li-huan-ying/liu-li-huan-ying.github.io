@@ -119,6 +119,7 @@ section[id] {
   font-size: 1.35rem;
   font-weight: 700;
   margin: 2.75rem 0 1rem;
+  scroll-margin-top: 6rem;
 }
 
 .md-body h3 {
