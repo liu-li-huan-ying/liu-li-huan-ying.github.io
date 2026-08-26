@@ -59,5 +59,8 @@ function rssPlugin() {
 }
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   plugins: [react(), tailwindcss(), rssPlugin()],
 })
