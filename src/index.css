@@ -8,6 +8,12 @@
   --color-neon-cyan: #22d3ee;
   --color-neon-violet: #818cf8;
   --color-neon-pink: #e879f9;
+
+  --color-slate-500: #7f8ca3;
+  --color-slate-600: #5f6d86;
+  --color-slate-700: #4a5872;
+  --color-slate-400: #a3aec4;
+
   --animate-float: float 7s ease-in-out infinite;
   --animate-float-slow: float 11s ease-in-out infinite;
   --animate-blink: blink 1.1s step-end infinite;

@@ -98,16 +98,19 @@ function Rig({ children }) {
 export default function HeroScene() {
   const wrapRef = useRef(null)
   const [active, setActive] = useState(true)
+  const [isDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
 
   useEffect(() => {
     const el = wrapRef.current
-    if (!el) return undefined
+    if (!el || !isDesktop) return undefined
     const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), {
       threshold: 0,
     })
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [isDesktop])
+
+  if (!isDesktop) return null
 
   return (
     <div

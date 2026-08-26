@@ -25,7 +25,7 @@ export default function Projects() {
         {projects.map((project, i) => (
           <FadeIn key={project.id} delay={(i % 3) * 0.1} className="h-full">
             <TiltCard className="h-full rounded-2xl">
-              <article
+              <div
                 role="link"
                 tabIndex={0}
                 data-cursor-label="VIEW"
@@ -91,9 +91,9 @@ export default function Projects() {
                         {tag}
                       </span>
                     ))}
-                  </div>
                 </div>
-              </article>
+              </div>
+              </div>
             </TiltCard>
           </FadeIn>
         ))}

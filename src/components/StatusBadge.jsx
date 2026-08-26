@@ -58,13 +58,18 @@ function pad2(n) {
   return String(n).padStart(2, '0')
 }
 
+function getForcedStatus() {
+  const value = new URLSearchParams(window.location.search).get('status')
+  return value && STATUS_MAP[value] ? value : null
+}
+
 export default function StatusBadge() {
   const { lang } = useLang()
-  const [statusKey, setStatusKey] = useState(() =>
-    pickStatus(fallbackIsHoliday(new Date()), isDaytime(new Date()))
-  )
+  const [statusKey, setStatusKey] = useState(() => getForcedStatus() ?? pickStatus(fallbackIsHoliday(new Date()), isDaytime(new Date())))
 
   useEffect(() => {
+    if (getForcedStatus()) return undefined
+
     let cancelled = false
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 2500)
