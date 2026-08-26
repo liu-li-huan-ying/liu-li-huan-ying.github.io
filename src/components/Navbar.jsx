@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { navLinks, profile } from '../data/profile'
-import { goSection } from '../hooks/useHashRoute'
+import { goSection, navigate } from '../hooks/useHashRoute'
 import { CloseIcon, MenuIcon } from './Icons'
 import LangToggle from './LangToggle'
 
@@ -24,7 +24,11 @@ export default function Navbar() {
   const onNavClick = (e, id) => {
     e.preventDefault()
     setOpen(false)
-    goSection(id)
+    if (id === 'projects' || id === 'blog') {
+      navigate(`/${id}`)
+    } else {
+      goSection(id)
+    }
   }
 
   return (

@@ -8,6 +8,7 @@ import FadeIn from '../components/FadeIn'
 import SectionHeader from '../components/SectionHeader'
 import TiltCard from '../components/TiltCard'
 import GitHubStats from '../components/GitHubStats'
+import Magnetic from '../components/Magnetic'
 
 function openProject(id) {
   window.history.pushState(null, '', `#/projects/${id}`)
@@ -34,23 +35,33 @@ export default function ProjectList() {
 
   return (
     <section className="relative mx-auto max-w-6xl px-6 pb-24 pt-32">
-      <SectionHeader index={s.index} eyebrow={pl.eyebrow} title={pl.title} />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-10 right-0 z-0 select-none font-display text-[9rem] font-bold leading-none text-white/[0.03] md:text-[15rem]"
+      >
+        {s.index}
+      </span>
 
-      <FadeIn className="mb-12 flex flex-wrap items-center gap-3">
+      <div className="relative z-10">
+        <SectionHeader index={s.index} eyebrow={pl.eyebrow} title={pl.title} />
+      </div>
+
+      <FadeIn className="relative z-10 mb-12 flex flex-wrap items-center gap-3">
         {chips.map((chip) => (
-          <button
-            key={chip}
-            type="button"
-            onClick={() => setActiveTag(chip)}
-            data-cursor-label="FILTER"
-            className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
-              activeTag === chip
-                ? 'border-neon-violet/60 bg-neon-violet/15 text-white shadow-[0_0_16px_rgba(129,140,248,0.35)]'
-                : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-violet/40 hover:text-white'
-            }`}
-          >
-            {chip}
-          </button>
+          <Magnetic key={chip} strength={0.25}>
+            <button
+              type="button"
+              onClick={() => setActiveTag(chip)}
+              data-cursor-label="FILTER"
+              className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
+                activeTag === chip
+                  ? 'border-neon-violet/60 bg-neon-violet/15 text-white shadow-[0_0_16px_rgba(129,140,248,0.35)]'
+                  : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-violet/40 hover:text-white'
+              }`}
+            >
+              {chip}
+            </button>
+          </Magnetic>
         ))}
         <span className="ml-auto font-mono text-xs text-slate-500">
           {filtered.length} / {projects.length} {pl.items}
@@ -91,6 +102,13 @@ export default function ProjectList() {
                     <div className="absolute inset-0 bg-night/40 transition-opacity duration-300 group-hover:opacity-20" />
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">
                       {project.letter}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                    />
+                    <span className="absolute left-4 top-4 rounded-md bg-night/50 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white/70 backdrop-blur-sm">
+                      {String(projects.indexOf(project) + 1).padStart(2, '0')}
                     </span>
                   </div>
 
