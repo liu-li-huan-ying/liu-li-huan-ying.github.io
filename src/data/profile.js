@@ -33,6 +33,7 @@ export const profile = {
       {
         id: 'phantom-video',
         letter: 'P',
+        image: '/projects/phantom-video.jpg',
         title: 'Phantom Video',
         desc: 'A hand-built Windows video player: libmpv core with D3D11VA zero-copy hardware decoding and a fully self-drawn SDL2 transparent UI.',
         tags: ['C++17', 'Win32', 'libmpv', 'D3D11VA', 'SDL2'],
@@ -56,6 +57,7 @@ export const profile = {
       {
         id: 'gojidb',
         letter: 'G',
+        image: '/projects/gojidb.jpg',
         title: 'GojiDB',
         desc: 'A high-performance, lightweight KV store based on LSM-Tree with WAL and TTL support.',
         tags: ['Go', 'LSM-Tree', 'WAL', 'TTL', 'Benchmark'],
@@ -117,6 +119,7 @@ export const profile = {
       {
         id: 'phantom-video',
         letter: 'P',
+        image: '/projects/phantom-video.jpg',
         title: 'Phantom Video',
         desc: '自研 Windows 视频播放器：libmpv 解码内核 + D3D11VA 零拷贝硬解，SDL2 逐像素透明 UI 全部自绘。',
         tags: ['C++17', 'Win32', 'libmpv', 'D3D11VA', 'SDL2'],
@@ -140,6 +143,7 @@ export const profile = {
       {
         id: 'gojidb',
         letter: 'G',
+        image: '/projects/gojidb.jpg',
         title: 'GojiDB',
         desc: '基于 LSM-Tree 的高性能轻量级 KV 数据库，支持 WAL 与 TTL。',
         tags: ['Go', 'LSM-Tree', 'WAL', 'TTL', 'Benchmark'],

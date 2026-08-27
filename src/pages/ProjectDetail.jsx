@@ -29,10 +29,18 @@ export default function ProjectDetail({ project, index, projects }) {
           background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,
         }}
       >
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-9xl font-bold text-white/15 md:text-[12rem]">
+            {project.letter}
+          </span>
+        )}
         <div className="absolute inset-0 bg-night/40" />
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-9xl font-bold text-white/15 md:text-[12rem]">
-          {project.letter}
-        </span>
       </div>
 
       <h1 className="mt-10 text-3xl font-bold text-white md:text-5xl">{project.title}</h1>

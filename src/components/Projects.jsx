@@ -54,10 +54,19 @@ export default function Projects() {
                     background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,
                   }}
                 >
+                  {project.image ? (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">
+                      {project.letter}
+                    </span>
+                  )}
                   <div className="absolute inset-0 bg-night/40 transition-opacity duration-300 group-hover:opacity-20" />
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">
-                    {project.letter}
-                  </span>
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-6">
