@@ -9,6 +9,7 @@ import SectionHeader from '../components/SectionHeader'
 import TiltCard from '../components/TiltCard'
 import GitHubStats from '../components/GitHubStats'
 import { coverWipeNavigate } from '../utils/pageTransition'
+import { navigate } from '../hooks/useHashRoute'
 import Magnetic from '../components/Magnetic'
 
 export default function ProjectList() {

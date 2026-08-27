@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify'
 import { parseFrontmatter } from '../utils/frontmatter'
 
 const rawFiles = import.meta.glob('../content/posts/*.md', {
@@ -59,5 +60,5 @@ export function postsFor(lang) {
 export async function renderMarkdown(markdown) {
   const { marked } = await import('marked')
   marked.setOptions({ gfm: true, breaks: true })
-  return marked.parse(markdown)
+  return DOMPurify.sanitize(marked.parse(markdown), { ADD_TAGS: ['iframe'] })
 }
