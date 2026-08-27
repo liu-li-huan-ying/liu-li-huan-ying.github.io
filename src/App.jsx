@@ -23,6 +23,7 @@ import ScrollProgress from './components/ScrollProgress'
 import CommandPalette from './components/CommandPalette'
 import KonamiRain from './components/KonamiRain'
 import KanbanMusume from './components/KanbanMusume'
+import MusicPlayer from './components/MusicPlayer'
 import Analytics from './components/Analytics'
 
 const NOISE =
@@ -152,6 +153,7 @@ function Shell() {
             <CommandPalette />
             <KonamiRain />
             <KanbanMusume />
+            <MusicPlayer />
           <Analytics />
           </>
         )}
