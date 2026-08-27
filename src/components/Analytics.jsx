@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { useHashRoute } from '../hooks/useHashRoute'
 import { ANALYTICS } from '../utils/analytics-config'
 
+let injected = false
+
 function injectBaidu(id) {
   window._hmt = window._hmt || []
   const hm = document.createElement('script')
@@ -33,17 +35,33 @@ function injectGoatcounter(site) {
   document.head.appendChild(s)
 }
 
+function injectAll() {
+  if (injected) return
+  injected = true
+  if (ANALYTICS.baiduId) injectBaidu(ANALYTICS.baiduId)
+  if (ANALYTICS.clarityId) injectClarity(ANALYTICS.clarityId)
+  if (ANALYTICS.goatcounterSite) injectGoatcounter(ANALYTICS.goatcounterSite)
+}
+
 export default function Analytics() {
   const route = useHashRoute()
 
   useEffect(() => {
-    if (ANALYTICS.baiduId) injectBaidu(ANALYTICS.baiduId)
-    if (ANALYTICS.clarityId) injectClarity(ANALYTICS.clarityId)
-    if (ANALYTICS.goatcounterSite) injectGoatcounter(ANALYTICS.goatcounterSite)
+    const onInteraction = () => {
+      injectAll()
+      window.removeEventListener('pointerdown', onInteraction)
+      window.removeEventListener('keydown', onInteraction)
+    }
+    window.addEventListener('pointerdown', onInteraction, { once: true })
+    window.addEventListener('keydown', onInteraction, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', onInteraction)
+      window.removeEventListener('keydown', onInteraction)
+    }
   }, [])
 
   useEffect(() => {
-    if (!route.startsWith('/')) return
+    if (!route.startsWith('/') || !injected) return
     const path = `/${route}`
     if (ANALYTICS.baiduId && window._hmt) {
       window._hmt.push(['_trackPageview', path])
