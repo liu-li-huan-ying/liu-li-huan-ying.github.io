@@ -6,6 +6,7 @@ import { navLinks, profile } from '../data/profile'
 import { goSection, navigate } from '../hooks/useHashRoute'
 import { CloseIcon, MenuIcon } from './Icons'
 import LangToggle from './LangToggle'
+import Magnetic from './Magnetic'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -47,14 +48,16 @@ export default function Navbar() {
         <ul className="hidden items-center gap-7 md:flex">
           {navLinks.map((link, i) => (
             <li key={link.id}>
-              <a
-                href={`#${link.id}`}
-                onClick={(e) => onNavClick(e, link.id)}
-                className="text-sm text-slate-300 transition-colors hover:text-white"
-              >
-                <span className="mr-1 font-mono text-xs text-neon-violet">0{i + 1}.</span>
-                {t[link.id]}
-              </a>
+              <Magnetic strength={0.3}>
+                <a
+                  href={`#${link.id}`}
+                  onClick={(e) => onNavClick(e, link.id)}
+                  className="text-sm text-slate-300 transition-colors hover:text-white"
+                >
+                  <span className="mr-1 font-mono text-xs text-neon-violet">0{i + 1}.</span>
+                  {t[link.id]}
+                </a>
+              </Magnetic>
             </li>
           ))}
           <li>

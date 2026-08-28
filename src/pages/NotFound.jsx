@@ -18,8 +18,8 @@ const ROUTE_MAP = {
 
 export default function NotFound() {
   const { lang } = useLang()
-  const t = ui[lang].notFound
-  const term = t.term
+  const t = ui[lang]?.notFound
+  const term = t?.term
 
   const [bootLines, setBootLines] = useState([])
   const [bootDone, setBootDone] = useState(false)
@@ -34,19 +34,29 @@ export default function NotFound() {
 
   // Boot sequence
   useEffect(() => {
-    const bootLen = term.boot.length
+    if (!term?.boot) return
+    const boot = term.boot
+    const bootLen = boot.length
     let i = 0
+    let cancelled = false
     const interval = setInterval(() => {
+      if (cancelled) return
       if (i < bootLen) {
-        setBootLines((prev) => [...prev, term.boot[i]])
+        const currentLine = boot[i]
         i++
+        if (currentLine != null) {
+          setBootLines((prev) => [...prev, currentLine])
+        }
       } else {
         clearInterval(interval)
         setBootDone(true)
       }
     }, 400)
-    return () => clearInterval(interval)
-  }, [term.boot])
+    return () => {
+      cancelled = true
+      clearInterval(interval)
+    }
+  }, [term])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -166,6 +176,8 @@ export default function NotFound() {
       setOutput([])
     }
   }
+
+  if (!t || !term) return null
 
   return (
     <section className="relative flex min-h-[80vh] items-center justify-center px-4 py-20">
