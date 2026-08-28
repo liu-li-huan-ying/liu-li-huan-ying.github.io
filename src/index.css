@@ -515,3 +515,20 @@ section[id] {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(200%); }
 }
+
+/* 3D Monitor glow */
+.monitor-body {
+  transition: box-shadow 0.4s ease;
+}
+
+.monitor-body:hover {
+  box-shadow:
+    0 20px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(129, 140, 248, 0.12),
+    0 0 40px rgba(34, 211, 238, 0.08),
+    0 0 80px rgba(129, 140, 248, 0.05);
+}
+
+.monitor-screen {
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
+}
