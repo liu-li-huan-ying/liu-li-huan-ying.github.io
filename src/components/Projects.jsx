@@ -36,11 +36,12 @@ export default function Projects() {
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-night via-night/80 to-transparent md:w-24" />
 
         <div
-          className="film-strip flex overflow-x-auto snap-x snap-mandatory py-6 pl-8 pr-8 md:pl-24 md:pr-24"
+          className="film-strip relative flex overflow-x-auto snap-x snap-mandatory py-6 pl-8 pr-8 md:pl-24 md:pr-24"
           style={{ scrollbarWidth: 'none' }}
           role="region"
           aria-label="Projects film strip"
         >
+          <div className="film-strip-sprockets-bottom" />
           {projects.map((project, i) => (
             <motion.div
               key={project.id}
@@ -89,7 +90,10 @@ export default function Projects() {
 
                 <div className="flex flex-col gap-3 px-5 py-4 md:px-6 md:py-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-neon-cyan md:text-xl">
+                    <h3
+                      className="text-lg font-semibold text-white tracking-wide transition-colors group-hover:text-neon-cyan md:text-xl"
+                      style={{ textShadow: '0 0 20px rgba(34,211,238,0.15)' }}
+                    >
                       {project.title}
                     </h3>
                     <div className="flex gap-2 text-slate-500">
@@ -118,7 +122,7 @@ export default function Projects() {
                     </div>
                   </div>
 
-                  <p className="text-sm leading-relaxed text-slate-500">{project.desc}</p>
+                  <p className="text-sm leading-relaxed text-slate-400">{project.desc}</p>
 
                   {(() => {
                     const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
@@ -129,7 +133,7 @@ export default function Projects() {
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded border border-neon-violet/15 bg-neon-violet/8 px-2 py-0.5 font-mono text-[10px] text-neon-violet/80"
+                        className="rounded border border-neon-violet/20 bg-neon-violet/5 px-2 py-0.5 font-mono text-[10px] text-neon-violet/80"
                       >
                         {tag}
                       </span>
