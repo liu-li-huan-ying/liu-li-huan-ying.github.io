@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import GitHubHeatmap from '../components/GitHubHeatmap'
 import { MapPinIcon } from '../components/Icons'
 import FadeIn from '../components/FadeIn'
@@ -18,6 +19,23 @@ export default function AboutPage() {
   const a = ui[lang].apage
   const data = profile[lang]
   const username = githubProfileUrl.split('/').pop()
+
+  const recentProjects = useMemo(() => {
+    const sorted = [...data.projects].sort(
+      (a, b) => Number(b.detail.year) - Number(a.detail.year),
+    )
+    return sorted.slice(0, 3)
+  }, [data.projects])
+
+  const nowItems = useMemo(
+    () => recentProjects.map((p) => ({ name: p.title, desc: p.desc })),
+    [recentProjects],
+  )
+
+  const focusChips = useMemo(() => {
+    const tags = recentProjects.flatMap((p) => p.tags)
+    return [...new Set(tags)]
+  }, [recentProjects])
 
   return (
     <section className="relative mx-auto max-w-5xl px-6 pb-24 pt-32">
@@ -78,7 +96,7 @@ export default function AboutPage() {
                 </div>
                 <p className="mt-1 font-mono text-[11px] text-slate-500">{a.nowSubtitle}</p>
                 <ul className="mt-4 space-y-4">
-                  {a.nowItems.map((item) => (
+                  {nowItems.map((item) => (
                     <li key={item.name} className="flex items-start gap-3">
                       <span className="mt-1 text-neon-cyan">✦</span>
                       <div>
@@ -96,7 +114,7 @@ export default function AboutPage() {
             <div className="glass rounded-2xl p-6">
               <h3 className="font-semibold text-white">{a.focusTitle}</h3>
               <div className="mt-4 flex flex-wrap gap-2.5">
-                {a.focusChips.map((chip, i) => (
+                {focusChips.map((chip, i) => (
                   <span
                     key={chip}
                     className={`rounded-lg border px-3.5 py-1.5 font-mono text-xs ${CHIP_COLORS[i % CHIP_COLORS.length]}`}

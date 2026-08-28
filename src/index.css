@@ -217,3 +217,115 @@ section[id] {
     cursor: none;
   }
 }
+
+.film-strip {
+  position: relative;
+  background: #0a0a0a;
+  counter-reset: frame;
+}
+
+.film-strip::before,
+.film-strip::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 18px,
+      rgba(255, 255, 255, 0.06) 18px 20px,
+      transparent 20px 28px,
+      #1a1714 28px 30px,
+      transparent 30px 40px
+    );
+}
+
+.film-strip::before {
+  top: 0;
+  border-bottom: 1px solid #1a1714;
+}
+
+.film-strip::after {
+  bottom: 0;
+  border-top: 1px solid #1a1714;
+}
+
+.film-frame {
+  counter-increment: frame;
+  position: relative;
+  border-left: 3px solid #1a1714;
+  border-right: 3px solid #1a1714;
+  background: #0d0d0d;
+}
+
+.film-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.015) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.03) 0 1px,
+      transparent 1px 4px
+    );
+  background-size: 140px 140px, 180px 180px;
+  mix-blend-mode: overlay;
+}
+
+.film-frame::after {
+  content: counter(frame, decimal-leading-zero);
+  position: absolute;
+  bottom: 22px;
+  left: 12px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  z-index: 4;
+  letter-spacing: 0.1em;
+}
+
+.film-cover {
+  aspect-ratio: 2.35 / 1;
+  overflow: hidden;
+  border-bottom: 1px solid #1a1714;
+}
+
+.film-cover img {
+  transition: transform 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+}
+
+.film-frame:hover .film-cover img {
+  transform: scale(1.05);
+}
+
+.film-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.4;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.02) 0 1px,
+      transparent 1px 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.03) 0 1px,
+      transparent 1px 3px
+    );
+  background-size: 120px 120px, 160px 160px;
+  mix-blend-mode: overlay;
+}

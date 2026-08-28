@@ -50,13 +50,7 @@ export const ui = {
       ],
       nowTitle: 'Right Now',
       nowSubtitle: 'what I am up to these days',
-      nowItems: [
-        { name: 'GojiDB v2', desc: 'Compaction tuning & TTL internals' },
-        { name: 'Reading DDIA', desc: 'Designing Data-Intensive Applications, again' },
-        { name: 'AI tooling', desc: 'Exploring how LLMs reshape developer workflows' },
-      ],
       focusTitle: 'Currently Sharpening',
-      focusChips: ['Distributed Systems', 'GPU Render Pipelines', 'Rust', 'Kubernetes', 'LLM Engineering'],
       back: 'Back to home',
     },
     blist: {
@@ -198,13 +192,7 @@ export const ui = {
       ],
       nowTitle: '此刻在做',
       nowSubtitle: '最近这段时间的动态',
-      nowItems: [
-        { name: 'GojiDB v2', desc: '压缩策略调优与 TTL 内核实现' },
-        { name: '重读 DDIA', desc: 'Designing Data-Intensive Applications' },
-        { name: 'AI 工具链', desc: '探索 LLM 如何重塑开发者工作流' },
-      ],
       focusTitle: '正在精进',
-      focusChips: ['分布式系统', 'GPU 渲染管线', 'Rust', 'Kubernetes', 'LLM 工程'],
       back: '回到首页',
     },
     blist: {
