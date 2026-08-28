@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
@@ -6,7 +6,6 @@ import { navLinks, profile } from '../data/profile'
 import { goSection, navigate } from '../hooks/useHashRoute'
 import { CloseIcon, MenuIcon } from './Icons'
 import LangToggle from './LangToggle'
-import Magnetic from './Magnetic'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -14,6 +13,11 @@ export default function Navbar() {
   const { lang } = useLang()
   const t = ui[lang].nav
   const name = profile[lang].name
+
+  const ulRef = useRef(null)
+  const linkRefs = useRef([])
+  const [hoveredIdx, setHoveredIdx] = useState(-1)
+  const [barStyle, setBarStyle] = useState({ x: 0, width: 0, opacity: 0 })
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -32,6 +36,42 @@ export default function Navbar() {
     }
   }
 
+  const handleUlMouseMove = useCallback((e) => {
+    const links = linkRefs.current
+    if (!links.length) return
+
+    let closestIdx = 0
+    let closestDist = Infinity
+
+    links.forEach((el, i) => {
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const center = rect.left + rect.width / 2
+      const dist = Math.abs(e.clientX - center)
+      if (dist < closestDist) {
+        closestDist = dist
+        closestIdx = i
+      }
+    })
+
+    const target = links[closestIdx]
+    if (!target) return
+    const ulRect = ulRef.current.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+
+    setHoveredIdx(closestIdx)
+    setBarStyle({
+      x: targetRect.left - ulRect.left,
+      width: targetRect.width,
+      opacity: 1,
+    })
+  }, [])
+
+  const handleUlMouseLeave = useCallback(() => {
+    setHoveredIdx(-1)
+    setBarStyle((prev) => ({ ...prev, opacity: 0 }))
+  }, [])
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
@@ -45,19 +85,45 @@ export default function Navbar() {
           {' />'}
         </a>
 
-        <ul className="hidden items-center gap-7 md:flex">
+        <ul
+          ref={ulRef}
+          onMouseMove={handleUlMouseMove}
+          onMouseLeave={handleUlMouseLeave}
+          className="relative hidden items-center gap-7 md:flex"
+        >
+          {/* Scanning highlight bar */}
+          <motion.div
+            className="pointer-events-none absolute bottom-[-6px] h-[2px] rounded-full"
+            animate={{
+              x: barStyle.x,
+              width: barStyle.width,
+              opacity: barStyle.opacity,
+            }}
+            transition={{ type: 'spring', stiffness: 350, damping: 30, mass: 0.6 }}
+            style={{
+              background: 'linear-gradient(90deg, #22d3ee, #818cf8)',
+              boxShadow: '0 0 12px rgba(34,211,238,0.5), 0 0 24px rgba(129,140,248,0.3)',
+            }}
+          >
+            {/* Scanning light sweep */}
+            <span className="scan-light absolute inset-0 rounded-full" />
+          </motion.div>
+
           {navLinks.map((link, i) => (
             <li key={link.id}>
-              <Magnetic strength={0.3}>
-                <a
-                  href={`#${link.id}`}
-                  onClick={(e) => onNavClick(e, link.id)}
-                  className="text-sm text-slate-300 transition-colors hover:text-white"
-                >
-                  <span className="mr-1 font-mono text-xs text-neon-violet">0{i + 1}.</span>
-                  {t[link.id]}
-                </a>
-              </Magnetic>
+              <a
+                ref={(el) => { linkRefs.current[i] = el }}
+                href={`#${link.id}`}
+                onClick={(e) => onNavClick(e, link.id)}
+                className={`text-sm transition-colors ${
+                  hoveredIdx === i ? 'text-white' : 'text-slate-300'
+                }`}
+              >
+                <span className={`mr-1 font-mono text-xs transition-colors ${
+                  hoveredIdx === i ? 'text-neon-cyan' : 'text-neon-violet'
+                }`}>0{i + 1}.</span>
+                {t[link.id]}
+              </a>
             </li>
           ))}
           <li>

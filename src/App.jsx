@@ -133,7 +133,7 @@ function Shell() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-night">
+    <div className="relative min-h-screen overflow-x-clip bg-night">
       <AuroraBackground />
       <ParticleBackground />
 

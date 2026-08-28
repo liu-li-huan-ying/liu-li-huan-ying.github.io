@@ -54,7 +54,7 @@ html {
 }
 
 body {
-  @apply overflow-x-hidden bg-night font-display text-slate-300 antialiased;
+  @apply overflow-x-clip bg-night font-display text-slate-300 antialiased;
 }
 
 ::selection {
@@ -495,4 +495,23 @@ section[id] {
 
 .terminal-body::-webkit-scrollbar-thumb:hover {
   background: rgba(129, 140, 248, 0.5);
+}
+
+/* Navbar scanning light sweep */
+.scan-light {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 60%,
+    transparent 100%
+  );
+  animation: scan-sweep 1.8s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes scan-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }
