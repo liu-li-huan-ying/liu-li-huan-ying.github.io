@@ -68,7 +68,8 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
 
   const weeks = useMemo(() => {
     if (!data) return []
-    const offset = new Date(data.contributions[0].date).getDay()
+    const [y, m, d] = data.contributions[0].date.split('-').map(Number)
+    const offset = new Date(Date.UTC(y, m - 1, d)).getDay()
     const padded = [...Array(offset).fill(null), ...data.contributions]
     const columns = []
     for (let i = 0; i < padded.length; i += 7) columns.push(padded.slice(i, i + 7))
@@ -130,7 +131,7 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
                   <span
                     key={month}
                     className="absolute font-mono text-[9px] uppercase tracking-wider text-slate-500"
-                    style={{ left: `${col * 13}px` }}
+                    style={{ left: `${28 + col * 14}px` }}
                   >
                     {(labels.months ?? [])[month - 1] ?? month}
                   </span>
