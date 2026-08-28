@@ -8,12 +8,14 @@ const postsDir = path.resolve(
   '../src/content/posts'
 )
 
-function findTargetFile(arg) {
+function findTargetFile(arg, force) {
   if (!arg) {
-    const candidates = readdirSync(postsDir)
+    let candidates = readdirSync(postsDir)
       .filter((f) => f.endsWith('.md') && !f.endsWith('.en.md'))
-      .filter((f) => !existsSync(path.join(postsDir, f.replace(/\.md$/, '.en.md'))))
-      .sort()
+    if (!force) {
+      candidates = candidates.filter((f) => !existsSync(path.join(postsDir, f.replace(/\.md$/, '.en.md'))))
+    }
+    candidates.sort()
     return candidates.length ? candidates[candidates.length - 1] : null
   }
   if (existsSync(path.join(postsDir, arg))) return arg
@@ -46,12 +48,17 @@ async function translateViaMyMemory(text) {
     const url =
       'https://api.mymemory.translated.net/get?langpair=zh-CN|en-GB&de=luchang0829@163.com&q=' +
       encodeURIComponent(chunk)
-    const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
+    let res
+    try {
+      res = await fetch(url, { signal: AbortSignal.timeout(20000) })
+    } catch (err) {
+      throw new Error(`network error: ${err.message}`)
+    }
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const json = await res.json()
     const translated = json?.responseData?.translatedText ?? ''
     if (!translated || translated.includes('MYMEMORY WARNING')) {
-      throw new Error('mymemory quota or invalid response')
+      throw new Error('quota exceeded or invalid response')
     }
     translatedParts.push(translated)
   }
@@ -62,10 +69,15 @@ async function translateViaGoogleFetch(text) {
   const url =
     'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh&tl=en&dt=t&q=' +
     encodeURIComponent(text)
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0' },
-    signal: AbortSignal.timeout(20000),
-  })
+  let res
+  try {
+    res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(20000),
+    })
+  } catch (err) {
+    throw new Error(`network error: ${err.message}`)
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const payload = await res.text()
   const json = JSON.parse(payload)
@@ -128,33 +140,46 @@ async function translateText(text) {
   const trimmed = text.trim()
   if (!trimmed) return text
 
+  const errors = []
+
   try {
     return await translateViaMyMemory(trimmed)
-  } catch {
-    console.warn('  · mymemory unavailable, trying google route…')
+  } catch (err) {
+    errors.push(`MyMemory: ${err.message}`)
   }
 
   try {
     return await translateViaGoogleFetch(trimmed)
-  } catch {
+  } catch (err) {
+    errors.push(`Google(fetch): ${err.message}`)
     try {
       return await translateViaGoogleCurl(trimmed)
-    } catch {
-      console.warn('  ! all translation routes failed, keeping original')
-      return trimmed
+    } catch (err2) {
+      errors.push(`Google(curl): ${err2.message}`)
     }
   }
+
+  console.warn(`  ! all translation routes failed for: "${trimmed.slice(0, 40)}..."`)
+  errors.forEach((e) => console.warn(`    - ${e}`))
+  return trimmed
 }
 
 const sourceArg = process.argv[2]
-const target = findTargetFile(sourceArg)
+const force = process.argv.includes('--force')
+const target = findTargetFile(sourceArg, force)
 
 if (!target) {
   console.error(
     sourceArg
       ? `no matching zh post found for "${sourceArg}"`
-      : 'every zh post already has an .en.md version. Nothing to do.'
+      : 'every zh post already has an .en.md version. Nothing to do.\n  tip: use --force to re-translate existing .en.md files.'
   )
+  process.exit(1)
+}
+
+const enName = target.replace(/\.md$/, '.en.md')
+if (!force && existsSync(path.join(postsDir, enName))) {
+  console.error(`${enName} already exists. Use --force to overwrite.`)
   process.exit(1)
 }
 
@@ -201,6 +226,8 @@ for (const line of metaLines) {
 const bodyLines = fmMatch[2].split(/\r?\n/)
 const outBody = []
 let inCode = false
+let translatedLines = 0
+let translatedChars = 0
 
 for (const line of bodyLines) {
   if (/^\s*```/.test(line)) {
@@ -219,23 +246,31 @@ for (const line of bodyLines) {
 
   const heading = line.match(/^(\s*#{1,6}\s+)(.*)$/)
   if (heading) {
-    outBody.push(heading[1] + (await translateText(heading[2])))
+    const result = heading[1] + (await translateText(heading[2]))
+    outBody.push(result)
+    translatedLines++
+    translatedChars += heading[2].length
     continue
   }
 
   const listItem = line.match(/^(\s*(?:>|[-*+]|\d+\.)\s+)(.*)$/)
   if (listItem) {
-    outBody.push(listItem[1] + (await translateText(listItem[2])))
+    const result = listItem[1] + (await translateText(listItem[2]))
+    outBody.push(result)
+    translatedLines++
+    translatedChars += listItem[2].length
     continue
   }
 
   outBody.push(await translateText(line))
+  translatedLines++
+  translatedChars += line.length
 }
 
-const enName = target.replace(/\.md$/, '.en.md')
 const enContent = `---\n${outMeta.join('\n')}\n---\n\n${outBody.join('\n').replace(/\n{3,}/g, '\n\n').trim()}\n`
 
 writeFileSync(path.join(postsDir, enName), enContent)
 
 console.log(`created: src/content/posts/${enName}`)
+console.log(`summary: ${translatedLines} lines, ~${translatedChars} chars translated`)
 console.log('note: machine translation draft — code blocks untouched, please proof-read.')

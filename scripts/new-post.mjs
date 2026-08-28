@@ -1,4 +1,5 @@
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, existsSync } from 'node:fs'
+import { execSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -8,9 +9,13 @@ const contentDir = path.resolve(
 )
 
 const slug = process.argv[2]
-if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
-  console.error('Usage: npm run newpost -- <slug> ["Title"]')
-  console.error('  slug: lowercase letters, numbers and dashes. e.g. my-new-post')
+const noTranslate = process.argv.includes('--no-translate')
+
+if (!slug) {
+  console.error('Usage: npm run newpost -- <slug> ["Title"] [--no-translate]')
+  console.error('  slug: letters, numbers, dashes, or Chinese characters.')
+  console.error('  e.g. npm run newpost -- my-new-post "My New Post"')
+  console.error('  e.g. npm run newpost -- 读书笔记 "Reading Notes"')
   process.exit(1)
 }
 
@@ -23,8 +28,13 @@ const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, 
 const zhFile = path.join(contentDir, `${date}-${slug}.md`)
 const enFile = path.join(contentDir, `${date}-${slug}.en.md`)
 
+if (existsSync(zhFile)) {
+  console.error(`Error: ${date}-${slug}.md already exists.`)
+  process.exit(1)
+}
+
 const zhTemplate = `---
-title: TODO 标题
+title: ${title}
 date: ${date}
 tags: 标签一, 标签二
 summary: TODO 一句话摘要。
@@ -61,8 +71,26 @@ TODO body. Markdown fully supported.
 `
 
 writeFileSync(zhFile, zhTemplate)
-writeFileSync(enFile, enTemplate)
-
 console.log(`created: src/content/posts/${date}-${slug}.md       (中文，主版本)`)
-console.log(`created: src/content/posts/${date}-${slug}.en.md    (英文，可选)`)
-console.log('next: fill frontmatter + body in either file (or both), then push.')
+
+if (!noTranslate) {
+  writeFileSync(enFile, enTemplate)
+  console.log(`created: src/content/posts/${date}-${slug}.en.md    (英文占位)`)
+
+  console.log('\ntranslating to English...')
+  try {
+    execSync(`node scripts/translate-post.mjs "${date}-${slug}.md"`, {
+      stdio: 'inherit',
+      cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'),
+    })
+    console.log('translation complete!')
+  } catch (err) {
+    console.warn(`\nwarning: auto-translation failed (${err.message}).`)
+    console.warn(`  run manually: npm run translate -- ${date}-${slug}.md`)
+    console.warn(`  or edit ${date}-${slug}.en.md directly.`)
+  }
+} else {
+  console.log(`created: src/content/posts/${date}-${slug}.en.md    (英文，跳过翻译)`)
+}
+
+console.log('\nnext: fill frontmatter + body in the zh file, then push.')
