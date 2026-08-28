@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 function parse() {
   const raw = window.location.hash
   if (!raw.startsWith('#/')) return '/'
-  return raw.slice(1) || '/'
+  try {
+    return decodeURIComponent(raw.slice(1)) || '/'
+  } catch {
+    return raw.slice(1) || '/'
+  }
 }
 
 export function useHashRoute() {
