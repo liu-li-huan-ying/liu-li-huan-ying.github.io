@@ -201,7 +201,7 @@ export default function NotFound() {
   if (!t || !term) return null
 
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-center justify-center px-4 py-10">
+    <section className="relative flex min-h-[85vh] flex-col items-center justify-center px-4 pt-28 pb-10">
       {/* Glitch overlay */}
       <AnimatePresence>
         {glitch && (
