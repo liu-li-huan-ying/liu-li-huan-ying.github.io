@@ -6,9 +6,9 @@ const postsZh = postsFor('zh')
 export const profile = {
   en: {
     name: 'Glazed Mirage',
-    roles: ['Full Stack Developer', 'AI Application Explorer', 'Open Source Enthusiast'],
+    roles: ['Full Stack Developer', 'UI Craftsperson', 'Open Source Enthusiast'],
     tagline:
-      'Data Science & Big Data Technology graduate. I enjoy turning ideas into scalable systems, exploring the intersection of frontend engineering and distributed systems.',
+      'Data Science & Big Data Technology graduate. I build desktop apps with Electron, browser extensions with vanilla JS, and storage engines with Go — always chasing that sweet spot between aesthetics and engineering.',
     email: 'luchang0829@163.com',
     location: 'Beijing, China',
     status: 'Working',
@@ -19,17 +19,63 @@ export const profile = {
       { label: 'Email', url: 'mailto:luchang0829@163.com' },
     ],
     about: [
-      'Hello! I come from a Data Science and Big Data Technology background, and I love turning ideas into runnable, scalable systems. Most of my recent work lives at the intersection of frontend engineering and distributed systems — building interfaces on one end and storage engines on the other.',
-      'GojiDB, my hand-written LSM-Tree based KV store, is where I spend most of my open-source energy these days. Away from the keyboard I am usually reading papers on storage engines or exploring how AI applications can be engineered properly.',
+      'Hello! I come from a Data Science and Big Data Technology background, and I love turning ideas into runnable, scalable systems. My recent work spans desktop apps, browser extensions, and storage engines — building polished UIs on one end and low-level systems on the other.',
+      'YuJian (玉笺), my cross-platform Markdown editor built with Electron + Vue 3 + Milkdown, is where I pour most of my frontend energy — five Chinese kiln-color themes, glass material design, and WYSIWYG editing. GojiDB, a hand-written LSM-Tree KV store, keeps my systems side sharp. Lucent, a glass-themed browser new tab extension, rounds out the trio.',
     ],
     features: [
-      { icon: 'code', title: 'Full Stack', desc: 'From React UIs to Go storage engines' },
-      { icon: 'sparkles', title: 'Systems Thinking', desc: 'LSM-Trees, WAL and distributed design' },
-      { icon: 'zap', title: 'Performance', desc: 'Benchmark-driven, measured always' },
+      { icon: 'code', title: 'Full Stack', desc: 'From Electron desktop apps to Go storage engines' },
+      { icon: 'sparkles', title: 'UI Craft', desc: 'Glass materials, kiln-color themes, pixel-perfect detail' },
+      { icon: 'zap', title: 'Performance', desc: 'Benchmark-driven, zero-copy pipelines, measured always' },
       { icon: 'rocket', title: 'Open Source', desc: 'Building in public, shipping often' },
     ],
-    skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Node.js', 'Python', 'Go', 'C', 'C++'],
+    skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Electron', 'Node.js', 'Python', 'Go', 'C++', 'CSS'],
     projects: [
+      {
+        id: 'yujian',
+        letter: '玉',
+        title: 'YuJian',
+        desc: 'Cross-platform Markdown editor: Electron + Vue 3 + Milkdown, five Chinese kiln-color themes with glass material design.',
+        tags: ['Electron', 'Vue 3', 'Milkdown', 'TypeScript', 'CSS'],
+        github: 'https://github.com/liu-li-huan-ying/yujian',
+        live: '',
+        gradient: ['#22d3ee', '#34d399'],
+        detail: {
+          role: 'Solo Developer',
+          year: '2026',
+          body: [
+            'YuJian (玉笺, "jade letter") is a local-first Markdown writing tool: folders are vaults, documents are plain .md files, data is always readable, Git-friendly, and portable. The editor kernel is built on Milkdown Crepe — Markdown is a first-class citizen, and untouched documents are saved byte-for-byte.',
+            'Visually, YuJian uses a "jade" material language — warm jade framework layers, translucent glass overlays, and clean solid content layers. Five traditional Chinese kiln-color themes (Celadon / Sky Blue / Moon White / Indigo / Amber) with dark/light/system modes. The glass material system unifies all floating panels with backdrop-filter.',
+          ],
+          highlights: [
+            'WYSIWYG + source mode toggle, Markdown round-trip fidelity',
+            '5 kiln-color themes with glass material system (backdrop-filter)',
+            'Mermaid charts, KaTeX math, code syntax highlighting, PDF/HTML export',
+          ],
+        },
+      },
+      {
+        id: 'lucent-newtab',
+        letter: 'L',
+        title: 'Lucent',
+        desc: 'Glass-themed browser new tab: real photo wallpapers, ambient sounds, weather, todos — pure HTML/CSS/JS, zero dependencies.',
+        tags: ['HTML', 'CSS', 'JavaScript', 'Browser Extension', 'Web Audio'],
+        github: 'https://github.com/liu-li-huan-ying/lucent-newtab',
+        live: '',
+        gradient: ['#818cf8', '#e879f9'],
+        detail: {
+          role: 'Solo Developer',
+          year: '2026',
+          body: [
+            'Lucent is a browser new tab extension built with zero frameworks and zero dependencies — pure HTML, CSS, and JavaScript. It features real photo wallpapers from Unsplash with a liquid glass overlay, 12 switchable search engines, and ambient sounds (rain, café, ocean waves, campfire) generated entirely via Web Audio API.',
+            'The design uses a `.veil` darkening mask to ensure white text remains readable on bright wallpapers. Cards are freely draggable across zones, and all settings persist in localStorage with JSON export/import backup.',
+          ],
+          highlights: [
+            'Web Audio synthesized ambient sounds (no audio files)',
+            'Unsplash + Bing daily wallpapers with per-day caching',
+            'MV3 Chrome/Edge extension with GitHub Actions auto-release',
+          ],
+        },
+      },
       {
         id: 'phantom-video',
         letter: 'P',
@@ -92,9 +138,9 @@ export const profile = {
 
   zh: {
     name: '琉璃幻影',
-    roles: ['全栈开发者', 'AI 应用探索者', '开源爱好者'],
+    roles: ['全栈开发者', 'UI 工匠', '开源爱好者'],
     tagline:
-      '数据科学与大数据技术专业背景，热爱用代码把想法变成可运行、可扩展的系统。在前端与分布式系统之间寻找优雅的工程解法。',
+      '数据科学与大数据技术专业背景。用 Electron 做桌面应用，用原生 JS 做浏览器扩展，用 Go 做存储引擎——始终在美学与工程之间寻找最佳平衡点。',
     email: 'luchang0829@163.com',
     location: '北京，中国',
     status: '工作中',
@@ -105,17 +151,63 @@ export const profile = {
       { label: 'Email', url: 'mailto:luchang0829@163.com' },
     ],
     about: [
-      '你好！我来自数据科学与大数据技术专业，热爱用代码把想法变成可运行、可扩展的系统。近期的工作大多发生在前端工程与分布式系统的交界处——一端打磨界面，另一端打磨存储引擎。',
-      '手写的 LSM-Tree 键值数据库 GojiDB 是我目前投入最多开源精力的项目。离开键盘的时候，我通常在读存储引擎相关的论文，或者琢磨 AI 应用该如何被正确地工程化。',
+      '你好！我来自数据科学与大数据技术专业，热爱用代码把想法变成可运行、可扩展的系统。近期的工作横跨桌面应用、浏览器扩展与存储引擎——一端打磨精致的界面，另一端打磨底层系统。',
+      '玉笺（YuJian）是我投入最多前端精力的跨平台 Markdown 编辑器，基于 Electron + Vue 3 + Milkdown，五套中国传统窑色皮肤加玻璃材质设计。手写的 LSM-Tree 键值数据库 GojiDB 保持系统侧的敏锐。Lucent 轻玻璃新标签页扩展则完成了三件套的拼图。',
     ],
     features: [
-      { icon: 'code', title: '全栈能力', desc: '从 React 界面到 Go 存储引擎' },
-      { icon: 'sparkles', title: '系统思维', desc: 'LSM-Tree、WAL 与分布式设计' },
-      { icon: 'zap', title: '性能至上', desc: '基准驱动，用数据说话' },
+      { icon: 'code', title: '全栈能力', desc: '从 Electron 桌面应用到 Go 存储引擎' },
+      { icon: 'sparkles', title: 'UI 工匠', desc: '玻璃材质、窑色皮肤、像素级细节' },
+      { icon: 'zap', title: '性能至上', desc: '基准驱动、零拷贝管线、用数据说话' },
       { icon: 'rocket', title: '拥抱开源', desc: '公开构建，持续交付' },
     ],
-    skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Node.js', 'Python', 'Go', 'C', 'C++'],
+    skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Electron', 'Node.js', 'Python', 'Go', 'C++', 'CSS'],
     projects: [
+      {
+        id: 'yujian',
+        letter: '玉',
+        title: '玉笺',
+        desc: '跨平台 Markdown 编辑器：Electron + Vue 3 + Milkdown，五套中国传统窑色皮肤与玻璃材质设计。',
+        tags: ['Electron', 'Vue 3', 'Milkdown', 'TypeScript', 'CSS'],
+        github: 'https://github.com/liu-li-huan-ying/yujian',
+        live: '',
+        gradient: ['#22d3ee', '#34d399'],
+        detail: {
+          role: '独立开发者',
+          year: '2026',
+          body: [
+            '玉笺（yù jiān，"玉制的信笺"）是一款本地优先的 Markdown 写作工具：文件夹即笔记库，文档是普通的 .md 文件，数据永远可读、可 Git、可迁移。编辑器内核基于 Milkdown Crepe，Markdown 是一等公民，未编辑的文档保存时一字不改写回原文。',
+            '视觉上，玉笺以「玉质」为核心材质语言——框架层温润玉质、浮层玻璃透亮、内容层纯净实色，并提供五套中国传统窑色皮肤（青瓷 / 天青 / 月白 / 黛 / 琥珀）与深 / 浅 / 跟随系统三档明暗。玻璃材质系统统一所有浮层面板。',
+          ],
+          highlights: [
+            '所见即所得 + 源码模式切换，Markdown 往返保真',
+            '五套窑色皮肤 + 玻璃材质系统（backdrop-filter）',
+            'Mermaid 图表、KaTeX 公式、代码高亮、PDF/HTML 导出',
+          ],
+        },
+      },
+      {
+        id: 'lucent-newtab',
+        letter: 'L',
+        title: 'Lucent',
+        desc: '轻玻璃浏览器新标签页：真实照片壁纸、环境音、天气、待办——纯 HTML/CSS/JS，零依赖。',
+        tags: ['HTML', 'CSS', 'JavaScript', '浏览器扩展', 'Web Audio'],
+        github: 'https://github.com/liu-li-huan-ying/lucent-newtab',
+        live: '',
+        gradient: ['#818cf8', '#e879f9'],
+        detail: {
+          role: '独立开发者',
+          year: '2026',
+          body: [
+            'Lucent 是一个零框架、零依赖的浏览器新标签页扩展——纯 HTML、CSS、JavaScript。特性包括 Unsplash 真实照片壁纸加液态玻璃蒙版、12 个可切换搜索引擎、以及完全通过 Web Audio API 合成的环境音（雨声、咖啡馆、海浪、篝火）。',
+            '设计上使用 `.veil` 压暗蒙版确保白字在亮图上依然清晰。卡片可跨区域自由拖拽排序，所有设置持久化到 localStorage，支持 JSON 导出/导入备份。',
+          ],
+          highlights: [
+            'Web Audio 合成环境音（无音频文件）',
+            'Unsplash + 必应每日壁纸，按天缓存',
+            'MV3 Chrome/Edge 扩展，GitHub Actions 自动发版',
+          ],
+        },
+      },
       {
         id: 'phantom-video',
         letter: 'P',
