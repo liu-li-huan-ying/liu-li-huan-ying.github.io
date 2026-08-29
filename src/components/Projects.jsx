@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { navigate } from '../hooks/useHashRoute'
 import { coverWipeNavigate } from '../utils/pageTransition'
@@ -15,7 +15,17 @@ export default function Projects() {
   const p2 = ui[lang].proj
   const projects = profile[lang].projects
   const stripRef = useRef(null)
-  const dragRef = useRef({ dragging: false, startX: 0, scrollLeft: 0, moved: false })
+  const dragRef = useRef({
+    active: false,
+    startX: 0,
+    scrollLeft: 0,
+    moved: false,
+    velX: 0,
+    lastX: 0,
+    lastT: 0,
+    samples: [],
+  })
+  const rafRef = useRef(null)
 
   const openProject = (event, id) => {
     if (dragRef.current.moved) return
@@ -23,32 +33,91 @@ export default function Projects() {
     coverWipeNavigate(navigate, `/projects/${id}`, cover)
   }
 
+  const stopMomentum = () => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+  }
+
   const onPointerDown = useCallback((e) => {
+    stopMomentum()
     const el = stripRef.current
     if (!el) return
-    dragRef.current = { dragging: true, startX: e.clientX, scrollLeft: el.scrollLeft, moved: false }
+    const d = dragRef.current
+    d.active = true
+    d.startX = e.clientX
+    d.scrollLeft = el.scrollLeft
+    d.moved = false
+    d.lastX = e.clientX
+    d.lastT = performance.now()
+    d.samples = []
     el.style.cursor = 'grabbing'
     el.style.userSelect = 'none'
   }, [])
 
   const onPointerMove = useCallback((e) => {
     const d = dragRef.current
-    if (!d.dragging) return
+    if (!d.active) return
+
+    const now = performance.now()
     const dx = e.clientX - d.startX
     if (Math.abs(dx) > 5) d.moved = true
+
+    const dt = now - d.lastT
+    if (dt > 0) {
+      d.samples.push({ dx: e.clientX - d.lastX, dt })
+      if (d.samples.length > 6) d.samples.shift()
+    }
+    d.lastX = e.clientX
+    d.lastT = now
+
     stripRef.current.scrollLeft = d.scrollLeft - dx
+  }, [])
+
+  const startMomentum = useCallback(() => {
+    const el = stripRef.current
+    const d = dragRef.current
+    if (!el || d.samples.length === 0) return
+
+    let totalDx = 0
+    let totalDt = 0
+    for (const s of d.samples) {
+      totalDx += s.dx
+      totalDt += s.dt
+    }
+    const velocity = totalDt > 0 ? totalDx / totalDt : 0
+
+    if (Math.abs(velocity) < 0.1) return
+
+    let v = -velocity * 16
+    const friction = 0.95
+    const minV = 0.5
+
+    const tick = () => {
+      if (Math.abs(v) < minV) return
+      el.scrollLeft += v
+      v *= friction
+      rafRef.current = requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
   }, [])
 
   const onPointerUp = useCallback(() => {
     const el = stripRef.current
-    dragRef.current.dragging = false
+    const d = dragRef.current
+    d.active = false
     if (el) {
       el.style.cursor = ''
       el.style.userSelect = ''
     }
-  }, [])
+    startMomentum()
+  }, [startMomentum])
+
+  useEffect(() => () => stopMomentum(), [])
 
   const scrollBy = (dir) => {
+    stopMomentum()
     const el = stripRef.current
     if (!el) return
     el.scrollBy({ left: dir * 420, behavior: 'smooth' })
@@ -91,7 +160,7 @@ export default function Projects() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerLeave={onPointerUp}
-          className="film-strip relative flex overflow-x-auto snap-x snap-mandatory py-6 pl-8 pr-8 md:pl-24 md:pr-24"
+          className="film-strip relative flex overflow-x-auto py-6 pl-8 pr-8 md:pl-24 md:pr-24"
           style={{ scrollbarWidth: 'none', cursor: 'grab' }}
           role="region"
           aria-label="Projects film strip"
@@ -104,7 +173,7 @@ export default function Projects() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.7, delay: i * 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="film-frame snap-center shrink-0 w-[340px] md:w-[520px]"
+              className="film-frame shrink-0 w-[340px] md:w-[520px]"
             >
               <div className="film-grain" />
 
@@ -204,7 +273,7 @@ export default function Projects() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, delay: projects.length * 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="film-frame snap-center shrink-0 flex items-center justify-center w-[340px] md:w-[520px]"
+            className="film-frame shrink-0 flex items-center justify-center w-[340px] md:w-[520px]"
           >
             <a
               href={githubProfileUrl}
