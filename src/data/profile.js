@@ -33,6 +33,7 @@ export const profile = {
       {
         id: 'yujian',
         letter: '玉',
+        image: '/projects/yujian.jpg',
         title: 'YuJian',
         desc: 'Cross-platform Markdown editor: Electron + Vue 3 + Milkdown, five Chinese kiln-color themes with glass material design.',
         tags: ['Electron', 'Vue 3', 'Milkdown', 'TypeScript', 'CSS'],
@@ -56,6 +57,7 @@ export const profile = {
       {
         id: 'lucent-newtab',
         letter: 'L',
+        image: '/projects/lucent-newtab.jpg',
         title: 'Lucent',
         desc: 'Glass-themed browser new tab: real photo wallpapers, ambient sounds, weather, todos — pure HTML/CSS/JS, zero dependencies.',
         tags: ['HTML', 'CSS', 'JavaScript', 'Browser Extension', 'Web Audio'],
@@ -165,6 +167,7 @@ export const profile = {
       {
         id: 'yujian',
         letter: '玉',
+        image: '/projects/yujian.jpg',
         title: '玉笺',
         desc: '跨平台 Markdown 编辑器：Electron + Vue 3 + Milkdown，五套中国传统窑色皮肤与玻璃材质设计。',
         tags: ['Electron', 'Vue 3', 'Milkdown', 'TypeScript', 'CSS'],
@@ -188,6 +191,7 @@ export const profile = {
       {
         id: 'lucent-newtab',
         letter: 'L',
+        image: '/projects/lucent-newtab.jpg',
         title: 'Lucent',
         desc: '轻玻璃浏览器新标签页：真实照片壁纸、环境音、天气、待办——纯 HTML/CSS/JS，零依赖。',
         tags: ['HTML', 'CSS', 'JavaScript', '浏览器扩展', 'Web Audio'],
