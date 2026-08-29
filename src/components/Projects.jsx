@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { navigate } from '../hooks/useHashRoute'
 import { coverWipeNavigate } from '../utils/pageTransition'
@@ -13,10 +14,44 @@ export default function Projects() {
   const s = ui[lang].sec.projects
   const p2 = ui[lang].proj
   const projects = profile[lang].projects
+  const stripRef = useRef(null)
+  const dragRef = useRef({ dragging: false, startX: 0, scrollLeft: 0, moved: false })
 
   const openProject = (event, id) => {
+    if (dragRef.current.moved) return
     const cover = event?.currentTarget?.querySelector('[data-cover]') ?? null
     coverWipeNavigate(navigate, `/projects/${id}`, cover)
+  }
+
+  const onPointerDown = useCallback((e) => {
+    const el = stripRef.current
+    if (!el) return
+    dragRef.current = { dragging: true, startX: e.clientX, scrollLeft: el.scrollLeft, moved: false }
+    el.style.cursor = 'grabbing'
+    el.style.userSelect = 'none'
+  }, [])
+
+  const onPointerMove = useCallback((e) => {
+    const d = dragRef.current
+    if (!d.dragging) return
+    const dx = e.clientX - d.startX
+    if (Math.abs(dx) > 5) d.moved = true
+    stripRef.current.scrollLeft = d.scrollLeft - dx
+  }, [])
+
+  const onPointerUp = useCallback(() => {
+    const el = stripRef.current
+    dragRef.current.dragging = false
+    if (el) {
+      el.style.cursor = ''
+      el.style.userSelect = ''
+    }
+  }, [])
+
+  const scrollBy = (dir) => {
+    const el = stripRef.current
+    if (!el) return
+    el.scrollBy({ left: dir * 420, behavior: 'smooth' })
   }
 
   return (
@@ -31,13 +66,33 @@ export default function Projects() {
         />
       </div>
 
-      <div className="relative mt-10">
+      <div className="relative mt-10 group/film">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-night via-night/80 to-transparent md:w-24" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-night via-night/80 to-transparent md:w-24" />
 
+        <button
+          onClick={() => scrollBy(-1)}
+          aria-label="Scroll left"
+          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
+        >
+          ‹
+        </button>
+        <button
+          onClick={() => scrollBy(1)}
+          aria-label="Scroll right"
+          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
+        >
+          ›
+        </button>
+
         <div
+          ref={stripRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerLeave={onPointerUp}
           className="film-strip relative flex overflow-x-auto snap-x snap-mandatory py-6 pl-8 pr-8 md:pl-24 md:pr-24"
-          style={{ scrollbarWidth: 'none' }}
+          style={{ scrollbarWidth: 'none', cursor: 'grab' }}
           role="region"
           aria-label="Projects film strip"
         >
