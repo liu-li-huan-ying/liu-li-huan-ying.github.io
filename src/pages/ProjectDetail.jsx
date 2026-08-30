@@ -95,16 +95,18 @@ export default function ProjectDetail({ project, index, projects }) {
       </ul>
 
       <div className="mt-12 flex flex-wrap gap-4">
-        <a
-          href={project.live}
-          target="_blank"
-          rel="noreferrer"
-          data-cursor-label="OPEN"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink px-6 py-3 font-semibold text-night transition-all hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(129,140,248,0.45)]"
-        >
-          {t.demo}
-          <ExternalIcon className="h-4 w-4" />
-        </a>
+        {project.live && (
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noreferrer"
+            data-cursor-label="OPEN"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink px-6 py-3 font-semibold text-night transition-all hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(129,140,248,0.45)]"
+          >
+            {t.demo}
+            <ExternalIcon className="h-4 w-4" />
+          </a>
+        )}
         <a
           href={project.github}
           target="_blank"

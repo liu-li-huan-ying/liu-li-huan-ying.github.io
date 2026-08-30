@@ -138,7 +138,7 @@ export default function BlogPost({ post, index, posts }) {
         <aside className="hidden xl:block">
           <nav aria-label="Table of contents" className="sticky top-28 border-l border-white/10 pl-5">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
-              目录 · TOC
+              {t.toc}
             </p>
             <ul className="space-y-3">
               {toc.map((item) => (

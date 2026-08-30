@@ -93,15 +93,15 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
   if (failed) return null
 
   const stats = data ? computeStats(data.contributions) : null
-  const weekdayLabels = labels?.weekdays ?? ['Mon', 'Wed', 'Fri']
+  const weekdaySet = new Set([1, 3, 5])
 
   return (
     <div className="glass rounded-2xl p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-semibold text-white">{labels.title}</h3>
+        <h3 className="font-semibold text-white">{labels.heatmapTitle}</h3>
         {stats ? (
           <span className="font-mono text-xs text-neon-cyan">
-            {stats.total} {labels.subtitle}
+            {stats.total} {labels.heatmapSub}
           </span>
         ) : (
           <span className="font-mono text-xs text-slate-500">loading…</span>
@@ -141,7 +141,7 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
                 <div className="mr-1 flex w-6 shrink-0 flex-col gap-[3px]">
                   {[...Array(7)].map((_, i) => (
                     <span key={i} className="h-[11px] font-mono text-[8px] leading-[11px] text-slate-600">
-                      {weekdayLabels.includes(i) ? (labels.weekdayShort ?? [])[i] ?? '' : ''}
+                      {weekdaySet.has(i) ? (labels.weekdayShort ?? [])[i] ?? '' : ''}
                     </span>
                   ))}
                 </div>

@@ -156,6 +156,8 @@ export default function CommandPalette() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-[90] flex justify-center bg-night/70 px-4 pt-[16vh] backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
             onClick={close}
           >
             <motion.div

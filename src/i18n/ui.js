@@ -138,6 +138,7 @@ export const ui = {
       read: 'min read',
       newer: '« Newer',
       older: 'Older »',
+      toc: 'TOC',
     },
     pal: {
       placeholder: 'Type a command or search…',
@@ -319,6 +320,7 @@ export const ui = {
       read: '分钟读完',
       newer: '« 较新一篇',
       older: '较早一篇 »',
+      toc: '目录',
     },
     pal: {
       placeholder: '输入命令或搜索…',
