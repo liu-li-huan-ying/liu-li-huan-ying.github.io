@@ -11,7 +11,7 @@ export default function Contact() {
   const email = profile[lang].email
 
   return (
-    <section id="contact" className="relative mx-auto max-w-2xl px-6 py-32 text-center">
+    <section id="contact" className="relative mx-auto max-w-2xl px-6 py-28 text-center">
       <FadeIn>
         <p className="font-mono text-sm tracking-[0.3em] text-neon-cyan">05. // {t.eyebrow}</p>
 

@@ -173,7 +173,7 @@ export default function Navbar() {
                 <a
                   href={`#${link.id}`}
                   onClick={(e) => onNavClick(e, link.id)}
-                  className="block px-6 py-4 font-mono text-sm text-slate-200"
+                  className="block px-6 py-4 font-mono text-sm text-slate-200 transition-colors hover:bg-white/[0.06] active:bg-white/[0.1]"
                 >
                   <span className="mr-2 text-neon-violet">0{i + 1}.</span>
                   {t[link.id]}

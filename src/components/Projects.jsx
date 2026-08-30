@@ -203,6 +203,7 @@ export default function Projects() {
                       alt={project.title}
                       className="absolute inset-0 h-full w-full object-cover"
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-7xl font-bold text-white/15 md:text-9xl">

@@ -88,7 +88,7 @@ export default function KonamiRain() {
   }, [mode])
 
   useEffect(() => {
-    if (!mode) return undefined
+    if (mode !== 'on') return undefined
     const clear = setTimeout(() => setMode(null), 2400)
     return () => clearTimeout(clear)
   }, [mode])

@@ -49,7 +49,14 @@ export default function GitHubStats({ repo }) {
     }
   }, [repo, stats])
 
-  if (!stats) return null
+  if (!stats) {
+    return (
+      <div className="flex gap-3 font-mono text-[11px]">
+        <div className="h-3.5 w-10 animate-pulse rounded bg-white/5" />
+        <div className="h-3.5 w-10 animate-pulse rounded bg-white/5" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-slate-400">

@@ -34,6 +34,7 @@ export default function ProjectDetail({ project, index, projects }) {
             src={project.image}
             alt={project.title}
             className="absolute inset-0 h-full w-full object-cover"
+            decoding="async"
           />
         ) : (
           <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-9xl font-bold text-white/15 md:text-[12rem]">

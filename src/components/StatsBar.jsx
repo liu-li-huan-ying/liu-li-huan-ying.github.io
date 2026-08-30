@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLang } from '../i18n/use-lang'
 import { CalendarIcon, EyeIcon, FolderIcon } from './Icons'
 import FadeIn from './FadeIn'
+import { profile } from '../data/profile'
 
 const ABACUS_NS = 'liu-li-huan-ying'
 const ABACUS_KEY = 'portfolio-visits'
@@ -51,6 +52,14 @@ export default function StatsBar() {
       controller.abort()
     }
   }, [])
+
+  const timeText = new Date().toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  const postCount = profile[lang].posts?.length ?? 0
+  const postText = lang === 'zh' ? `${postCount} 篇文章` : `${postCount} posts`
 
   const visitText =
     visits === null

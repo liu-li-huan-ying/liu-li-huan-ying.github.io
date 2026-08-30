@@ -72,6 +72,11 @@ export default function ProjectList() {
 
       <motion.div layout className="grid gap-6 sm:grid-cols-2">
         <AnimatePresence mode="popLayout">
+          {filtered.length === 0 && (
+            <p className="py-12 text-center font-mono text-sm text-slate-500 sm:col-span-2">
+              {lang === 'zh' ? '没有匹配的项目' : 'No projects match this filter.'}
+            </p>
+          )}
           {filtered.map((project) => (
             <motion.div
               key={project.id}
@@ -108,6 +113,7 @@ export default function ProjectList() {
                         alt={project.title}
                         className="absolute inset-0 h-full w-full object-cover"
                         loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">

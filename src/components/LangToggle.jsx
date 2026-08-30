@@ -37,7 +37,7 @@ export default function LangToggle() {
           className={`relative z-10 font-mono text-xs transition-colors duration-200 ${
             lang === option.value ? 'font-semibold text-night' : 'text-slate-400 hover:text-white'
           }`}
-          style={{ width: THUMB_W, lineHeight: '22px' }}
+          style={{ width: THUMB_W, lineHeight: '22px', minWidth: '40px' }}
         >
           {option.label}
         </button>

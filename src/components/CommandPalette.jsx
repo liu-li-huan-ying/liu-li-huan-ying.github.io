@@ -142,7 +142,7 @@ export default function CommandPalette() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="glass fixed bottom-6 left-6 z-40 hidden items-center gap-2 rounded-lg px-3.5 py-2 font-mono text-xs text-slate-400 transition-colors hover:border-neon-violet/40 hover:text-white md:flex"
+        className="glass fixed bottom-6 left-6 z-[56] hidden items-center gap-2 rounded-lg px-3.5 py-2 font-mono text-xs text-slate-400 transition-colors hover:border-neon-violet/40 hover:text-white md:flex"
       >
         <span className="text-neon-violet">⌘</span> {pal.menu}
         <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Ctrl K</kbd>
