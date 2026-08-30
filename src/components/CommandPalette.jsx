@@ -90,7 +90,10 @@ export default function CommandPalette() {
     const onKey = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        setOpen((v) => !v)
+        setOpen((v) => {
+          if (v) setQuery('')
+          return !v
+        })
       }
     }
     window.addEventListener('keydown', onKey)

@@ -27,11 +27,30 @@ function collectPosts() {
           meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim()
         }
       }
+
+      const enFile = path.join(postsDir, `${slug}.en.md`)
+      let enMeta = {}
+      try {
+        const enSrc = readFileSync(enFile, 'utf8')
+        const enFm = enSrc.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+        if (enFm) {
+          for (const line of enFm[1].split(/\r?\n/)) {
+            const idx = line.indexOf(':')
+            if (idx === -1) continue
+            enMeta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim()
+          }
+        }
+      } catch {
+        // no English translation
+      }
+
       return {
         slug,
         title: meta.title ?? slug,
+        titleEn: enMeta.title ?? meta.title ?? slug,
         date: String(meta.date ?? '').slice(0, 10),
         summary: meta.summary ?? '',
+        summaryEn: enMeta.summary ?? meta.summary ?? '',
       }
     })
     .sort((a, b) => b.date.localeCompare(a.date))

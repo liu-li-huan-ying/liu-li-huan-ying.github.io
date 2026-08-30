@@ -11,14 +11,16 @@ function MatrixCanvas() {
     const ctx = canvas.getContext('2d')
     const FONT = 16
 
+    let columns = 0
+    let drops = []
+
     const resize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      columns = Math.floor(canvas.width / FONT)
+      drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / FONT))
     }
     resize()
-
-    let columns = Math.floor(canvas.width / FONT)
-    let drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / FONT))
 
     let raf = 0
     let last = 0

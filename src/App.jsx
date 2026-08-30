@@ -149,12 +149,12 @@ function Shell() {
             <Navbar />
             <RoutedView />
             <BackToTop />
-          <ScrollProgress />
+            <ScrollProgress />
             <CommandPalette />
             <KonamiRain />
             <KanbanMusume />
             <MusicPlayer />
-          <Analytics />
+            <Analytics />
           </>
         )}
       </ErrorBoundary>
