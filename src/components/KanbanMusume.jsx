@@ -46,6 +46,7 @@ const TIPS_BY_LANG = {
 
 export default function KanbanMusume() {
   const widgetRef = useRef(null)
+  const hitboxRef = useRef(null)
   const { lang } = useLang()
 
   useEffect(() => {
@@ -127,6 +128,7 @@ export default function KanbanMusume() {
               )
             })
             document.body.appendChild(hitbox)
+            hitboxRef.current = hitbox
           } catch {
             // silent
           }
@@ -146,6 +148,8 @@ export default function KanbanMusume() {
 
     return () => {
       cancelled = true
+      hitboxRef.current?.remove()
+      hitboxRef.current = null
       const widget = widgetRef.current
       widgetRef.current = null
       if (widget) {

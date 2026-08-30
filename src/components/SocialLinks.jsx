@@ -40,14 +40,13 @@ export default function SocialLinks({ className = '' }) {
               onClick={() => copyValue(social)}
               aria-label={`Copy ${social.label} ID`}
               data-cursor-label="COPY"
-              className={`transition-all hover:-translate-y-1 ${
+              className={`relative flex h-6 w-6 items-center justify-center transition-all hover:-translate-y-1 ${
                 copiedLabel === social.label ? 'text-emerald-300' : 'text-slate-400 hover:text-neon-cyan'
               }`}
             >
-              {copiedLabel === social.label ? (
-                <span className="font-mono text-xs">✓ ID</span>
-              ) : (
-                <Icon className="h-6 w-6" />
+              <Icon className="absolute h-6 w-6" />
+              {copiedLabel === social.label && (
+                <span className="absolute font-mono text-[10px]">✓</span>
               )}
             </button>
           )

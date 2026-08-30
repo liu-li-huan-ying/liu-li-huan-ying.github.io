@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
@@ -20,7 +20,7 @@ const T = 'text-slate-400'
 const N = 'text-neon-violet'
 const seg = (t, c) => ({ t, c })
 
-function useCodeLines(name, focusText) {
+function getCodeLines(name, focusText) {
   return [
     [seg('const ', K), seg('developer', V), seg(' = {', P)],
     [seg('  name: ', T), seg(`'${name}'`, S), seg(',', P)],
@@ -85,7 +85,10 @@ export default function Hero() {
   const data = profile[lang]
   const roles = ROLES_BY_LANG[lang]
   const typed = useTypewriter(roles)
-  const codeLines = useCodeLines(data.name, lang === 'zh' ? '全栈与分布式系统' : 'fullstack & systems')
+  const codeLines = useMemo(
+    () => getCodeLines(data.name, lang === 'zh' ? '全栈与分布式系统' : 'fullstack & systems'),
+    [data.name, lang],
+  )
   const [show3D] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
 
   const sectionRef = useRef(null)
@@ -102,7 +105,7 @@ export default function Hero() {
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    window.history.replaceState(null, '', `#${id}`)
+    window.history.replaceState(null, '', `#/${id}`)
   }
 
   return (

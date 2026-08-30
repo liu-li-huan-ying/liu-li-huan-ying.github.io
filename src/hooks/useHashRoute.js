@@ -32,11 +32,19 @@ export function navigate(path) {
 export function goSection(id) {
   if (!window.location.hash.startsWith('#/')) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    window.history.replaceState(null, '', `#${id}`)
+    window.history.replaceState(null, '', `#/${id}`)
     return
   }
   navigate('/')
-  setTimeout(() => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }, 80)
+  let attempts = 0
+  const tryScroll = () => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else if (attempts < 20) {
+      attempts++
+      requestAnimationFrame(tryScroll)
+    }
+  }
+  requestAnimationFrame(tryScroll)
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import 'highlight.js/styles/github-dark.css'
 import { useLang } from '../i18n/use-lang'
 import { ui } from '../i18n/ui'
 import { navigate } from '../hooks/useHashRoute'
@@ -47,6 +46,7 @@ export default function BlogPost({ post, index, posts }) {
     let cancelled = false
     async function highlight() {
       try {
+        await import('highlight.js/styles/github-dark.css')
         const [{ default: hljs }, go, bash, javascript, xml] = await Promise.all([
           import('highlight.js/lib/core'),
           import('highlight.js/lib/languages/go'),

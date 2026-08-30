@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { LangProvider } from './i18n/lang-provider'
 import { useLang } from './i18n/use-lang'
@@ -123,14 +123,14 @@ function Shell() {
     }
   })
 
-  const markBooted = () => {
+  const markBooted = useCallback(() => {
     try {
       sessionStorage.setItem('pf-booted', '1')
     } catch (err) {
       void err
     }
     setBooted(true)
-  }
+  }, [])
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-night">

@@ -128,10 +128,18 @@ export default function CommandPalette() {
       close()
     } else if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setActive((a) => Math.min(a + 1, visible.length - 1))
+      setActive((a) => {
+        const next = Math.min(a + 1, visible.length - 1)
+        listRef.current?.children[next]?.scrollIntoView({ block: 'nearest' })
+        return next
+      })
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
-      setActive((a) => Math.max(a - 1, 0))
+      setActive((a) => {
+        const next = Math.max(a - 1, 0)
+        listRef.current?.children[next]?.scrollIntoView({ block: 'nearest' })
+        return next
+      })
     } else if (e.key === 'Enter') {
       exec(visible[currentActive])
     }

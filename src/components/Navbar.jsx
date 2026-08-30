@@ -14,6 +14,12 @@ export default function Navbar() {
   const t = ui[lang].nav
   const name = profile[lang].name
 
+  useEffect(() => {
+    const onHashChange = () => setOpen(false)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
   const ulRef = useRef(null)
   const linkRefs = useRef([])
   const [hoveredIdx, setHoveredIdx] = useState(-1)

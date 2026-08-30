@@ -188,7 +188,9 @@ export default function MusicPlayer() {
       style={{ left: pos.x, top: pos.y, touchAction: 'none' }}
     >
       {showTip && (
-        <div className="glass pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg px-2.5 py-1 font-mono text-[10px] text-neon-cyan">
+        <div className={`glass pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-lg px-2.5 py-1 font-mono text-[10px] text-neon-cyan ${
+          pos.x > window.innerWidth - 150 ? 'right-full mr-3' : 'left-full ml-3'
+        }`}>
           {showTip}
         </div>
       )}

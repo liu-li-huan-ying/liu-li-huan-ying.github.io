@@ -50,8 +50,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee,
+  .animate-float,
+  .animate-float-slow,
+  .animate-blink {
     animation-play-state: paused;
+  }
+  .animate-float,
+  .animate-float-slow {
+    transform: translateY(0);
   }
 }
 
