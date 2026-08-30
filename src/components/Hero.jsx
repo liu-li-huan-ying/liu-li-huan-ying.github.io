@@ -110,7 +110,7 @@ export default function Hero() {
       id="top"
       ref={sectionRef}
       onMouseMove={onMouseMove}
-      className="relative flex min-h-screen items-center overflow-hidden pt-24"
+      className="relative flex min-h-screen items-center overflow-hidden pt-24 pb-20"
     >
       {show3D && (
         <Suspense fallback={null}>
@@ -118,7 +118,7 @@ export default function Hero() {
         </Suspense>
       )}
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-16 px-6 pb-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-16 px-6 pb-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
           <StatusBadge />
 
@@ -142,7 +142,7 @@ export default function Hero() {
           >
             <span className="mr-3 text-neon-pink">&gt;</span>
             <span>{typed}</span>
-            <span className="ml-1 inline-block h-6 w-[10px] animate-blink bg-neon-cyan" />
+            <span className="ml-1 inline-block h-[1.2em] w-[10px] animate-blink bg-neon-cyan" />
           </motion.div>
 
           <motion.p

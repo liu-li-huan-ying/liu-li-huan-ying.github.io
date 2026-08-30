@@ -15,6 +15,8 @@ const POST_GRADIENTS = [
   ['#f472b6', '#818cf8'],
 ]
 
+const MONTHS_EN = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+
 function SearchIcon(props) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...props}>
@@ -59,7 +61,6 @@ export default function BlogList() {
   }, [])
 
   const chips = [bl.all, ...tagPool]
-  const monthsEn = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
   const pristine = q === '' && activeTag === bl.all
 
   return (
@@ -165,9 +166,9 @@ export default function BlogList() {
       ) : (
         <div className="relative z-10 space-y-4">
           {filtered.slice(pristine ? 1 : 0).map((post, i) => {
-            const gradient = POST_GRADIENTS[posts.indexOf(post) % POST_GRADIENTS.length]
+            const gradient = POST_GRADIENTS[Math.max(0, posts.indexOf(post)) % POST_GRADIENTS.length]
             const [y, m, d] = post.date.split('-')
-            const monthLabel = lang === 'zh' ? `${Number(m)} 月` : monthsEn[Number(m) - 1]
+            const monthLabel = lang === 'zh' ? `${Number(m)} 月` : MONTHS_EN[Number(m) - 1]
             return (
               <FadeIn key={post.slug} delay={i * 0.06}>
                 <motion.a

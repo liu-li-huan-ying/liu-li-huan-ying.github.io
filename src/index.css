@@ -49,6 +49,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation-play-state: paused;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -192,6 +198,13 @@ section[id] {
   color: #22d3ee;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.md-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
 }
 
 .md-body strong {

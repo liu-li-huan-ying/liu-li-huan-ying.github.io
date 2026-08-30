@@ -3,6 +3,7 @@ import { ui } from '../i18n/ui'
 import { navigate } from '../hooks/useHashRoute'
 import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import GitHubStats from '../components/GitHubStats'
+import { repoSlug } from '../utils/github'
 
 export default function ProjectDetail({ project, index, projects }) {
   const { lang } = useLang()
@@ -35,6 +36,7 @@ export default function ProjectDetail({ project, index, projects }) {
             alt={project.title}
             className="absolute inset-0 h-full w-full object-cover"
             decoding="async"
+            onError={(e) => { e.target.style.display = 'none' }}
           />
         ) : (
           <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-9xl font-bold text-white/15 md:text-[12rem]">
@@ -47,10 +49,10 @@ export default function ProjectDetail({ project, index, projects }) {
       <h1 className="mt-10 text-3xl font-bold text-white md:text-5xl">{project.title}</h1>
       <p className="mt-4 leading-relaxed text-slate-400">{project.desc}</p>
       {(() => {
-        const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
-        return m ? (
+        const slug = repoSlug(project.github)
+        return slug ? (
           <div className="mt-4">
-            <GitHubStats repo={`${m[1]}/${m[2]}`} />
+            <GitHubStats repo={slug} />
           </div>
         ) : null
       })()}

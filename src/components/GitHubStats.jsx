@@ -11,6 +11,7 @@ export default function GitHubStats({ repo }) {
     }
     return null
   })
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     if (stats) return undefined
@@ -38,7 +39,7 @@ export default function GitHubStats({ repo }) {
         }
         setStats(data)
       } catch {
-        // silently hide stats when rate limited or offline
+        if (!cancelled) setFailed(true)
       }
     }, 1500)
 
@@ -50,6 +51,7 @@ export default function GitHubStats({ repo }) {
   }, [repo, stats])
 
   if (!stats) {
+    if (failed) return null
     return (
       <div className="flex gap-3 font-mono text-[11px]">
         <div className="h-3.5 w-10 animate-pulse rounded bg-white/5" />

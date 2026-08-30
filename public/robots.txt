@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://liu-li-huan-ying.github.io/sitemap.xml

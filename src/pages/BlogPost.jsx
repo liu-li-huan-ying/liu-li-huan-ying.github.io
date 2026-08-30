@@ -28,11 +28,11 @@ export default function BlogPost({ post, index, posts }) {
     const container = bodyRef.current
     if (!container) return undefined
 
-    const headings = [...container.querySelectorAll('h2')]
+    const headings = [...container.querySelectorAll('h2, h3')]
     headings.forEach((heading, i) => {
       heading.id = `sec-${i}`
     })
-    setToc(headings.map((heading) => ({ id: heading.id, text: heading.textContent })))
+    setToc(headings.map((heading) => ({ id: heading.id, text: heading.textContent, level: heading.tagName.toLowerCase() })))
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -111,7 +111,7 @@ export default function BlogPost({ post, index, posts }) {
               </span>
             )}
           </div>
-          <h1 className="mt-6 text-3xl font-bold leading-tight text-white md:text-5xl">{post.title}</h1>
+          <h1 className="mt-6 text-3xl font-bold leading-tight text-white break-words md:text-5xl">{post.title}</h1>
         </header>
 
         <div ref={bodyRef} className="md-body mt-12" dangerouslySetInnerHTML={{ __html: html }} />
@@ -149,7 +149,9 @@ export default function BlogPost({ post, index, posts }) {
                       e.preventDefault()
                       document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }}
-                    className={`block text-sm leading-snug transition-colors ${
+                    className={`block leading-snug transition-colors ${
+                      item.level === 'h3' ? 'pl-3 text-xs' : 'text-sm'
+                    } ${
                       activeId === item.id ? 'text-neon-cyan' : 'text-slate-400 hover:text-white'
                     }`}
                   >

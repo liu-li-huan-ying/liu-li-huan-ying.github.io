@@ -13,7 +13,8 @@ export default function ParticleBackground() {
     const mouse = { x: -9999, y: -9999 }
 
     const init = () => {
-      const count = Math.min(110, Math.floor((window.innerWidth * window.innerHeight) / 14000))
+      const isLowPerf = navigator.hardwareConcurrency <= 4 || /Mobi|Android/i.test(navigator.userAgent)
+      const count = Math.min(isLowPerf ? 50 : 110, Math.floor((window.innerWidth * window.innerHeight) / 14000))
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,

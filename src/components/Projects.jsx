@@ -8,6 +8,7 @@ import { githubProfileUrl, profile } from '../data/profile'
 import { ExternalIcon, GitHubIcon } from './Icons'
 import SectionHeader from './SectionHeader'
 import GitHubStats from './GitHubStats'
+import { repoSlug } from '../utils/github'
 
 export default function Projects() {
   const { lang } = useLang()
@@ -67,7 +68,7 @@ export default function Projects() {
     const dt = now - d.lastT
     if (dt > 0) {
       d.samples.push({ dx: e.clientX - d.lastX, dt })
-      if (d.samples.length > 6) d.samples.shift()
+      if (d.samples.length > 10) d.samples.shift()
     }
     d.lastX = e.clientX
     d.lastT = now
@@ -90,9 +91,9 @@ export default function Projects() {
 
     if (Math.abs(velocity) < 0.1) return
 
-    let v = -velocity * 16
-    const friction = 0.95
-    const minV = 0.5
+    let v = Math.sign(-velocity) * Math.max(Math.abs(velocity) * 14, 3)
+    const friction = 0.96
+    const minV = 0.3
 
     const tick = () => {
       if (Math.abs(v) < minV) return
@@ -142,14 +143,14 @@ export default function Projects() {
         <button
           onClick={() => scrollBy(-1)}
           aria-label="Scroll left"
-          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
+          className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
         >
           ‹
         </button>
         <button
           onClick={() => scrollBy(1)}
           aria-label="Scroll right"
-          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
+          className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-night/80 backdrop-blur-sm text-white/40 opacity-0 group-hover/film:opacity-100 transition-opacity duration-300 hover:border-neon-cyan/40 hover:text-neon-cyan cursor-pointer"
         >
           ›
         </button>
@@ -204,6 +205,7 @@ export default function Projects() {
                       className="absolute inset-0 h-full w-full object-cover"
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => { e.target.style.display = 'none' }}
                     />
                   ) : (
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-7xl font-bold text-white/15 md:text-9xl">
@@ -250,8 +252,8 @@ export default function Projects() {
                   <p className="text-sm leading-relaxed text-slate-400">{project.desc}</p>
 
                   {(() => {
-                    const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
-                    return m ? <GitHubStats repo={`${m[1]}/${m[2]}`} /> : null
+                    const slug = repoSlug(project.github)
+                    return slug ? <GitHubStats repo={slug} /> : null
                   })()}
 
                   <div className="flex flex-wrap gap-1.5">

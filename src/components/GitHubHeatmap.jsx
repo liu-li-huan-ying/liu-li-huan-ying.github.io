@@ -34,7 +34,9 @@ function computeStats(contributions) {
   return { total, activeDays, longest, current }
 }
 
-export default function GitHubHeatmap({ username, year = 2026, labels }) {
+const WEEKDAY_SET = new Set([1, 3, 5])
+
+export default function GitHubHeatmap({ username, year = new Date().getFullYear(), labels }) {
   const [data, setData] = useState(null)
   const [failed, setFailed] = useState(false)
 
@@ -93,7 +95,6 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
   if (failed) return null
 
   const stats = data ? computeStats(data.contributions) : null
-  const weekdaySet = new Set([1, 3, 5])
 
   return (
     <div className="glass rounded-2xl p-6">
@@ -141,7 +142,7 @@ export default function GitHubHeatmap({ username, year = 2026, labels }) {
                 <div className="mr-1 flex w-6 shrink-0 flex-col gap-[3px]">
                   {[...Array(7)].map((_, i) => (
                     <span key={i} className="h-[11px] font-mono text-[8px] leading-[11px] text-slate-600">
-                      {weekdaySet.has(i) ? (labels.weekdayShort ?? [])[i] ?? '' : ''}
+                      {WEEKDAY_SET.has(i) ? (labels.weekdayShort ?? [])[i] ?? '' : ''}
                     </span>
                   ))}
                 </div>

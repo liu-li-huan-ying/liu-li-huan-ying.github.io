@@ -180,11 +180,11 @@ export default function MusicPlayer() {
     toggle()
   }, [toggle])
 
-  const offset = (1 - volume) * CIRC
+  const offset = muted ? CIRC : (1 - volume) * CIRC
 
   return (
     <div
-      className="fixed z-50 select-none"
+      className="fixed z-[52] select-none"
       style={{ left: pos.x, top: pos.y, touchAction: 'none' }}
     >
       {showTip && (

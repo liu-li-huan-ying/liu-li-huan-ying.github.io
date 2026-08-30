@@ -157,7 +157,7 @@ export default function NotFound() {
           break
         case 'matrix':
           addOutput([{ type: 'info', text: 'Activating Matrix mode...' }])
-          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'm', ctrlKey: true, shiftKey: true }))
+          window.dispatchEvent(new Event('portfolio:matrix'))
           break
         default:
           triggerGlitch()
@@ -273,7 +273,7 @@ export default function NotFound() {
               {/* Terminal body */}
               <div
                 ref={termRef}
-                className="terminal-body relative z-10 h-[55vh] overflow-y-auto p-5 font-mono text-sm leading-relaxed md:h-[60vh] md:p-6 md:text-[15px]"
+                className="terminal-body relative z-10 h-[55vh] overflow-y-auto p-5 font-mono text-sm leading-relaxed md:h-[60vh] md:p-6"
                 onClick={() => inputRef.current?.focus()}
               >
                 {/* Glitch 404 text */}
@@ -319,10 +319,7 @@ export default function NotFound() {
                     }`}
                   >
                     {line.type === 'input' ? (
-                      <>
-                        <span className="text-neon-cyan">{line.text.split('$')[0]}$</span>
-                        <span className="text-white">{line.text.split('$')[1]}</span>
-                      </>
+                      <span className="text-white">{line.text}</span>
                     ) : (
                       line.text
                     )}

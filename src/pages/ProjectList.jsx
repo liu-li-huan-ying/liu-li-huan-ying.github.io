@@ -9,6 +9,7 @@ import SectionHeader from '../components/SectionHeader'
 import TiltCard from '../components/TiltCard'
 import GitHubStats from '../components/GitHubStats'
 import { coverWipeNavigate } from '../utils/pageTransition'
+import { repoSlug } from '../utils/github'
 import { navigate } from '../hooks/useHashRoute'
 import Magnetic from '../components/Magnetic'
 
@@ -114,6 +115,7 @@ export default function ProjectList() {
                         className="absolute inset-0 h-full w-full object-cover"
                         loading="lazy"
                         decoding="async"
+                        onError={(e) => { e.target.style.display = 'none' }}
                       />
                     ) : (
                       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">
@@ -165,8 +167,8 @@ export default function ProjectList() {
                     <p className="flex-1 text-sm leading-relaxed text-slate-400">{project.desc}</p>
 
                     {(() => {
-                      const m = project.github.match(/github\.com\/([^/]+)\/([^/#?]+)/)
-                      return m ? <GitHubStats repo={`${m[1]}/${m[2]}`} /> : null
+                      const slug = repoSlug(project.github)
+                      return slug ? <GitHubStats repo={slug} /> : null
                     })()}
 
                     <div className="flex flex-wrap gap-2 pt-1">

@@ -67,7 +67,7 @@ export default function AboutPage() {
 
         <div className="space-y-8">
           <FadeIn delay={0.05}>
-            <GitHubHeatmap username={username} year={2026} labels={a} />
+            <GitHubHeatmap username={username} year={new Date().getFullYear()} labels={a} />
           </FadeIn>
 
           <div className="grid gap-8 md:grid-cols-2">

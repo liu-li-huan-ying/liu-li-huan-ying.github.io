@@ -44,9 +44,18 @@ function MatrixCanvas() {
 
     raf = requestAnimationFrame(draw)
     window.addEventListener('resize', resize)
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf)
+        return
+      }
+      raf = requestAnimationFrame(draw)
+    }
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 
