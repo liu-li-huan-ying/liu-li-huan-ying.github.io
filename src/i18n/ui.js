@@ -64,10 +64,9 @@ export const ui = {
     },
     contact: {
       eyebrow: "WHAT'S NEXT?",
-      head: "Let's Build Something",
-      accent: 'Amazing',
-      blurb:
-        'My inbox is always open — whether you have a project idea, a job opportunity, or just want to say hi. I will get back to you as soon as I can.',
+      head: 'Got a project idea?',
+      accent: "Let's talk",
+      blurb: 'Drop me an email — ideas, jobs, or just a quick hello all work.',
       cta: 'Say Hello',
     },
     footer: {
@@ -246,10 +245,9 @@ export const ui = {
     },
     contact: {
       eyebrow: '下一步？',
-      head: '一起构建点',
-      accent: '了不起的东西',
-      blurb:
-        '我的邮箱永远向你敞开——无论是项目想法、工作机会，还是只想打个招呼。我会尽快回复你。',
+      head: '有想法就来',
+      accent: '聊聊吧',
+      blurb: '发封邮件就好——项目想法、工作机会、或者随便打个招呼。',
       cta: '打个招呼',
     },
     footer: {

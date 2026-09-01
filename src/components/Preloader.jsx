@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-const LOG = [
-  { p: 2, t: '$ ./boot --portfolio', c: 'text-slate-300' },
-  { p: 20, t: '[ ok ] loading modules ..........', c: 'text-slate-500' },
-  { p: 40, t: '[ ok ] compiling shaders ........', c: 'text-slate-500' },
-  { p: 60, t: '[ ok ] warming up gpu ...........', c: 'text-slate-500' },
-  { p: 80, t: '[ ok ] connecting github ........', c: 'text-slate-500' },
-  { p: 97, t: 'ready. launching experience.', c: 'text-emerald-300' },
-]
-
 export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0)
   const done = useRef(false)
@@ -20,7 +11,7 @@ export default function Preloader({ onComplete }) {
     let raf
 
     const step = (now) => {
-      const t = Math.min((now - start) / 1700, 1)
+      const t = Math.min((now - start) / 1400, 1)
       const eased = 1 - Math.pow(1 - t, 2)
       setProgress(Math.floor(eased * 100))
       if (t < 1) {
@@ -40,29 +31,13 @@ export default function Preloader({ onComplete }) {
 
   return (
     <motion.div
-      exit={{ opacity: 0, scale: 1.04, filter: 'blur(8px)' }}
-      transition={{ duration: 0.55, ease: 'easeInOut' }}
+      exit={{ opacity: 0, filter: 'blur(6px)' }}
+      transition={{ duration: 0.45, ease: 'easeInOut' }}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-night"
     >
-      <div className="glass w-[min(92vw,540px)] rounded-2xl p-8">
-        <div className="flex items-center gap-1.5 border-b border-white/10 pb-4">
-          <span className="h-3 w-3 rounded-full bg-red-400/90" />
-          <span className="h-3 w-3 rounded-full bg-yellow-400/90" />
-          <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
-          <span className="ml-3 font-mono text-xs text-slate-500">system — boot</span>
-          <span className="ml-auto font-mono text-sm text-neon-cyan">{progress}%</span>
-        </div>
-
-        <div className="mt-5 h-36 font-mono text-sm leading-6">
-          {LOG.filter((line) => progress >= line.p).map((line) => (
-            <p key={line.t} className={line.c}>
-              {line.t}
-            </p>
-          ))}
-          <span className="inline-block h-4 w-2 animate-blink bg-neon-cyan align-middle" />
-        </div>
-
-        <div className="mt-5 h-1 overflow-hidden rounded-full bg-white/10">
+      <div className="flex w-48 flex-col items-center gap-4">
+        <p className="font-mono text-sm tracking-widest text-slate-400">Glazed Mirage</p>
+        <div className="h-0.5 w-full overflow-hidden rounded-full bg-white/10">
           <div
             className="h-full rounded-full bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink transition-[width] duration-100"
             style={{ width: `${progress}%` }}

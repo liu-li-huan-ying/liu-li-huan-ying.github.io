@@ -86,7 +86,7 @@ export default function BlogList() {
                 data-cursor-label="FILTER"
                 className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
                   activeTag === chip
-                    ? 'border-neon-cyan/60 bg-neon-cyan/15 text-white shadow-[0_0_16px_rgba(34,211,238,0.35)]'
+                    ? 'border-neon-cyan/60 bg-neon-cyan/15 text-white'
                     : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-cyan/40 hover:text-white'
                 }`}
               >

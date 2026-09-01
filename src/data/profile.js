@@ -6,9 +6,9 @@ const postsZh = postsFor('zh')
 export const profile = {
   en: {
     name: 'Glazed Mirage',
-    roles: ['Full Stack Developer', 'UI Craftsperson', 'Open Source Enthusiast'],
+    roles: ['Desktop · Browser · Systems', 'Developer of YuJian, GojiDB, Lucent'],
     tagline:
-      'Data Science & Big Data Technology graduate. I build desktop apps with Electron, browser extensions with vanilla JS, and storage engines with Go — always chasing that sweet spot between aesthetics and engineering.',
+      'Data Science & Big Data Technology graduate. Electron editor, Go KV store, C++ video player — I build things I actually want to use.',
     email: 'luchang0829@163.com',
     location: 'Beijing, China',
     status: 'Working',
@@ -19,14 +19,14 @@ export const profile = {
       { label: 'Email', url: 'mailto:luchang0829@163.com' },
     ],
     about: [
-      'Hello! I come from a Data Science and Big Data Technology background, and I love turning ideas into runnable, scalable systems. My recent work spans desktop apps, browser extensions, and storage engines — building polished UIs on one end and low-level systems on the other.',
-      'YuJian (玉笺), my cross-platform Markdown editor built with Electron + Vue 3 + Milkdown, is where I pour most of my frontend energy — five Chinese kiln-color themes, glass material design, and WYSIWYG editing. GojiDB, a hand-written LSM-Tree KV store, keeps my systems side sharp. Lucent, a glass-themed browser new tab extension, rounds out the trio.',
+      'Hello! Data Science & Big Data Technology background. I build things I actually want to use — an Electron Markdown editor, a Go KV store, a C++ video player.',
+      'YuJian (玉笺) is where most of my frontend energy goes — five Chinese kiln-color themes, glass material design, and WYSIWYG editing. GojiDB keeps my systems side sharp. Lucent rounds out the trio as a glass-themed browser new tab.',
     ],
     features: [
-      { icon: 'code', title: 'Full Stack', desc: 'From Electron desktop apps to Go storage engines' },
-      { icon: 'sparkles', title: 'UI Craft', desc: 'Glass materials, kiln-color themes, pixel-perfect detail' },
-      { icon: 'zap', title: 'Performance', desc: 'Benchmark-driven, zero-copy pipelines, measured always' },
-      { icon: 'rocket', title: 'Open Source', desc: 'Building in public, shipping often' },
+      { icon: 'code', title: 'Desktop', desc: 'Electron, Vue 3, cross-platform' },
+      { icon: 'sparkles', title: 'Browser', desc: 'Extensions, new tabs, zero-dependency UI' },
+      { icon: 'zap', title: 'Systems', desc: 'Go KV store, C++ media pipeline, D3D11VA' },
+      { icon: 'rocket', title: 'Shipping', desc: '4 projects, 2 languages, always iterating' },
     ],
     skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Electron', 'Node.js', 'Python', 'Go', 'C++', 'CSS'],
     projects: [
@@ -153,14 +153,14 @@ export const profile = {
       { label: 'Email', url: 'mailto:luchang0829@163.com' },
     ],
     about: [
-      '你好！我来自数据科学与大数据技术专业，热爱用代码把想法变成可运行、可扩展的系统。近期的工作横跨桌面应用、浏览器扩展与存储引擎——一端打磨精致的界面，另一端打磨底层系统。',
-      '玉笺（YuJian）是我投入最多前端精力的跨平台 Markdown 编辑器，基于 Electron + Vue 3 + Milkdown，五套中国传统窑色皮肤加玻璃材质设计。手写的 LSM-Tree 键值数据库 GojiDB 保持系统侧的敏锐。Lucent 轻玻璃新标签页扩展则完成了三件套的拼图。',
+      '你好！数据科学与大数据技术专业。写的项目都是自己想用的东西——Electron 编辑器、Go 键值库、C++ 播放器。',
+      '玉笺（YuJian）是投入最多前端精力的项目，五套中国传统窑色皮肤加玻璃材质设计。GojiDB 保持系统侧的敏锐。Lucent 轻玻璃新标签页扩展则完成了三件套的拼图。',
     ],
     features: [
-      { icon: 'code', title: '全栈能力', desc: '从 Electron 桌面应用到 Go 存储引擎' },
-      { icon: 'sparkles', title: 'UI 工匠', desc: '玻璃材质、窑色皮肤、像素级细节' },
-      { icon: 'zap', title: '性能至上', desc: '基准驱动、零拷贝管线、用数据说话' },
-      { icon: 'rocket', title: '拥抱开源', desc: '公开构建，持续交付' },
+      { icon: 'code', title: '桌面端', desc: 'Electron、Vue 3、跨平台' },
+      { icon: 'sparkles', title: '浏览器', desc: '扩展、新标签页、零依赖 UI' },
+      { icon: 'zap', title: '底层系统', desc: 'Go KV 存储、C++ 媒体管线、D3D11VA' },
+      { icon: 'rocket', title: '持续交付', desc: '4 个项目、2 种语言、不断迭代' },
     ],
     skills: ['JavaScript', 'TypeScript', 'React', 'Vue', 'Electron', 'Node.js', 'Python', 'Go', 'C++', 'CSS'],
     projects: [

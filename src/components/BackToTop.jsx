@@ -36,7 +36,7 @@ export default function BackToTop() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label={`Back to top — ${Math.round(progress * 100)}% read`}
           data-cursor-label="TOP"
-          className="glass fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-neon-cyan shadow-lg shadow-neon-violet/20 transition-shadow hover:shadow-[0_0_24px_rgba(34,211,238,0.4)] lg:bottom-16 lg:left-6 lg:right-auto"
+          className="glass fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full text-neon-cyan transition-colors hover:border-white/20 lg:bottom-16 lg:left-6 lg:right-auto"
         >
           <svg viewBox="0 0 48 48" className="absolute inset-0 h-full w-full -rotate-90">
             <defs>

@@ -219,16 +219,6 @@ section[id] {
   font-weight: 600;
 }
 
-@media (pointer: fine) {
-  body,
-  a,
-  button,
-  input,
-  [role='button'] {
-    cursor: none;
-  }
-}
-
 .film-strip {
   position: relative;
   background: #0c0828;

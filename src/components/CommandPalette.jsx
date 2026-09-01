@@ -176,7 +176,7 @@ export default function CommandPalette() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="glass h-fit w-[min(100%,560px)] overflow-hidden rounded-2xl shadow-2xl shadow-neon-violet/20"
+              className="glass h-fit w-[min(100%,560px)] overflow-hidden rounded-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">

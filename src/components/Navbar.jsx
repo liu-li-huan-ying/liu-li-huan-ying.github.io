@@ -140,7 +140,7 @@ export default function Navbar() {
               href={profile.en.socials[0].url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg border border-neon-violet/40 px-4 py-1.5 font-mono text-sm text-neon-violet transition-all hover:bg-neon-violet/10 hover:shadow-[0_0_20px_rgba(129,140,248,0.3)]"
+              className="rounded-lg border border-neon-violet/40 px-4 py-1.5 font-mono text-sm text-neon-violet transition-all hover:bg-neon-violet/10 hover:border-neon-violet/60"
             >
               {t.github}
             </a>

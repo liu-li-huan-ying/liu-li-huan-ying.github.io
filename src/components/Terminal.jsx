@@ -141,7 +141,7 @@ export default function Terminal() {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-white/10 bg-panel/80 shadow-2xl shadow-neon-violet/10 backdrop-blur-xl"
+      className="overflow-hidden rounded-2xl border border-white/10 bg-panel/80 backdrop-blur-xl"
       onClick={() => inputRef.current?.focus()}
     >
       <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3.5">

@@ -7,8 +7,7 @@ import { profile } from './data/profile'
 import Preloader from './components/Preloader'
 import ErrorBoundary from './components/ErrorBoundary'
 import AuroraBackground from './components/AuroraBackground'
-import ParticleBackground from './components/ParticleBackground'
-import CustomCursor from './components/CustomCursor'
+
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import BlogList from './pages/BlogList'
@@ -22,8 +21,7 @@ import BackToTop from './components/BackToTop'
 import ScrollProgress from './components/ScrollProgress'
 import CommandPalette from './components/CommandPalette'
 import KonamiRain from './components/KonamiRain'
-import KanbanMusume from './components/KanbanMusume'
-import MusicPlayer from './components/MusicPlayer'
+
 import Analytics from './components/Analytics'
 
 const NOISE =
@@ -135,13 +133,10 @@ function Shell() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-night">
       <AuroraBackground />
-      <ParticleBackground />
 
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="bg-grid absolute inset-0" />
       </div>
-
-      <CustomCursor />
 
       <ErrorBoundary>
         {booted && (
@@ -152,8 +147,6 @@ function Shell() {
             <ScrollProgress />
             <CommandPalette />
             <KonamiRain />
-            <KanbanMusume />
-            <MusicPlayer />
             <Analytics />
           </>
         )}

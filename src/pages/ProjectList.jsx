@@ -58,7 +58,7 @@ export default function ProjectList() {
               data-cursor-label="FILTER"
               className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
                 activeTag === chip
-                  ? 'border-neon-violet/60 bg-neon-violet/15 text-white shadow-[0_0_16px_rgba(129,140,248,0.35)]'
+                  ? 'border-neon-violet/60 bg-neon-violet/15 text-white'
                   : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-violet/40 hover:text-white'
               }`}
             >

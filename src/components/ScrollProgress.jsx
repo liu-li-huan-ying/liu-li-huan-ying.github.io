@@ -21,7 +21,7 @@ export default function ScrollProgress() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 z-[80] h-[2px]">
       <div
-        className="h-full origin-left will-change-transform bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink shadow-[0_0_12px_rgba(129,140,248,0.7)]"
+        className="h-full origin-left will-change-transform bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink"
         style={{ transform: `scaleX(${progress})`, transition: 'transform 0.1s linear' }}
       />
     </div>

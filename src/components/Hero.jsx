@@ -221,7 +221,7 @@ export default function Hero() {
         >
           <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-neon-cyan/20 via-neon-violet/20 to-neon-pink/20 blur-3xl" />
 
-          <div className="glass relative animate-float rounded-2xl shadow-2xl shadow-neon-violet/10">
+          <div className="glass relative animate-float rounded-2xl">
             <div className="flex items-center gap-1.5 border-b border-white/10 px-5 py-3.5">
               <span className="h-3 w-3 rounded-full bg-red-400/90" />
               <span className="h-3 w-3 rounded-full bg-yellow-400/90" />
