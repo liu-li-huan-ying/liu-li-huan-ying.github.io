@@ -12,14 +12,14 @@ const PLANET_QUOTES = {
     'You found the planet ✦',
     'Gravity = curiosity',
     'GojiDB awaits below ↓',
-    'Keep building, keep exploring',
+    'Click around, something might happen',
     'Powered by Three.js & caffeine',
   ],
   zh: [
     '你发现了这颗星球 ✦',
     '引力 = 好奇心',
     'GojiDB 在下面等你 ↓',
-    '持续构建，持续探索',
+    '到处点点，也许有惊喜',
     '由 Three.js 与咖啡因驱动',
   ],
 }
