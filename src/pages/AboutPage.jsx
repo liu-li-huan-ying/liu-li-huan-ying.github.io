@@ -9,9 +9,9 @@ import { ui } from '../i18n/ui'
 import { githubProfileUrl, profile } from '../data/profile'
 
 const CHIP_COLORS = [
-  'border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] text-[var(--color-accent)]',
-  'border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] text-[var(--color-text-secondary)]',
-  'border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] text-[var(--color-accent)]',
+  'border-neon-cyan/30 bg-neon-cyan/10 text-neon-cyan',
+  'border-neon-violet/30 bg-neon-violet/10 text-neon-violet',
+  'border-neon-pink/30 bg-neon-pink/10 text-neon-pink',
 ]
 
 export default function AboutPage() {
@@ -51,7 +51,7 @@ export default function AboutPage() {
 
         <FadeIn className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs text-slate-500">
           <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="h-3.5 w-3.5 text-[var(--color-text-secondary)]" />
+            <MapPinIcon className="h-3.5 w-3.5 text-neon-violet" />
             {data.location}
           </span>
           <a
@@ -59,7 +59,7 @@ export default function AboutPage() {
             target="_blank"
             rel="noreferrer"
             data-cursor-label="GITHUB"
-            className="text-[var(--color-accent)] transition-colors hover:text-white"
+            className="text-neon-cyan transition-colors hover:text-white"
           >
             @{username}
           </a>
@@ -72,7 +72,7 @@ export default function AboutPage() {
 
           <div className="grid gap-8 md:grid-cols-2">
             <FadeIn delay={0.1}>
-              <div className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] h-full rounded-2xl p-6">
+              <div className="glass h-full rounded-2xl p-6">
                 <h3 className="font-semibold text-white">{a.langTitle}</h3>
                 <ul className="mt-4 space-y-4">
                   {a.langs.map((item) => (
@@ -86,7 +86,7 @@ export default function AboutPage() {
             </FadeIn>
 
             <FadeIn delay={0.16}>
-              <div className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] h-full rounded-2xl p-6">
+              <div className="glass h-full rounded-2xl p-6">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="font-semibold text-white">{a.nowTitle}</h3>
                   <span className="relative flex h-2 w-2">
@@ -98,7 +98,7 @@ export default function AboutPage() {
                 <ul className="mt-4 space-y-4">
                   {nowItems.map((item) => (
                     <li key={item.name} className="flex items-start gap-3">
-                       <span className="mt-1 text-[var(--color-accent)]">✦</span>
+                      <span className="mt-1 text-neon-cyan">✦</span>
                       <div>
                         <p className="font-medium text-slate-200">{item.name}</p>
                         <p className="mt-0.5 text-sm text-slate-500">{item.desc}</p>
@@ -111,7 +111,7 @@ export default function AboutPage() {
           </div>
 
           <FadeIn delay={0.2}>
-            <div className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] rounded-2xl p-6">
+            <div className="glass rounded-2xl p-6">
               <h3 className="font-semibold text-white">{a.focusTitle}</h3>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 {focusChips.map((chip, i) => (
@@ -131,7 +131,7 @@ export default function AboutPage() {
               type="button"
               onClick={() => navigate('/')}
               data-cursor-label="BACK"
-              className="font-mono text-sm text-[var(--color-accent)] transition-colors hover:text-white"
+              className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
             >
               ← {a.back}
             </button>

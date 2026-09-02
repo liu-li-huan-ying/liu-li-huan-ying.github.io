@@ -77,15 +77,15 @@ export default function StatsBar() {
   ]
 
   return (
-    <FadeIn className="mx-auto max-w-4xl px-6 pb-8 sm:px-12 md:px-20">
+    <FadeIn className="mx-auto max-w-4xl px-6 pb-8">
       <div className="grid gap-4 sm:grid-cols-3">
         {items.map(({ key, icon: Icon, text }) => (
           <div
             key={key}
-            className="flex items-center justify-center gap-3 border border-[var(--color-border)] px-5 py-4 transition-colors hover:border-[var(--color-border-hover)]"
+            className="glass flex items-center justify-center gap-3 rounded-xl px-5 py-4 transition-colors hover:border-neon-violet/30"
           >
-            <Icon className="h-4 w-4 shrink-0 text-[var(--color-text-muted)]" />
-            <span className="text-xs text-[var(--color-text-secondary)] sm:text-sm">{text}</span>
+            <Icon className="h-5 w-5 shrink-0 text-neon-cyan" />
+            <span className="font-mono text-xs leading-relaxed text-slate-300 sm:text-sm">{text}</span>
           </div>
         ))}
       </div>

@@ -63,11 +63,11 @@ export default function GitHubStats({ repo }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-slate-400">
       <span className="inline-flex items-center gap-1">
-        <StarIcon className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+        <StarIcon className="h-3.5 w-3.5 text-neon-cyan" />
         {stats.stars}
       </span>
       <span className="inline-flex items-center gap-1">
-        <ForkIcon className="h-3.5 w-3.5 text-[var(--color-text-secondary)]" />
+        <ForkIcon className="h-3.5 w-3.5 text-neon-violet" />
         {stats.forks}
       </span>
       {stats.language && <span className="text-slate-500">{stats.language}</span>}

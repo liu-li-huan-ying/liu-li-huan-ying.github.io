@@ -9,32 +9,32 @@ const STATUS_MAP = {
   working: {
     zh: '工作中',
     en: 'Working',
+    box: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-300',
     dot: 'bg-emerald-400',
-    text: 'text-emerald-400',
   },
   slacking: {
     zh: '摸鱼中',
     en: 'Slacking off',
+    box: 'border-amber-400/30 bg-amber-400/10 text-amber-300',
     dot: 'bg-amber-400',
-    text: 'text-amber-400',
   },
   overtime: {
     zh: '加班中',
     en: 'Overtime',
+    box: 'border-red-400/30 bg-red-400/10 text-red-300',
     dot: 'bg-red-400',
-    text: 'text-red-400',
   },
   resting: {
     zh: '休息中',
     en: 'Resting',
+    box: 'border-violet-400/30 bg-violet-400/10 text-violet-300',
     dot: 'bg-violet-400',
-    text: 'text-violet-400',
   },
   sleeping: {
     zh: '睡觉中',
     en: 'Sleeping',
-    dot: 'bg-[var(--color-text-muted)]',
-    text: 'text-[var(--color-text-muted)]',
+    box: 'border-slate-500/30 bg-slate-500/10 text-slate-400',
+    dot: 'bg-slate-400',
   },
 }
 
@@ -108,15 +108,15 @@ export default function StatusBadge() {
 
   return (
     <motion.p
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`inline-flex items-center gap-2 text-xs ${status.text}`}
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 font-mono text-xs transition-colors duration-500 ${status.box}`}
       title={lang === 'zh' ? '根据节假日与时间实时变化' : 'Changes with holidays and time of day'}
     >
-      <span className="relative flex h-1.5 w-1.5">
-        <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-40 ${status.dot}`} />
-        <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${status.dot}`} />
+      <span className="relative flex h-2 w-2">
+        <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-60 ${status.dot}`} />
+        <span className={`relative inline-flex h-2 w-2 rounded-full ${status.dot}`} />
       </span>
       {label}
     </motion.p>

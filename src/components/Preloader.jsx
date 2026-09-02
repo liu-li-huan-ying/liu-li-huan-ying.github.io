@@ -31,15 +31,15 @@ export default function Preloader({ onComplete }) {
 
   return (
     <motion.div
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--color-surface)]"
+      exit={{ opacity: 0, filter: 'blur(6px)' }}
+      transition={{ duration: 0.45, ease: 'easeInOut' }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-night"
     >
       <div className="flex w-48 flex-col items-center gap-4">
-        <p className="font-display text-xl text-[var(--color-text-primary)]">琉璃幻影</p>
-        <div className="h-px w-full overflow-hidden bg-[var(--color-border)]">
+        <p className="font-mono text-sm tracking-widest text-slate-400">Glazed Mirage</p>
+        <div className="h-0.5 w-full overflow-hidden rounded-full bg-white/10">
           <div
-            className="h-full bg-[var(--color-accent)] transition-[width] duration-100"
+            className="h-full rounded-full bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink transition-[width] duration-100"
             style={{ width: `${progress}%` }}
           />
         </div>

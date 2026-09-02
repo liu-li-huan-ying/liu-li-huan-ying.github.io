@@ -6,6 +6,8 @@ import { useHashRoute } from './hooks/useHashRoute'
 import { profile } from './data/profile'
 import Preloader from './components/Preloader'
 import ErrorBoundary from './components/ErrorBoundary'
+import AuroraBackground from './components/AuroraBackground'
+
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import BlogList from './pages/BlogList'
@@ -19,9 +21,13 @@ import BackToTop from './components/BackToTop'
 import ScrollProgress from './components/ScrollProgress'
 import CommandPalette from './components/CommandPalette'
 import KonamiRain from './components/KonamiRain'
+
 import Analytics from './components/Analytics'
 
-const DEFAULT_TITLE = '琉璃幻影 · Glazed Mirage'
+const NOISE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
+
+const DEFAULT_TITLE = '琉璃幻影 · Glazed Mirage — Full Stack Developer'
 
 function usePageTitle(route) {
   const { lang } = useLang()
@@ -92,10 +98,10 @@ function RoutedView() {
     <AnimatePresence mode="wait">
       <motion.main
         key={`${lang}:${route}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.28, ease: 'easeOut' }}
         className="relative z-10"
       >
         {view}
@@ -125,7 +131,13 @@ function Shell() {
   }, [])
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-[var(--color-surface)]">
+    <div className="relative min-h-screen overflow-x-clip bg-night">
+      <AuroraBackground />
+
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="bg-grid absolute inset-0" />
+      </div>
+
       <ErrorBoundary>
         {booted && (
           <>
@@ -139,6 +151,12 @@ function Shell() {
           </>
         )}
       </ErrorBoundary>
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[70] opacity-[0.03]"
+        style={{ backgroundImage: NOISE }}
+      />
 
       <AnimatePresence>{!booted && <Preloader onComplete={markBooted} />}</AnimatePresence>
     </div>

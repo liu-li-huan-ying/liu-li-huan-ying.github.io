@@ -1,23 +1,35 @@
 import FadeIn from './FadeIn'
+import ScrambleText from './ScrambleText'
+import { ArrowRightIcon } from './Icons'
 
-export default function SectionHeader({ eyebrow, title, more, moreLabel }) {
+export default function SectionHeader({ index, eyebrow, title, more, moreLabel }) {
+  const words = title.split(' ')
+  const last = words.pop()
   return (
-    <FadeIn className="mb-16">
-      <div className="flex items-end justify-between gap-6">
-        <div>
-          <p className="mono-label mb-3">{eyebrow}</p>
-          <h2 className="editorial-heading text-3xl sm:text-4xl md:text-5xl">{title}</h2>
-        </div>
-        {more && moreLabel && (
-          <a
-            href={more}
-            className="hidden text-sm text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text-primary)] sm:block"
-          >
-            {moreLabel} →
-          </a>
+    <FadeIn className="relative mb-14">
+      <p className="font-mono text-sm tracking-[0.3em] text-neon-cyan">
+        {index}. // <ScrambleText text={eyebrow} />
+      </p>
+      <h2 className="mt-4 text-3xl font-bold text-white md:text-5xl">
+        {words.length > 0 && (
+          <span className="mr-2">
+            <ScrambleText text={words.join(' ')} />
+          </span>
         )}
-      </div>
-      <div className="divider mt-8" />
+        <span className="text-gradient">
+          <ScrambleText text={last} />
+        </span>
+      </h2>
+      {more && moreLabel && (
+        <a
+          href={more}
+          data-cursor-label="MORE"
+          className="group absolute bottom-1 right-0 hidden items-center gap-1.5 font-mono text-sm text-neon-cyan transition-colors hover:text-white md:inline-flex"
+        >
+          {moreLabel}
+          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </a>
+      )}
     </FadeIn>
   )
 }

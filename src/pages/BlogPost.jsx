@@ -85,7 +85,7 @@ export default function BlogPost({ post, index, posts }) {
           type="button"
           onClick={() => navigate('/blog')}
           data-cursor-label="BACK"
-          className="font-mono text-sm text-[var(--color-accent)] transition-colors hover:text-white"
+          className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
         >
           ← {t.back}
         </button>
@@ -100,7 +100,7 @@ export default function BlogPost({ post, index, posts }) {
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] px-2.5 py-1 text-[var(--color-text-secondary)]"
+                className="rounded-full border border-neon-violet/20 bg-neon-violet/10 px-2.5 py-1 text-neon-violet"
               >
                 {tag}
               </span>
@@ -118,14 +118,14 @@ export default function BlogPost({ post, index, posts }) {
 
         <nav className="mt-16 flex items-center justify-between gap-4 border-t border-white/10 pt-8 font-mono text-sm">
           {newer ? (
-            <a href={`#/blog/${newer.slug}`} className="text-slate-400 transition-colors hover:text-[var(--color-accent)]">
+            <a href={`#/blog/${newer.slug}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
               {t.newer}
             </a>
           ) : (
             <span />
           )}
           {older ? (
-            <a href={`#/blog/${older.slug}`} className="text-slate-400 transition-colors hover:text-[var(--color-accent)]">
+            <a href={`#/blog/${older.slug}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
               {t.older}
             </a>
           ) : (
@@ -152,7 +152,7 @@ export default function BlogPost({ post, index, posts }) {
                     className={`block leading-snug transition-colors ${
                       item.level === 'h3' ? 'pl-3 text-xs' : 'text-sm'
                     } ${
-                      activeId === item.id ? 'text-[var(--color-accent)]' : 'text-slate-400 hover:text-white'
+                      activeId === item.id ? 'text-neon-cyan' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     {item.text}
