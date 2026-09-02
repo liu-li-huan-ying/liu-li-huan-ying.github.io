@@ -188,7 +188,7 @@ export default function HeroScene() {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             style={{ left: bubble.x, top: bubble.y - 20 }}
-            className="glass pointer-events-none fixed z-[75] -translate-x-1/2 -translate-y-full rounded-xl px-4 py-2 font-mono text-xs text-neon-cyan"
+            className="pointer-events-none fixed z-[75] -translate-x-1/2 -translate-y-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-2 font-mono text-xs text-[var(--color-accent)]"
           >
             {bubble.text}
           </motion.div>

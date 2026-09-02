@@ -19,7 +19,7 @@ export default function ProjectDetail({ project, index, projects }) {
         type="button"
         onClick={() => navigate('/projects')}
         data-cursor-label="BACK"
-        className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
+        className="font-mono text-sm text-[var(--color-accent)] transition-colors hover:text-white"
       >
         ← {t.back}
       </button>
@@ -43,7 +43,7 @@ export default function ProjectDetail({ project, index, projects }) {
             {project.letter}
           </span>
         )}
-        <div className="absolute inset-0 bg-night/40" />
+        <div className="absolute inset-0 bg-[var(--color-surface)]/40" />
       </div>
 
       <h1 className="mt-10 text-3xl font-bold text-white md:text-5xl">{project.title}</h1>
@@ -72,7 +72,7 @@ export default function ProjectDetail({ project, index, projects }) {
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-neon-violet/20 bg-neon-violet/10 px-2.5 py-1 font-mono text-xs text-neon-violet"
+                className="rounded-full border border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] px-2.5 py-1 font-mono text-xs text-[var(--color-text-secondary)]"
               >
                 {tag}
               </span>
@@ -91,7 +91,7 @@ export default function ProjectDetail({ project, index, projects }) {
       <ul className="mt-5 space-y-3">
         {detail.highlights.map((highlight) => (
           <li key={highlight} className="flex items-start gap-3 leading-7 text-slate-400">
-            <span className="mt-0.5 text-neon-cyan">✦</span>
+            <span className="mt-0.5 text-[var(--color-accent)]">✦</span>
             {highlight}
           </li>
         ))}
@@ -104,7 +104,7 @@ export default function ProjectDetail({ project, index, projects }) {
             target="_blank"
             rel="noreferrer"
             data-cursor-label="OPEN"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink px-6 py-3 font-semibold text-night transition-all hover:scale-[1.03]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-6 py-3 font-semibold text-[var(--color-surface)] transition-all hover:scale-[1.03]"
           >
             {t.demo}
             <ExternalIcon className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default function ProjectDetail({ project, index, projects }) {
           target="_blank"
           rel="noreferrer"
           data-cursor-label="CODE"
-          className="glass inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-slate-200 transition-all hover:border-neon-cyan/40 hover:text-white"
+          className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-6 py-3 font-semibold text-slate-200 transition-all hover:border-[var(--color-border-hover)] hover:text-white"
         >
           <GitHubIcon className="h-5 w-5" />
           {t.code}
@@ -124,14 +124,14 @@ export default function ProjectDetail({ project, index, projects }) {
 
       <nav className="mt-16 flex items-center justify-between gap-4 border-t border-white/10 pt-8 font-mono text-sm">
         {newer ? (
-          <a href={`#/projects/${newer.id}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
+          <a href={`#/projects/${newer.id}`} className="text-slate-400 transition-colors hover:text-[var(--color-accent)]">
             {t.newer}
           </a>
         ) : (
           <span />
         )}
         {older ? (
-          <a href={`#/projects/${older.id}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
+          <a href={`#/projects/${older.id}`} className="text-slate-400 transition-colors hover:text-[var(--color-accent)]">
             {t.older}
           </a>
         ) : (

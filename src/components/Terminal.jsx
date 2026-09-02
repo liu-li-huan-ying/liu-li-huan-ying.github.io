@@ -4,8 +4,8 @@ import { ui } from '../i18n/ui'
 import { profile } from '../data/profile'
 import { reveal } from '../utils/secret'
 
-const seg = (t, c = 'text-slate-400') => ({ t, c })
-const promptSegs = [seg('➜  ~ ', 'text-emerald-400')]
+const seg = (t, c = 'text-[var(--color-text-muted)]') => ({ t, c })
+const promptSegs = [seg('➜  ~ ', 'text-[var(--color-accent)]')]
 
 export default function Terminal() {
   const { lang } = useLang()
@@ -14,17 +14,17 @@ export default function Terminal() {
   const slug = d.name.toLowerCase().replace(/\s+/g, '-')
 
   const bootLines = useMemo(() => {
-    const cmd = (cmdText) => ({ type: 'cmd', segs: [...promptSegs, seg(cmdText, 'text-slate-100')] })
+    const cmd = (cmdText) => ({ type: 'cmd', segs: [...promptSegs, seg(cmdText, 'text-[var(--color-text-primary)]')] })
     const out = (...segs) => ({ type: 'out', segs })
     return [
-      out(seg(`${tt.welcome} `, 'text-slate-400'), seg(`${slug}@dev`, 'text-neon-cyan')),
+      out(seg(`${tt.welcome} `, 'text-[var(--color-text-muted)]'), seg(`${slug}@dev`, 'text-[var(--color-accent)]')),
       out(
-        seg(`${tt.typeLead} `, 'text-slate-500'),
-        seg(tt.typeKey, 'text-emerald-300'),
-        seg(` ${tt.typeTail}`, 'text-slate-500')
+        seg(`${tt.typeLead} `, 'text-[var(--color-text-muted)]'),
+        seg(tt.typeKey, 'text-emerald-400'),
+        seg(` ${tt.typeTail}`, 'text-[var(--color-text-muted)]')
       ),
       cmd('whoami'),
-      out(seg('>> ', 'text-slate-600'), seg(d.name, 'text-white'), seg(` — ${d.roles[0]}`, 'text-slate-400')),
+      out(seg('>> ', 'text-[var(--color-text-muted)]'), seg(d.name, 'text-[var(--color-text-primary)]'), seg(` — ${d.roles[0]}`, 'text-[var(--color-text-secondary)]')),
       cmd('cat passions.txt'),
       out(seg(`>> ${tt.passions}`)),
       cmd('uptime'),
@@ -39,47 +39,47 @@ export default function Terminal() {
         return []
       case 'help':
         return [
-          { type: 'out', segs: [seg(tt.helpTitle, 'text-slate-200')] },
+          { type: 'out', segs: [seg(tt.helpTitle, 'text-[var(--color-text-secondary)]')] },
           ...['help', 'whoami', 'about', 'skills', 'projects', 'contact', 'clear'].map((cmd) => ({
             type: 'out',
-            segs: [seg(`  ${cmd.padEnd(10)}`, 'text-neon-violet'), seg(tt.desc[cmd], 'text-slate-500')],
+            segs: [seg(`  ${cmd.padEnd(10)}`, 'text-[var(--color-accent)]'), seg(tt.desc[cmd], 'text-[var(--color-text-muted)]')],
           })),
         ]
       case 'whoami':
         return [
           {
             type: 'out',
-            segs: [seg('>> ', 'text-slate-600'), seg(d.name, 'text-white'), seg(` — ${d.roles[0]}`, 'text-slate-400')],
+            segs: [seg('>> ', 'text-[var(--color-text-muted)]'), seg(d.name, 'text-[var(--color-text-primary)]'), seg(` — ${d.roles[0]}`, 'text-[var(--color-text-secondary)]')],
           },
         ]
       case 'about':
         return d.about.map((p) => ({ type: 'out', segs: [seg(`>> ${p}`)] }))
       case 'skills':
-        return [{ type: 'out', segs: [seg('>> ', 'text-slate-600'), seg(d.skills.join(' · '), 'text-slate-300')] }]
+        return [{ type: 'out', segs: [seg('>> ', 'text-[var(--color-text-muted)]'), seg(d.skills.join(' · '), 'text-[var(--color-text-secondary)]')] }]
       case 'projects':
         return d.projects.map((p, i) => ({
           type: 'out',
-          segs: [seg(`>> ${i + 1}. ${p.title} `, 'text-slate-300'), seg(`# ${p.tags.join(', ')}`, 'text-slate-600')],
+          segs: [seg(`>> ${i + 1}. ${p.title} `, 'text-[var(--color-text-secondary)]'), seg(`# ${p.tags.join(', ')}`, 'text-[var(--color-text-muted)]')],
         }))
       case 'contact':
         return [
-          { type: 'out', segs: [seg('>> email: ', 'text-slate-500'), seg(d.email, 'text-neon-cyan')] },
+          { type: 'out', segs: [seg('>> email: ', 'text-[var(--color-text-muted)]'), seg(d.email, 'text-[var(--color-accent)]')] },
           ...d.socials.map((s) => ({
             type: 'out',
-            segs: [seg(`>> ${s.label.toLowerCase()}: `, 'text-slate-500'), seg(s.enc ? reveal(s.enc) : s.url, 'text-neon-cyan')],
+            segs: [seg(`>> ${s.label.toLowerCase()}: `, 'text-[var(--color-text-muted)]'), seg(s.enc ? reveal(s.enc) : s.url, 'text-[var(--color-accent)]')],
           })),
         ]
       case 'clear':
         return null
       case 'sudo':
-        return [{ type: 'out', segs: [seg(tt.sudo, 'text-red-400/90')] }]
+        return [{ type: 'out', segs: [seg(tt.sudo, 'text-red-400')] }]
       case 'exit':
-        return [{ type: 'out', segs: [seg(tt.exit, 'text-slate-500')] }]
+        return [{ type: 'out', segs: [seg(tt.exit, 'text-[var(--color-text-muted)]')] }]
       default:
         return [
           {
             type: 'out',
-            segs: [seg(`${tt.nfPre} ${name} `, 'text-red-400/90'), seg(tt.nfTail, 'text-slate-500')],
+            segs: [seg(`${tt.nfPre} ${name} `, 'text-red-400'), seg(tt.nfTail, 'text-[var(--color-text-muted)]')],
           },
         ]
     }
@@ -108,7 +108,7 @@ export default function Terminal() {
       setDynamic([])
       return
     }
-    setDynamic((prev) => [...prev, { type: 'cmd', segs: [...promptSegs, seg(cmd || ' ', 'text-slate-100')] }, ...result])
+    setDynamic((prev) => [...prev, { type: 'cmd', segs: [...promptSegs, seg(cmd || ' ', 'text-[var(--color-text-primary)]')] }, ...result])
   }
 
   const onKeyDown = (e) => {
@@ -141,18 +141,17 @@ export default function Terminal() {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-white/10 bg-panel/80 backdrop-blur-xl"
+      className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)]"
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3.5">
-        <span className="h-3 w-3 rounded-full bg-red-400/90" />
-        <span className="h-3 w-3 rounded-full bg-yellow-400/90" />
-        <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
-        <span className="ml-3 font-mono text-xs text-slate-500">{slug}@dev — zsh</span>
-        <span className="ml-auto hidden font-mono text-[10px] text-slate-600 sm:block">{tt.interactive}</span>
+      <div className="flex items-center gap-2 border-b border-[var(--color-border)] px-4 py-3">
+        <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+        <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
+        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+        <span className="ml-2 text-xs text-[var(--color-text-muted)]">{slug}@dev — zsh</span>
       </div>
 
-      <div ref={scrollRef} className="max-h-[340px] space-y-1 overflow-y-auto p-6 font-mono text-sm leading-7">
+      <div ref={scrollRef} className="max-h-[340px] space-y-1 overflow-y-auto p-5 font-mono text-sm leading-7">
         {allLines.map((line, i) => (
           <div key={`${i}-${line.type}`} className="min-h-[1.75rem] break-words">
             {line.segs.map((s, j) => (
@@ -178,7 +177,7 @@ export default function Terminal() {
             autoComplete="off"
             aria-label="terminal input"
             placeholder={tt.placeholder}
-            className="min-w-0 flex-1 border-none bg-transparent font-mono text-sm text-slate-100 caret-cyan-400 outline-none placeholder:text-slate-600"
+            className="min-w-0 flex-1 border-none bg-transparent font-mono text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)]"
           />
         </div>
       </div>

@@ -86,8 +86,8 @@ export default function BlogList() {
                 data-cursor-label="FILTER"
                 className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
                   activeTag === chip
-                    ? 'border-neon-cyan/60 bg-neon-cyan/15 text-white'
-                    : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-cyan/40 hover:text-white'
+                    ? 'border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] text-white'
+                    : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-[var(--color-border-hover)] hover:text-white'
                 }`}
               >
                 {chip}
@@ -95,7 +95,7 @@ export default function BlogList() {
             </Magnetic>
           ))}
 
-          <div className="glass relative ml-auto w-full max-w-xs rounded-lg">
+          <div className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] relative ml-auto w-full max-w-xs rounded-lg">
             <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
             <input
               ref={inputRef}
@@ -104,7 +104,7 @@ export default function BlogList() {
               placeholder={bl.search}
               spellCheck="false"
               aria-label={bl.search}
-              className="w-full border-none bg-transparent py-2.5 pl-9 pr-14 font-mono text-sm text-slate-100 caret-cyan-400 outline-none placeholder:text-slate-600"
+              className="w-full border-none bg-transparent py-2.5 pl-9 pr-14 font-mono text-sm text-slate-100 outline-none placeholder:text-slate-600"
             />
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
               /
@@ -113,7 +113,7 @@ export default function BlogList() {
         </div>
 
         <p className="font-mono text-xs text-slate-500">
-          {filtered.length} / {posts.length} · {bl.pressSlash}
+          {filtered.length} / {posts.length} Â· {bl.pressSlash}
         </p>
       </FadeIn>
 
@@ -130,14 +130,10 @@ export default function BlogList() {
                 background: `linear-gradient(135deg, ${POST_GRADIENTS[0][0]}, ${POST_GRADIENTS[0][1]})`,
               }}
             >
-              <div className="absolute inset-0 bg-night/55 transition-opacity duration-300 group-hover:opacity-30" />
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-              />
+              <div className="absolute inset-0 bg-[var(--color-surface)]/55 transition-opacity duration-300 group-hover:opacity-30" />
               <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                 <span className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white backdrop-blur-sm">
-                  ★ Featured · {filtered[0].tags.join(' / ')}
+                  ✦ Featured · {filtered[0].tags.join(' / ')}
                 </span>
                 <h3 className="text-2xl font-bold text-white md:text-3xl">{filtered[0].title}</h3>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-200/80">
@@ -158,7 +154,7 @@ export default function BlogList() {
               setQuery('')
               setActiveTag(bl.all)
             }}
-            className="mt-6 rounded-lg border border-neon-cyan/40 px-5 py-2 font-mono text-xs text-neon-cyan transition-colors hover:bg-neon-cyan/10"
+            className="mt-6 rounded-lg border border-[var(--color-border-hover)] px-5 py-2 font-mono text-xs text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-dim)]"
           >
             {bl.clear}
           </button>
@@ -176,7 +172,7 @@ export default function BlogList() {
                   data-cursor-label="READ"
                   whileHover={{ x: 6 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                  className="group glass flex gap-6 overflow-hidden rounded-xl p-5 transition-colors hover:border-neon-cyan/30"
+                  className="group border border-[var(--color-border)] bg-[var(--color-surface-raised)] flex gap-6 overflow-hidden rounded-xl p-5 transition-colors hover:border-[var(--color-border-hover)]"
                 >
                   <div className="relative hidden w-16 shrink-0 flex-col items-center justify-center sm:flex">
                     <span className="font-display text-3xl font-bold text-white">{Number(d)}</span>
@@ -189,10 +185,8 @@ export default function BlogList() {
                     />
                   </div>
 
-                  <div className="hidden w-px self-stretch bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
-
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-100 transition-colors group-hover:text-neon-cyan md:text-xl">
+                    <h3 className="text-lg font-semibold text-slate-100 transition-colors group-hover:text-[var(--color-accent)] md:text-xl">
                       {post.title}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-400">{post.summary}</p>
@@ -208,7 +202,7 @@ export default function BlogList() {
                       ))}
                       <span className="ml-auto inline-flex items-center gap-2 font-mono text-xs text-slate-500">
                         {post.readTime} {ui[lang].post.read}
-                        <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:text-neon-cyan" />
+                        <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:text-[var(--color-accent)]" />
                       </span>
                     </div>
                   </div>

@@ -58,8 +58,8 @@ export default function ProjectList() {
               data-cursor-label="FILTER"
               className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
                 activeTag === chip
-                  ? 'border-neon-violet/60 bg-neon-violet/15 text-white'
-                  : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-violet/40 hover:text-white'
+                  ? 'border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] text-white'
+                  : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-[var(--color-border-hover)] hover:text-white'
               }`}
             >
               {chip}
@@ -75,7 +75,7 @@ export default function ProjectList() {
         <AnimatePresence mode="popLayout">
           {filtered.length === 0 && (
             <p className="py-12 text-center font-mono text-sm text-slate-500 sm:col-span-2">
-              {lang === 'zh' ? '没有匹配的项目' : 'No projects match this filter.'}
+              {lang === 'zh' ? '没有匹配的项目。' : 'No projects match this filter.'}
             </p>
           )}
           {filtered.map((project) => (
@@ -99,7 +99,7 @@ export default function ProjectList() {
                       openProject(e, project.id)
                     }
                   }}
-                  className="group glass relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-neon-violet/40 hover:shadow-[0_24px_60px_-16px_rgba(129,140,248,0.35)]"
+                  className="group border border-[var(--color-border)] bg-[var(--color-surface-raised)] relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-[var(--color-border-hover)]"
                 >
                   <div
                     data-cover
@@ -122,19 +122,15 @@ export default function ProjectList() {
                         {project.letter}
                       </span>
                     )}
-                    <div className="absolute inset-0 bg-night/40 transition-opacity duration-300 group-hover:opacity-20" />
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                    />
-                    <span className="absolute left-4 top-4 rounded-md bg-night/50 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white/70 backdrop-blur-sm">
+                    <div className="absolute inset-0 bg-[var(--color-surface)]/40 transition-opacity duration-300 group-hover:opacity-20" />
+                    <span className="absolute left-4 top-4 rounded-md bg-[var(--color-surface)]/50 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white/70 backdrop-blur-sm">
                       {String(projects.indexOf(project) + 1).padStart(2, '0')}
                     </span>
                   </div>
 
                   <div className="flex flex-1 flex-col gap-3 p-6">
                     <div className="flex items-start justify-between">
-                      <FolderIcon className="h-8 w-8 text-neon-violet" />
+                      <FolderIcon className="h-8 w-8 text-[var(--color-text-secondary)]" />
                       <div className="flex gap-3 text-slate-400">
                         <a
                           href={project.github}
@@ -161,7 +157,7 @@ export default function ProjectList() {
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-neon-cyan">
+                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-[var(--color-accent)]">
                       {project.title}
                     </h3>
                     <p className="flex-1 text-sm leading-relaxed text-slate-400">{project.desc}</p>
@@ -180,7 +176,7 @@ export default function ProjectList() {
                             setActiveTag(tag)
                           }}
                           data-cursor-label="FILTER"
-                          className="cursor-pointer rounded-full border border-neon-violet/20 bg-neon-violet/10 px-2.5 py-1 font-mono text-xs text-neon-violet transition-colors hover:bg-neon-violet/25"
+                          className="cursor-pointer rounded-full border border-[var(--color-border-hover)] bg-[var(--color-accent-dim)] px-2.5 py-1 font-mono text-xs text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-accent-dim)]"
                         >
                           {tag}
                         </span>
@@ -200,11 +196,11 @@ export default function ProjectList() {
               target="_blank"
               rel="noreferrer"
               data-cursor-label="GITHUB"
-              className="group glass flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border-dashed p-8 text-center transition-all duration-300 hover:-translate-y-2 hover:border-neon-cyan/40 hover:shadow-[0_24px_60px_-16px_rgba(34,211,238,0.3)]"
+              className="group border border-[var(--color-border)] bg-[var(--color-surface-raised)] flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border-dashed p-8 text-center transition-all duration-300 hover:-translate-y-2 hover:border-[var(--color-border-hover)]"
             >
-              <GitHubIcon className="h-10 w-10 text-slate-400 transition-colors group-hover:text-neon-cyan" />
+              <GitHubIcon className="h-10 w-10 text-slate-400 transition-colors group-hover:text-[var(--color-accent)]" />
               <p className="font-mono text-sm text-slate-400">{pl.cta}</p>
-              <span className="font-mono text-xs text-neon-violet">@liu-li-huan-ying</span>
+              <span className="font-mono text-xs text-[var(--color-text-secondary)]">@liu-li-huan-ying</span>
             </a>
           </TiltCard>
         </motion.div>

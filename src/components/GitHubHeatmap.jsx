@@ -97,11 +97,11 @@ export default function GitHubHeatmap({ username, year = new Date().getFullYear(
   const stats = data ? computeStats(data.contributions) : null
 
   return (
-    <div className="glass rounded-2xl p-6">
+    <div className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] rounded-2xl p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h3 className="font-semibold text-white">{labels.heatmapTitle}</h3>
         {stats ? (
-          <span className="font-mono text-xs text-neon-cyan">
+          <span className="font-mono text-xs text-[var(--color-accent)]">
             {stats.total} {labels.heatmapSub}
           </span>
         ) : (

@@ -211,8 +211,8 @@ export default function NotFound() {
             exit={{ opacity: 0 }}
             className="pointer-events-none fixed inset-0 z-50"
           >
-            <div className="absolute inset-0 animate-glitch-1 bg-neon-cyan/5" />
-            <div className="absolute inset-0 animate-glitch-2 bg-neon-pink/5" />
+            <div className="absolute inset-0 animate-glitch-1 bg-[var(--color-accent-dim)]" />
+            <div className="absolute inset-0 animate-glitch-2 bg-[var(--color-accent-dim)]" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -245,7 +245,7 @@ export default function NotFound() {
             </div>
 
             {/* Power LED */}
-            <div className="absolute bottom-2 right-4 h-1.5 w-1.5 rounded-full bg-neon-cyan/60 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
+            <div className="absolute bottom-2 right-4 h-1.5 w-1.5 rounded-full bg-[var(--color-accent-dim)]" />
 
             {/* Screen area */}
             <div className="monitor-screen relative overflow-hidden rounded-lg border border-white/[0.05] bg-[#0a0a0f]">
@@ -278,7 +278,7 @@ export default function NotFound() {
               >
                 {/* Glitch 404 text */}
                 <div className="relative mb-4">
-                  <p className="glitch text-gradient font-display text-5xl font-bold md:text-7xl" data-text={t.code}>
+                  <p className="glitch text-[var(--color-accent)] font-display text-5xl font-bold md:text-7xl" data-text={t.code}>
                     {t.code}
                   </p>
                 </div>
@@ -294,7 +294,7 @@ export default function NotFound() {
                       line.startsWith('ERROR')
                         ? 'text-red-400'
                         : line.includes('help')
-                          ? 'text-neon-cyan'
+                          ? 'text-[var(--color-accent)]'
                           : 'text-green-400'
                     }`}
                   >
@@ -312,7 +312,7 @@ export default function NotFound() {
                         : line.type === 'success'
                           ? 'text-green-400'
                           : line.type === 'route'
-                            ? 'text-neon-cyan hover:underline cursor-pointer'
+                            ? 'text-[var(--color-accent)] hover:underline cursor-pointer'
                             : line.type === 'input'
                               ? 'text-white'
                               : 'text-slate-400'
@@ -329,19 +329,19 @@ export default function NotFound() {
                 {/* Input line */}
                 {bootDone && (
                   <div className="flex items-center">
-                    <span className="mr-2 text-neon-cyan">{term.prompt}$</span>
+                    <span className="mr-2 text-[var(--color-accent)]">{term.prompt}$</span>
                     <div className="relative flex-1">
                       <input
                         ref={inputRef}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        className="w-full border-none bg-transparent font-mono text-sm text-white caret-neon-cyan outline-none md:text-[15px]"
+                        className="w-full border-none bg-transparent font-mono text-sm text-white outline-none md:text-[15px]"
                         spellCheck="false"
                         autoComplete="off"
                         aria-label="Terminal input"
                       />
-                      <span className="pointer-events-none absolute left-0 top-0 -translate-y-px animate-blink font-mono text-sm text-neon-cyan opacity-0">
+                      <span className="pointer-events-none absolute left-0 top-0 -translate-y-px animate-blink font-mono text-sm text-[var(--color-accent)] opacity-0">
                         {'_'.repeat(input.length + 1)}
                       </span>
                     </div>
@@ -352,10 +352,10 @@ export default function NotFound() {
           </div>
 
           {/* Monitor stand neck */}
-          <div className="mx-auto h-10 w-24 bg-gradient-to-b from-[#2a2a3e] to-[#1a1a2e] md:h-12 md:w-28" />
+          <div className="mx-auto h-10 w-24 bg-[var(--color-surface-raised)] md:h-12 md:w-28" />
 
           {/* Monitor stand base */}
-          <div className="mx-auto h-2 w-40 rounded-full bg-gradient-to-b from-[#2a2a3e] to-[#1a1a2e] shadow-lg md:w-48" />
+          <div className="mx-auto h-2 w-40 rounded-full bg-[var(--color-surface-raised)] shadow-lg md:w-48" />
         </motion.div>
       </motion.div>
 
@@ -370,7 +370,7 @@ export default function NotFound() {
             <a
               href="#/"
               data-cursor-label="HOME"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink px-6 py-3 font-semibold text-night transition-all hover:scale-[1.03]"
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-6 py-3 font-semibold text-[var(--color-surface)] transition-all hover:scale-[1.03]"
             >
               ← {t.home}
             </a>

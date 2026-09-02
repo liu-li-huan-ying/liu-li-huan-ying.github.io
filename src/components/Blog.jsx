@@ -12,49 +12,41 @@ export default function Blog() {
   const posts = profile[lang].posts
 
   return (
-    <section id="blog" className="relative mx-auto max-w-4xl px-6 py-28">
-      <SectionHeader
-        index={s.index}
-        eyebrow={s.eyebrow}
-        title={s.title}
-        more="#/blog"
-        moreLabel={s.more}
-      />
+    <section id="blog" className="px-6 py-28 sm:px-12 md:px-20">
+      <div className="mx-auto max-w-4xl">
+        <SectionHeader
+          eyebrow={s.eyebrow}
+          title={s.title}
+          more="#/blog"
+          moreLabel={s.more}
+        />
 
-      <div>
-        {posts.map((post, i) => (
-          <FadeIn key={post.slug} delay={i * 0.07}>
-            <a
-              href={`#/blog/${post.slug}`}
-              data-cursor-label="READ"
-              className="group -mx-4 flex flex-col gap-2 rounded-xl px-4 py-6 transition-colors hover:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-8"
-            >
-              <time className="shrink-0 font-mono text-xs text-slate-500 sm:w-24">{post.date}</time>
+        <div>
+          {posts.map((post, i) => (
+            <FadeIn key={post.slug} delay={i * 0.06}>
+              <a
+                href={`#/blog/${post.slug}`}
+                className="group flex flex-col gap-2 border-b border-[var(--color-border)] py-6 transition-colors hover:border-[var(--color-border-hover)] sm:flex-row sm:items-center sm:gap-8"
+              >
+                <time className="shrink-0 text-xs text-[var(--color-text-muted)] sm:w-24">
+                  {post.date}
+                </time>
 
-              <div className="flex-1">
-                <h3 className="font-semibold text-slate-100 transition-colors group-hover:text-neon-cyan">
-                  {post.title}
-                </h3>
-                <p className="mt-1 text-sm text-slate-500">{post.summary}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-xs text-slate-400"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="flex-1">
+                  <h3 className="text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)]">
+                    {post.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">{post.summary}</p>
                 </div>
-              </div>
 
-              <div className="hidden shrink-0 items-center gap-3 font-mono text-xs text-slate-500 sm:flex">
-                {post.readTime} {t.read}
-                <ArrowRightIcon className="h-4 w-4 transition-all group-hover:translate-x-1 group-hover:text-neon-cyan" />
-              </div>
-            </a>
-          </FadeIn>
-        ))}
+                <div className="hidden shrink-0 items-center gap-3 text-xs text-[var(--color-text-muted)] sm:flex">
+                  {post.readTime} {t.read}
+                  <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </a>
+            </FadeIn>
+          ))}
+        </div>
       </div>
     </section>
   )

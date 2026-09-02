@@ -49,7 +49,7 @@ export default function CommandPalette() {
       id: 'lang',
       label: lang === 'zh' ? 'Switch to English' : '切换到中文',
       hint: 'action',
-      keywords: 'language i18n 语言',
+      keywords: 'language i18n è¯­è¨',
       run: actions.toggleLang,
     },
     ...profile[lang].socials.map((s) =>
@@ -153,9 +153,9 @@ export default function CommandPalette() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="glass fixed bottom-6 left-6 z-[56] hidden items-center gap-2 rounded-lg px-3.5 py-2 font-mono text-xs text-slate-400 transition-colors hover:border-neon-violet/40 hover:text-white md:flex"
+        className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] fixed bottom-6 left-6 z-[56] hidden items-center gap-2 rounded-lg px-3.5 py-2 font-mono text-xs text-slate-400 transition-colors hover:border-[var(--color-border-hover)] hover:text-white md:flex"
       >
-        <span className="text-neon-violet">⌘</span> {pal.menu}
+        <span className="text-[var(--color-text-secondary)]">⌘</span> {pal.menu}
         <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Ctrl K</kbd>
       </button>
 
@@ -166,7 +166,7 @@ export default function CommandPalette() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-[90] flex justify-center bg-night/70 px-4 pt-[16vh] backdrop-blur-sm"
+            className="fixed inset-0 z-[90] flex justify-center bg-[var(--color-surface)]/70 px-4 pt-[16vh] backdrop-blur-sm"
             role="dialog"
             aria-modal="true"
             onClick={close}
@@ -176,11 +176,11 @@ export default function CommandPalette() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="glass h-fit w-[min(100%,560px)] overflow-hidden rounded-2xl"
+              className="h-fit w-[min(100%,560px)] overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
-                <span className="font-mono text-neon-violet">&gt;_</span>
+                <span className="font-mono text-[var(--color-accent)]">&gt;_</span>
                 <input
                   ref={inputRef}
                   value={query}
@@ -190,7 +190,7 @@ export default function CommandPalette() {
                   spellCheck="false"
                   autoComplete="off"
                   aria-label="Command palette search"
-                  className="w-full border-none bg-transparent font-mono text-sm text-slate-100 caret-cyan-400 outline-none placeholder:text-slate-600"
+                  className="w-full border-none bg-transparent font-mono text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)]"
                 />
                 <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
                   esc
@@ -208,11 +208,11 @@ export default function CommandPalette() {
                     onMouseEnter={() => setActive(i)}
                     onClick={() => exec(item)}
                     className={`flex w-full items-center justify-between px-5 py-3 text-left font-mono text-sm transition-colors ${
-                      i === currentActive ? 'bg-neon-violet/15 text-white' : 'text-slate-300'
+                      i === currentActive ? 'bg-[var(--color-accent-dim)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
                     }`}
                   >
                     <span>
-                      <span className={`mr-3 ${i === currentActive ? 'text-neon-cyan' : 'text-slate-600'}`}>›</span>
+                      <span className={`mr-3 ${i === currentActive ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'}`}>›</span>
                       {item.label}
                     </span>
                     <span className="text-xs text-slate-500">{item.hint}</span>

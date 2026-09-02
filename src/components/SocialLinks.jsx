@@ -29,7 +29,7 @@ export default function SocialLinks({ className = '' }) {
   }
 
   return (
-    <div className={`flex items-center gap-6 ${className}`}>
+    <div className={`flex items-center gap-5 ${className}`}>
       {socials.map((social) => {
         const Icon = iconFor[social.label] ?? GitHubIcon
         if (social.enc) {
@@ -39,14 +39,15 @@ export default function SocialLinks({ className = '' }) {
               type="button"
               onClick={() => copyValue(social)}
               aria-label={`Copy ${social.label} ID`}
-              data-cursor-label="COPY"
-              className={`relative flex h-6 w-6 items-center justify-center transition-all hover:-translate-y-1 ${
-                copiedLabel === social.label ? 'text-emerald-300' : 'text-slate-400 hover:text-neon-cyan'
+              className={`relative flex h-5 w-5 items-center justify-center transition-colors ${
+                copiedLabel === social.label
+                  ? 'text-[var(--color-accent)]'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
               }`}
             >
-              <Icon className="absolute h-6 w-6" />
+              <Icon className="absolute h-5 w-5" />
               {copiedLabel === social.label && (
-                <span className="absolute font-mono text-[10px]">✓</span>
+                <span className="absolute text-[10px]">✓</span>
               )}
             </button>
           )
@@ -58,10 +59,9 @@ export default function SocialLinks({ className = '' }) {
             target="_blank"
             rel="noreferrer"
             aria-label={social.label}
-            data-cursor-label="OPEN"
-            className="text-slate-400 transition-all hover:-translate-y-1 hover:text-neon-cyan"
+            className="text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text-secondary)]"
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-5 w-5" />
           </a>
         )
       })}

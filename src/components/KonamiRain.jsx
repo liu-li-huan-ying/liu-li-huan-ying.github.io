@@ -114,7 +114,7 @@ export default function KonamiRain() {
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="glass fixed left-1/2 top-24 z-[85] -translate-x-1/2 rounded-full px-6 py-2.5 font-mono text-xs tracking-[0.35em] text-emerald-300"
+            className="border border-[var(--color-border)] bg-[var(--color-surface-raised)] fixed left-1/2 top-24 z-[85] -translate-x-1/2 rounded-full px-6 py-2.5 font-mono text-xs tracking-[0.35em] text-emerald-300"
           >
             {mode === 'on' ? 'HACKER MODE ACTIVATED' : 'HACKER MODE DEACTIVATED'}
           </motion.p>
