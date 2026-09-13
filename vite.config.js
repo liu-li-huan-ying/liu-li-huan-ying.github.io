@@ -2,7 +2,6 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -12,9 +11,12 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 const postsDir = path.resolve(rootDir, 'src/content/posts')
 const SITE_URL = 'https://liu-li-huan-ying.github.io'
 
+/* 构建期生成 rss.xml。
+   只读 frontmatter，正文不参与 —— 摘要够订阅者决定要不要点进来了。
+   字段解析与 mdPosts.js 用同一套约定，但不引那边的模块：那是给浏览器打包的。 */
 function collectPosts() {
   return readdirSync(postsDir)
-    .filter((f) => f.endsWith('.md') && !f.endsWith('.en.md'))
+    .filter((f) => f.endsWith('.md'))
     .map((file) => {
       const slug = file.replace(/\.md$/, '')
       const src = readFileSync(path.join(postsDir, file), 'utf8')
@@ -28,29 +30,11 @@ function collectPosts() {
         }
       }
 
-      const enFile = path.join(postsDir, `${slug}.en.md`)
-      let enMeta = {}
-      try {
-        const enSrc = readFileSync(enFile, 'utf8')
-        const enFm = enSrc.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-        if (enFm) {
-          for (const line of enFm[1].split(/\r?\n/)) {
-            const idx = line.indexOf(':')
-            if (idx === -1) continue
-            enMeta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim()
-          }
-        }
-      } catch {
-        // no English translation
-      }
-
       return {
         slug,
         title: meta.title ?? slug,
-        titleEn: enMeta.title ?? meta.title ?? slug,
         date: String(meta.date ?? '').slice(0, 10),
         summary: meta.summary ?? '',
-        summaryEn: enMeta.summary ?? meta.summary ?? '',
       }
     })
     .sort((a, b) => b.date.localeCompare(a.date))
@@ -64,8 +48,7 @@ function rssPlugin() {
       try {
         const xml = buildRss(collectPosts(), SITE_URL, {
           title: '琉璃幻影 · Glazed Mirage',
-          description:
-            'Full stack developer blog — Go, React, distributed systems and storage engines.',
+          description: '写存储、性能，以及一些与代码无关的书。',
           language: 'zh-CN',
         })
         writeFileSync(path.resolve(rootDir, 'dist/rss.xml'), xml)
@@ -81,5 +64,5 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  plugins: [react(), tailwindcss(), rssPlugin()],
+  plugins: [react(), rssPlugin()],
 })

@@ -1,104 +1,118 @@
-# 琉璃幻影 · Glazed Mirage — Developer Portfolio
+# 琉璃幻影 · Glazed Mirage
 
 [![Deploy to GitHub Pages](https://github.com/liu-li-huan-ying/liu-li-huan-ying.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/liu-li-huan-ying/liu-li-huan-ying.github.io/actions/workflows/deploy.yml)
 ![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss&logoColor=white)
-![Three.js](https://img.shields.io/badge/Three.js-r18-ffffff?logo=threedotjs&logoColor=white)
+![无 UI 框架](https://img.shields.io/badge/UI-手写_CSS-A33A2A)
 
-> 一个不满足于"能看就行"的个人主页 —— 手写 WebGL 着色器、可交互终端、Live2D 看板娘与中英双语子页面，全部零 UI 模板、从零手搓。
->
-> A personal homepage that refuses to be "good enough" — hand-written WebGL shaders, an explorable terminal, a Live2D companion and bilingual sub-pages. No UI templates, everything built from scratch.
+> 形制是手卷：**引首 → 画心 → 拖尾**。宣纸为地，墨为文，青瓷为色，朱砂为印。
+> 开卷时满纸冰裂，随滚动由外圈向中心一段段合上——破镜重圆。
 
-**🔗 在线访问 · Live: [https://liu-li-huan-ying.github.io](https://liu-li-huan-ying.github.io)**
+**🔗 [liu-li-huan-ying.github.io](https://liu-li-huan-ying.github.io)**
 
 ---
 
-## ✨ 亮点 Highlights
+## 形制 · 这一版在做什么
 
-| 模块 Feature | 说明 Description |
+不是又一套「暗色渐变 + 玻璃卡片」。这一版把页面当作一轴手卷来排：
+
+| 语汇 | 落在哪 |
 | --- | --- |
-| 🌌 **WebGL 极光 Aurora** | 手写 GLSL 片元着色器（fbm 噪声），流动极光跟随鼠标；移动端自动降级为静态帧 Hand-written GLSL fragment shader with fbm noise; degrades to a static frame on mobile |
-| 🪐 **3D 粒子星球 Particle Planet** | Three.js 渲染 2600+ 渐变粒子球体 + 扭曲线框核心，鼠标视差旋转，独立 chunk 懒加载 Three.js scene with 2600+ gradient particles, wireframe core and mouse-follow rotation, lazy-loaded |
-| 💻 **可交互终端 Interactive Terminal** | `help` / `whoami` / `skills` / `projects` / `contact` 全部可用，支持历史记录（↑↓）与口型同步彩蛋 Fully working commands, command history via arrow keys |
-| ⌨️ **命令面板 Command Palette** | `Ctrl/⌘ + K` 模糊搜索：跳转区块、复制邮箱、切换语言、触发彩蛋 Fuzzy-search navigation, clipboard actions, easter eggs |
-| 🎏 **看板娘 Live2D Companion** | l2d-widget 驱动，视线跟踪鼠标、打字机气泡口型同步、随机换装 Eye-tracking, lip-synced tips and model shuffling |
-| 🌍 **双语 i18n 中/EN** | 零依赖 Context 方案：全站文案、文章、项目详情双语文案化，一键切换 Dependency-free i18n covering every string, including blog articles |
-| 📄 **子页面 Sub-pages** | 手写 hash 路由：博客详情页、项目详情页、404 页，GitHub Pages 零配置可用 Hand-rolled hash router — no 404 hacks needed on GitHub Pages |
-| 🔒 **联系方式混淆 Contact Obfuscation** | QQ/微信号 XOR+Base64 密文存储，点击复制瞬间才在内存解码 IDs stored obfuscated, decoded in-memory only on click |
+| **五卷** | 引首（题名）/ 壹 · 琉璃（材质）/ 贰 · 作品 / 叁 · 自述 / 肆 · 手记 / 伍 · 落款 |
+| **书耳** | 右侧竖排卷次，兼作阅读进度；鱼尾随滚动下移 |
+| **冰裂** | 开卷裂满，滚动愈合（canvas 上按 Voronoi 开片，逐段重绘） |
+| **洇墨** | 纸 / 墨两套地色，切换时新色从按钮位置洇开（SVG 湍流位移遮罩 + View Transition） |
+| **钤印** | 篆书字形**现场组装**：不用字体、不用图片，白文/朱文两种刻法 |
+| **落款** | 干支年号按当年实时推算（`[data-gz]`），未跑脚本时停在丙午 |
+| **牌记** | 卷尾交代姓名、年月、地点，如古籍刻本的牌子 |
 
-## 🚀 技术栈 Tech Stack
+## ✨ 各处怎么实现的
 
-React 19 · Vite 8 · Tailwind CSS 4 · Framer Motion 13 · Three.js (React Three Fiber) · WebGL/GLSL · l2d-widget · oxlint
+| 模块 | 说明 |
+| --- | --- |
+| 🖋 **手卷排版** | 版心 / 天头地脚 / 乌丝栏（界格当 12 栏栅格用）全在 CSS 令牌里，纸墨两套只在 `:root` 与暗色块各定义一次，不写死颜色 |
+| ❄️ **冰裂与愈合** | `lib/crackle.js`：按 Voronoi 开片切出裂纹细胞，滚动进度驱动 `heal` 由 0 → 1，逐段合上；`prefers-reduced-motion` 下直接跳到愈合态 |
+| 🖌 **洇墨换地色** | `lib/theme.js`：优先 View Transition + `feDisplacementMap` 遮罩；缺能力时退回 clip-path 圆形硬边的降级路径 |
+| 🪧 **篆书钤印** | `lib/sealGlyphs.js` 是《说文》小篆字形的**编译产物**（一个字可含多个部件，各带平移与横向压缩），`lib/seals.js` 现场组装成白文/朱文印 |
+| 🖱 **毛笔光标** | `lib/cursor.js`：随动笔锋与落墨点，触屏与降低动效偏好下自动关掉 |
+| 🔒 **联系方式混淆** | QQ / 微信号以 XOR + Base64 密文存在 `data-copy` 上，点击那一刻才在内存里解出并写入剪贴板 |
+| 📄 **子页面** | 手写 hash 路由：作品目录 / 作品详情 / 手记目录 / 手记正文 / 关于 / 404，GitHub Pages 上零配置可用 |
+| 📊 **GitHub 数据块** | 贡献热力图（青瓷深浅表示当天提交量）+ 仓库星标，读 `api.github.com` 与 `github-contributions-api`，拿不到就整块不显示 |
 
-## 📂 本地运行 Getting Started
+## 📁 结构
+
+```
+src/
+├── styles/
+│   ├── scroll.css   # 设计系统本体：令牌 + 版心 + 书耳 + 印章 + 各卷版式
+│   └── site.css     # 站点自有：子页版式、markdown 正文、代码高亮配色、打印
+├── components/
+│   ├── scroll/      # 手卷的固定层与各卷（Chrome / Masthead / Ear / Toc / Intro /
+│   │                #    Material / Works / SelfNote / Writing / Closing / Colophon）
+│   │                #    specimens.jsx 是四张手绘 SVG 解剖图
+│   ├── GitHubStats.jsx / GitHubHeatmap.jsx
+│   └── BackToTop.jsx / ErrorBoundary.jsx / Analytics.jsx
+├── lib/             # 运行时模块：cursor / theme / contacts / toc / roll /
+│                    #   seals / reveal / count / crackle / scrollDrive
+├── pages/           # Home / ProjectList / ProjectDetail / BlogList / BlogPost /
+│                    #   AboutPage / NotFound
+├── data/profile.js  # 唯一内容源：作品、自述、技能、近况、经历、文章清单
+└── content/posts/   # 手记正文（Markdown）
+```
+
+**一条约定：观感全在 `styles/scroll.css` 与 `components/scroll/`。**
+`lib/` 里的模块只负责行为（滚动、换色、钤印、扫描 DOM），不写样式、不产生文案。
+
+## 📂 本地运行
 
 ```bash
 git clone https://github.com/liu-li-huan-ying/liu-li-huan-ying.github.io.git
 cd liu-li-huan-ying.github.io
 npm install
-npm run dev      # 开发调试 http://localhost:5173
-npm run build    # 生产构建 → dist/
-npm run lint     # oxlint 检查
+npm run dev      # 开发调试
+npm run build    # 生产构建 → dist/（顺带生成 rss.xml）
+npm run lint     # oxlint
+npm run test     # vitest
 ```
 
-## 📁 结构 Structure
-
-```
-src/
-├── components/    # 全部 UI 组件 All UI components
-├── pages/         # 路由页面 Routed pages (Home / BlogPost / ProjectDetail / NotFound)
-├── data/          # profile.js — 单一数据源 Single source of content (bilingual)
-├── i18n/          # 语言上下文与字典 Language context & dictionaries
-└── hooks/         # hash 路由等工具 Hash router & helpers
-```
-
-## ☁️ 部署 Deployment
-
-推送到 `main` 分支即自动构建发布（GitHub Actions → GitHub Pages）。
-Every push to `main` triggers an automatic build & deploy via GitHub Actions.
-
-## ✍️ 写文章 Adding Posts
-
-文章是 `src/content/posts/` 下的 **Markdown 文件**，放进去即自动收录（按日期倒序、双语自动配对）。
-
-最快方式：
+## ✍️ 写一篇手记
 
 ```bash
-npm run newpost -- my-new-post "我的新文章"
+npm run newpost -- mmap-notes "内存映射笔记"
 ```
 
-会生成中文主文件 `YYYY-MM-DD-my-new-post.md` 和可选英文骨架 `*.en.md`，填好内容 push 即上线。
-
-Frontmatter 参考：
+会在 `src/content/posts/` 生成 `YYYY-MM-DD-mmap-notes.md`，填好 push 即上线（列表页与 RSS 都在构建期生成）。
 
 ```md
 ---
 title: 文章标题
 date: 2026-08-26        # YYYY-MM-DD，决定排序
 tags: Go, 存储          # 逗号分隔
-summary: 一句话摘要     # 列表页展示
-readTime: 7             # 可选，缺省按字数自动估算
+summary: 一句话摘要     # 只用在列表页与 RSS
+readTime: 7             # 可选，缺省按字数估算（中文 400 字/分钟）
 ---
-正文支持 GFM Markdown：标题、列表、引用、围栏代码块、链接、图片。
+正文支持 GFM：标题、列表、引用、围栏代码块、链接、图片。
+代码高亮按需加载（只带 go / bash / javascript / xml 四种）。
 ```
 
-- 英文版文件命名为 `<同名>.en.md`；没有英文版时英文界面自动回退中文并标注「原文」
-- 正文渲染为 `.md-body` 排版（标题/列表/引用/代码块均已适配暗色主题）
+**改内容**：作品、自述、技能、近况、指标、经历都在 `src/data/profile.js`——首页各卷与子页面读的是同一份，不在组件里重抄文案。
+加一件作品：在 `projects` 里补一条；要在首页作品卷露面，把 `specimen` 填成 `components/scroll/specimens.jsx` 里那张解剖图的键（解剖图本身要自己画一段 SVG）。
 
-### 🌐 自动翻译英文版
+**改观感**：改 `styles/scroll.css`。类名与选择器是照着设计稿定的，别在组件里另写一套颜色。
 
-懒得手写英文？对着中文稿一键生成 `.en.md` 初稿：
+## 🎨 重新生成图标
 
 ```bash
-npm run translate -- my-new-post        # 指定文章（slug 或文件名片段）
-npm run translate                       # 不带参数 = 自动挑选最新一篇缺英文版的
+node scripts/make-favicon.mjs          # 用篆书「璃」生成白文印 favicon
+node scripts/make-favicon.mjs 影       # 换一个字
 ```
 
-- 调用 Google 翻译接口，**代码块原样跳过**、标题/列表逐行保留格式
-- 需要能访问谷歌的网络：脚本会自动探测本地代理（7897/7890/10809），或设置 `HTTPS_PROXY` 环境变量
-- 机器翻译仅为初稿，建议推送前润色；网络不通时会保留中文原文并给出警告
+favicon 与站内钤印共用 `src/lib/sealGlyphs.js` 那套字形，所以两者长得一样。
+
+## ☁️ 部署
+
+推送到 `main` 即自动构建发布（GitHub Actions → GitHub Pages）；Actions 里先跑 lint 与测试，再 build。
 
 ---
 
-© 2026 [琉璃幻影 · Liu-Li-Huan-Ying](https://github.com/liu-li-huan-ying) · Built with React and too much curiosity
+© 2026 [琉璃幻影 · Liu-Li-Huan-Ying](https://github.com/liu-li-huan-ying)

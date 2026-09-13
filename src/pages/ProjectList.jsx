@@ -1,214 +1,128 @@
-import { useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { useLang } from '../i18n/use-lang'
-import { ui } from '../i18n/ui'
-import { githubProfileUrl, profile } from '../data/profile'
-import { ExternalIcon, FolderIcon, GitHubIcon } from '../components/Icons'
-import FadeIn from '../components/FadeIn'
-import SectionHeader from '../components/SectionHeader'
-import TiltCard from '../components/TiltCard'
+import { useState } from 'react'
+import { profile } from '../data/profile'
+import { SPECIMENS } from '../components/scroll/specimens'
 import GitHubStats from '../components/GitHubStats'
-import { coverWipeNavigate } from '../utils/pageTransition'
+import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import { repoSlug } from '../utils/github'
-import { navigate } from '../hooks/useHashRoute'
-import Magnetic from '../components/Magnetic'
+
+/* 作品 · 目录
+   行版式与首页「贰 · 作品」同一套 .work：左边文字、右边标本框，
+   交替左右只是把 .flip 加上。视觉用解剖图 —— 目录里放剖面，
+   一眼能认出「这东西怎么跑的」，与首页是同一套语汇。
+   profile 里的 cover 图只作兜底（不是界面截图，且有的尺寸大到会拖垮浏览器），
+   没有解剖图时才拿它顶。两样都没有就留字，不出现空框。 */
+const NUM = ['一', '二', '三', '四', '五', '六', '七', '八']
+const ALL = '全部'
 
 export default function ProjectList() {
-  const { lang } = useLang()
-  const s = ui[lang].sec.projects
-  const pl = ui[lang].plist
-  const projects = profile[lang].projects
+  const projects = profile.projects
 
-  const tagPool = useMemo(() => {
-    const set = new Set()
-    projects.forEach((p) => p.tags.forEach((t) => set.add(t)))
-    return [...set]
-  }, [projects])
-
-  const [activeTag, setActiveTag] = useState(pl.all)
-  const filtered =
-    activeTag === pl.all ? projects : projects.filter((p) => p.tags.includes(activeTag))
-
-  const chips = [pl.all, ...tagPool]
-
-  const openProject = (event, id) => {
-    const cover = event?.currentTarget?.querySelector('[data-cover]') ?? null
-    coverWipeNavigate(navigate, `/projects/${id}`, cover)
-  }
+  /* 按「形态」筛，不用技术栈：形态是四个封闭值（桌面端 / 存储引擎 / …），
+     技术栈标签会越加越多，做筛选器只会变成一排读不完的签条 */
+  const kinds = [...new Set(projects.map((p) => p.kind))]
+  const [kind, setKind] = useState(ALL)
+  const shown = kind === ALL ? projects : projects.filter((p) => p.kind === kind)
 
   return (
-    <section className="relative mx-auto max-w-6xl px-6 pb-24 pt-32">
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-10 right-0 z-0 select-none font-display text-[9rem] font-bold leading-none text-white/[0.03] md:text-[15rem]"
-      >
-        {s.index}
-      </span>
+    <section className="page">
+      <div className="wrap">
+        <a className="backlink" href="#/">
+          <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true" style={{ transform: 'scaleX(-1)' }}><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+          回卷首
+        </a>
 
-      <div className="relative z-10">
-        <SectionHeader index={s.index} eyebrow={pl.eyebrow} title={pl.title} />
-      </div>
+        <div className="sec-head rv">
+          <div className="slip"><span className="slip-num">贰</span><span className="slip-line"></span><span className="slip-name">作品</span></div>
+          <div className="sec-title-wrap">
+            <span className="label">Selected Work</span>
+            <h2 className="d-l"><span className="mask"><span className="ch">{shown.length === projects.length ? `共 ${projects.length} 件` : `${shown.length} 件`}</span></span></h2>
+            <p className="lead sec-sub">
+              横跨界面、系统、图形三层。每一件都写清了最费劲的那个决定，以及为此丢掉了什么。
+            </p>
+          </div>
+        </div>
 
-      <FadeIn className="relative z-10 mb-12 flex flex-wrap items-center gap-3">
-        {chips.map((chip) => (
-          <Magnetic key={chip} strength={0.25}>
+        <div className="chips rv">
+          {[ALL, ...kinds].map((k) => (
             <button
               type="button"
-              onClick={() => setActiveTag(chip)}
-              data-cursor-label="FILTER"
-              className={`rounded-full border px-4 py-1.5 font-mono text-xs transition-all ${
-                activeTag === chip
-                  ? 'border-neon-violet/60 bg-neon-violet/15 text-white'
-                  : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-neon-violet/40 hover:text-white'
-              }`}
+              className="chip"
+              key={k}
+              aria-pressed={kind === k}
+              onClick={() => setKind(k)}
             >
-              {chip}
+              {k}
             </button>
-          </Magnetic>
-        ))}
-        <span className="ml-auto font-mono text-xs text-slate-500">
-          {filtered.length} / {projects.length} {pl.items}
-        </span>
-      </FadeIn>
+          ))}
+        </div>
 
-      <motion.div layout className="grid gap-6 sm:grid-cols-2">
-        <AnimatePresence mode="popLayout">
-          {filtered.length === 0 && (
-            <p className="py-12 text-center font-mono text-sm text-slate-500 sm:col-span-2">
-              {lang === 'zh' ? '没有匹配的项目' : 'No projects match this filter.'}
-            </p>
-          )}
-          {filtered.map((project) => (
-            <motion.div
-              key={project.id}
-              layout
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.92 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-            >
-              <TiltCard className="h-full rounded-2xl">
-                <div
-                  role="link"
-                  tabIndex={0}
-                  data-cursor-label="VIEW"
-                  onClick={(e) => openProject(e, project.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      openProject(e, project.id)
-                    }
-                  }}
-                  className="group glass relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:border-neon-violet/40 hover:shadow-[0_24px_60px_-16px_rgba(129,140,248,0.35)]"
-                >
-                  <div
-                    data-cover
-                    className="relative h-52 overflow-hidden"
-                    style={{
-                      background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,
-                    }}
-                  >
-                    {project.image ? (
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="absolute inset-0 h-full w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => { e.target.style.display = 'none' }}
-                      />
-                    ) : (
-                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-8xl font-bold text-white/15 transition-transform duration-500 group-hover:scale-125">
-                        {project.letter}
-                      </span>
-                    )}
-                    <div className="absolute inset-0 bg-night/40 transition-opacity duration-300 group-hover:opacity-20" />
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                    />
-                    <span className="absolute left-4 top-4 rounded-md bg-night/50 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white/70 backdrop-blur-sm">
-                      {String(projects.indexOf(project) + 1).padStart(2, '0')}
-                    </span>
+        {shown.length === 0 ? (
+          <p className="small" style={{ marginTop: 'clamp(34px,5vh,56px)' }}>这一类下暂时没有作品。</p>
+        ) : (
+          shown.map((p) => {
+            const slug = repoSlug(p.github || '')
+            const i = projects.indexOf(p)
+
+            return (
+              <article className={'work rv' + (i % 2 ? ' flip' : '')} key={p.id}>
+                <div className="work-info">
+                  <div className="work-top">
+                    <span className="work-num">{NUM[i]}</span>
+                    <h3 className="work-title">
+                      <a href={`#/projects/${p.id}`}>
+                        {p.title}
+                        {p.latin ? <span className="lat" style={{ fontSize: '.58em', color: 'var(--ink-3)' }}> {p.latin}</span> : null}
+                      </a>
+                    </h3>
+                  </div>
+                  <p className="work-role">{p.role} · {p.year} · {p.kind}</p>
+                  <p className="work-desc">{p.desc}</p>
+
+                  {slug ? <div className="row-stats"><GitHubStats repo={slug} /></div> : null}
+
+                  <div className="tags">
+                    {p.tags.map((t) => <span className="tag" key={t}>{t}</span>)}
                   </div>
 
-                  <div className="flex flex-1 flex-col gap-3 p-6">
-                    <div className="flex items-start justify-between">
-                      <FolderIcon className="h-8 w-8 text-neon-violet" />
-                      <div className="flex gap-3 text-slate-400">
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`${project.title} GitHub repository`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="transition-colors hover:text-white"
-                        >
-                          <GitHubIcon className="h-5 w-5" />
-                        </a>
-                        {project.live && (
-                          <a
-                            href={project.live}
-                            target="_blank"
-                            rel="noreferrer"
-                            aria-label={`${project.title} live demo`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="transition-colors hover:text-white"
-                          >
-                            <ExternalIcon className="h-5 w-5" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-
-                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-neon-cyan">
-                      {project.title}
-                    </h3>
-                    <p className="flex-1 text-sm leading-relaxed text-slate-400">{project.desc}</p>
-
-                    {(() => {
-                      const slug = repoSlug(project.github)
-                      return slug ? <GitHubStats repo={slug} /> : null
-                    })()}
-
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setActiveTag(tag)
-                          }}
-                          data-cursor-label="FILTER"
-                          className="cursor-pointer rounded-full border border-neon-violet/20 bg-neon-violet/10 px-2.5 py-1 font-mono text-xs text-neon-violet transition-colors hover:bg-neon-violet/25"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="proj-links">
+                    <a href={`#/projects/${p.id}`}>看详情</a>
+                    {p.github ? <a href={p.github} target="_blank" rel="noreferrer"><GitHubIcon /> 源码</a> : null}
+                    {p.live ? <a href={p.live} target="_blank" rel="noreferrer"><ExternalIcon /> 演示</a> : null}
                   </div>
                 </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </AnimatePresence>
 
-        <motion.div layout key="cta" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <TiltCard className="h-full rounded-2xl">
-            <a
-              href={githubProfileUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor-label="GITHUB"
-              className="group glass flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border-dashed p-8 text-center transition-all duration-300 hover:-translate-y-2 hover:border-neon-cyan/40 hover:shadow-[0_24px_60px_-16px_rgba(34,211,238,0.3)]"
-            >
-              <GitHubIcon className="h-10 w-10 text-slate-400 transition-colors group-hover:text-neon-cyan" />
-              <p className="font-mono text-sm text-slate-400">{pl.cta}</p>
-              <span className="font-mono text-xs text-neon-violet">@liu-li-huan-ying</span>
-            </a>
-          </TiltCard>
-        </motion.div>
-      </motion.div>
+                <div className="work-visual">
+                  <a className="specimen" href={`#/projects/${p.id}`} aria-label={`${p.title} 详情`}>
+                    {/* 解剖图优先（自带一条 sp-bar）；没有才退回配图；都没有就留字 */}
+                    {SPECIMENS[p.specimen] ? (
+                      SPECIMENS[p.specimen]
+                    ) : p.image ? (
+                      <>
+                        <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                        <span className="sp-blank">{p.title}</span>
+                        {/* 图挂了就把自己藏掉，露出底下的字，不留一块空框 */}
+                        <img
+                          className="sp-img"
+                          src={p.image}
+                          alt={`${p.title} 配图`}
+                          loading="lazy"
+                          decoding="async"
+                          onError={(e) => { e.currentTarget.style.display = 'none' }}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                        <span className="sp-blank">{p.title}</span>
+                      </>
+                    )}
+                  </a>
+                </div>
+              </article>
+            )
+          })
+        )}
+      </div>
     </section>
   )
 }

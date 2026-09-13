@@ -1,7 +1,11 @@
 import { writeFileSync, existsSync } from 'node:fs'
-import { execSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+/* 建一篇新手记。
+   用法： npm run newpost -- my-new-post "文章标题"
+   文件名 = YYYY-MM-DD-<slug>.md，日期写在最前，按文件名排就能看出新旧。
+   正文与 frontmatter 的约定见 README。 */
 
 const contentDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -9,13 +13,11 @@ const contentDir = path.resolve(
 )
 
 const slug = process.argv[2]
-const noTranslate = process.argv.includes('--no-translate')
 
 if (!slug) {
-  console.error('Usage: npm run newpost -- <slug> ["Title"] [--no-translate]')
-  console.error('  slug: letters, numbers, dashes, or Chinese characters.')
-  console.error('  e.g. npm run newpost -- my-new-post "My New Post"')
-  console.error('  e.g. npm run newpost -- 读书笔记 "Reading Notes"')
+  console.error('用法: npm run newpost -- <slug> ["标题"]')
+  console.error('  slug: 字母、数字、连字符或汉字。')
+  console.error('  例:   npm run newpost -- mmap-notes "内存映射笔记"')
   process.exit(1)
 }
 
@@ -25,15 +27,14 @@ const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, 
   today.getDate()
 ).padStart(2, '0')}`
 
-const zhFile = path.join(contentDir, `${date}-${slug}.md`)
-const enFile = path.join(contentDir, `${date}-${slug}.en.md`)
+const file = path.join(contentDir, `${date}-${slug}.md`)
 
-if (existsSync(zhFile)) {
-  console.error(`Error: ${date}-${slug}.md already exists.`)
+if (existsSync(file)) {
+  console.error(`已存在: ${date}-${slug}.md`)
   process.exit(1)
 }
 
-const zhTemplate = `---
+const template = `---
 title: ${title}
 date: ${date}
 tags: 标签一, 标签二
@@ -50,47 +51,9 @@ TODO 正文。支持 **加粗**、*斜体*、列表和代码块：
 fmt.Println("hello")
 \`\`\`
 
-> TODO 收尾金句。
+> TODO 收尾的话。
 `
 
-const enTemplate = `---
-title: ${title}
-date: ${date}
-tags: tag-one, tag-two
-summary: TODO one-sentence summary.
-readTime: 5
----
-
-TODO opening paragraph — what is this about and why should anyone care.
-
-## TODO section heading
-
-TODO body. Markdown fully supported.
-
-> TODO a closing thought.
-`
-
-writeFileSync(zhFile, zhTemplate)
-console.log(`created: src/content/posts/${date}-${slug}.md       (中文，主版本)`)
-
-if (!noTranslate) {
-  writeFileSync(enFile, enTemplate)
-  console.log(`created: src/content/posts/${date}-${slug}.en.md    (英文占位)`)
-
-  console.log('\ntranslating to English...')
-  try {
-    execSync(`node scripts/translate-post.mjs "${date}-${slug}.md"`, {
-      stdio: 'inherit',
-      cwd: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'),
-    })
-    console.log('translation complete!')
-  } catch (err) {
-    console.warn(`\nwarning: auto-translation failed (${err.message}).`)
-    console.warn(`  run manually: npm run translate -- ${date}-${slug}.md`)
-    console.warn(`  or edit ${date}-${slug}.en.md directly.`)
-  }
-} else {
-  console.log(`created: src/content/posts/${date}-${slug}.en.md    (英文，跳过翻译)`)
-}
-
-console.log('\nnext: fill frontmatter + body in the zh file, then push.')
+writeFileSync(file, template)
+console.log(`created: src/content/posts/${date}-${slug}.md`)
+console.log('写完 push 即上线（列表页与 RSS 都在构建期生成）。')

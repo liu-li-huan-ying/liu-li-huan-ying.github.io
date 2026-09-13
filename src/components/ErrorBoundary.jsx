@@ -1,5 +1,8 @@
 import { Component } from 'react'
 
+/* 兜底：渲染期真出了错，至少给一张能读的错页。
+   版式沿用 404 的 .missing（同样是一张「此页不在」的错页），
+   并且顺手把错误原文摊出来 —— 出了问题先看它，比看控制台快。 */
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
@@ -16,25 +19,23 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.error) {
-      const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
       return (
-        <div className="flex min-h-screen items-center justify-center p-6">
-          <div className="glass max-w-xl rounded-2xl p-8 text-center">
-            <p className="font-mono text-sm text-neon-pink">
-              ⚠ {lang === 'zh' ? '渲染过程中出现了错误。' : 'Something broke while rendering.'}
-            </p>
-            <pre className="mt-4 max-h-48 overflow-auto rounded-lg bg-black/30 p-4 text-left font-mono text-xs text-slate-500">
-              {String(this.state.error)}
-            </pre>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="mt-6 rounded-lg border border-neon-cyan/40 px-5 py-2 font-mono text-xs text-neon-cyan transition-colors hover:bg-neon-cyan/10"
-            >
-              {lang === 'zh' ? '重新加载' : 'Reload'}
-            </button>
+        <section className="page">
+          <div className="wrap">
+            <div className="missing">
+              <div className="missing-code" aria-hidden="true">✕</div>
+              <h1 className="missing-title">这一卷没打开</h1>
+              <p className="small">渲染的时候出了点问题。错误原文在下面。</p>
+              <pre className="err-box">{String(this.state.error)}</pre>
+              <div className="missing-links">
+                <button type="button" className="chip" onClick={() => window.location.reload()}>
+                  重新加载
+                </button>
+                <a className="backlink" href="#/" style={{ marginBottom: 0 }}>回卷首</a>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       )
     }
     return this.props.children

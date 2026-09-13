@@ -1,38 +1,55 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="paper">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <!-- CSP：只放行页面真正会连的域名 ——
+         字体（Google Fonts）、统计（百度 / Clarity / GoatCounter）、
+         两块 GitHub 数据（仓库信息与贡献记录）。 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: https: blob:; connect-src 'self' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at https://*.goatcounter.com https://abacus.jasoncameron.dev https://model.hacxy.cn https://api.github.com https://github-contributions-api.jogruber.de https://api.iconify.design; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: https: blob:; connect-src 'self' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at https://*.goatcounter.com https://api.github.com https://github-contributions-api.jogruber.de; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
-    <title>琉璃幻影 · Glazed Mirage — Full Stack Developer</title>
+    <title>琉璃幻影 · Glazed Mirage</title>
     <meta
       name="description"
-      content="琉璃幻影 (Glazed Mirage) — full-stack developer building scalable systems, from React frontends to Go-powered storage engines. Author of GojiDB."
+      content="琉璃幻影的技术作品与手记：本地优先的写作工具玉笺、从零实现的存储引擎 GojiDB、零依赖的浏览器新标签页 Lucent。"
     />
     <meta name="author" content="琉璃幻影" />
-    <meta name="theme-color" content="#04010f" />
+    <meta name="theme-color" content="#EDE8DD" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#191714" media="(prefers-color-scheme: dark)" />
+
+    <!-- 衬线字体异步加载：普通 <link rel=stylesheet> 会阻塞脚本，
+         而 fonts.googleapis.com 在本地网络下时常不可达，一卡就是几十秒，
+         入场动画、冰裂、换地色会集体失效，页面看着像坏了。
+         media="print" 既不阻塞渲染也不阻塞脚本，加载完再切回 all。
+         兜底字体栈已备好系统中文衬线，最坏情况只是衬线略变，功能不受影响 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all';this.onload=null"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600;900&display=swap"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />
-    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:url" content="https://liu-li-huan-ying.github.io/" />
-    <meta property="og:title" content="琉璃幻影 · Glazed Mirage — Full Stack Developer" />
+    <meta property="og:title" content="琉璃幻影 · Glazed Mirage" />
     <meta
       property="og:description"
-      content="Immersive developer portfolio — hand-written WebGL shaders, an interactive terminal and GojiDB, a hand-rolled LSM-Tree KV store."
+      content="写存储、性能，以及一些与代码无关的书。作品与手记，卷在这里。"
     />
     <meta property="og:image" content="https://liu-li-huan-ying.github.io/og-image.png" />
-    <meta property="og:site_name" content="琉璃幻影 · DevFolio" />
+    <meta property="og:site_name" content="琉璃幻影" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="琉璃幻影 · Glazed Mirage — Full Stack Developer" />
+    <meta name="twitter:title" content="琉璃幻影 · Glazed Mirage" />
     <meta
       name="twitter:description"
-      content="Full-stack developer portfolio — React, Go, distributed systems."
+      content="写存储、性能，以及一些与代码无关的书。"
     />
     <meta name="twitter:image" content="https://liu-li-huan-ying.github.io/og-image.png" />
 
@@ -46,9 +63,9 @@
         "alternateName": "Glazed Mirage",
         "url": "https://liu-li-huan-ying.github.io/",
         "sameAs": ["https://github.com/liu-li-huan-ying"],
-        "jobTitle": "Full Stack Developer",
+        "jobTitle": "独立开发者",
         "email": "mailto:luchang0829@163.com",
-        "knowsAbout": ["React", "Go", "TypeScript", "Distributed Systems", "Storage Engines", "LSM-Tree"]
+        "knowsAbout": ["React", "Go", "TypeScript", "存储引擎", "LSM-Tree", "桌面应用"]
       }
     </script>
 

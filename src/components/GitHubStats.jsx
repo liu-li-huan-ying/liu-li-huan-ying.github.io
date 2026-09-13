@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { ForkIcon, StarIcon } from './Icons'
 
+/* 仓库的星标 / fork / 主语言
+   走 api.github.com，按 sessionStorage 缓存一层（同一次访问里不重复请求）。
+   拿不到就整块不显示 —— 一个「加载失败」的占位比没有更难看。 */
 export default function GitHubStats({ repo }) {
   const [stats, setStats] = useState(() => {
     try {
@@ -18,6 +21,7 @@ export default function GitHubStats({ repo }) {
 
     let cancelled = false
     const controller = new AbortController()
+    /* 延后一点再发：列表页会同时挂好几个，等首屏稳下来，免得和关键资源抢带宽 */
     const timeout = setTimeout(async () => {
       try {
         const res = await fetch(`https://api.github.com/repos/${repo}`, {
@@ -53,24 +57,17 @@ export default function GitHubStats({ repo }) {
   if (!stats) {
     if (failed) return null
     return (
-      <div className="flex gap-3 font-mono text-[11px]">
-        <div className="h-3.5 w-10 animate-pulse rounded bg-white/5" />
-        <div className="h-3.5 w-10 animate-pulse rounded bg-white/5" />
+      <div className="gh-skel" aria-hidden="true">
+        <i /><i />
       </div>
     )
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-slate-400">
-      <span className="inline-flex items-center gap-1">
-        <StarIcon className="h-3.5 w-3.5 text-neon-cyan" />
-        {stats.stars}
-      </span>
-      <span className="inline-flex items-center gap-1">
-        <ForkIcon className="h-3.5 w-3.5 text-neon-violet" />
-        {stats.forks}
-      </span>
-      {stats.language && <span className="text-slate-500">{stats.language}</span>}
+    <div className="gh-inline">
+      <span className="star"><StarIcon /> {stats.stars}</span>
+      <span><ForkIcon /> {stats.forks}</span>
+      {stats.language ? <span>{stats.language}</span> : null}
     </div>
   )
 }

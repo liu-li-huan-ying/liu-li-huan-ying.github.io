@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 
-const LEVEL_COLORS = [
-  'rgba(148, 163, 184, 0.08)',
-  'rgba(34, 211, 238, 0.28)',
-  'rgba(56, 189, 248, 0.55)',
-  'rgba(129, 140, 248, 0.85)',
-  'rgba(232, 121, 249, 1)',
-]
+/* GitHub 贡献热力图
+   数据来自 github-contributions-api（CSP 里已放行）。
+   格子用青瓷的深浅表示当天提交量 —— 不引第二种彩色，纸墨两套地色都自洽。
+   横轴按周分列，左侧标一/三/五，上方标月份。拿不到数据就整块不显示。 */
+const MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+const WEEKDAY_SET = new Set([1, 3, 5])
+const WEEKDAY_LABEL = ['', '一', '', '三', '', '五', '']
 
 function computeStats(contributions) {
   let total = 0
@@ -34,9 +34,7 @@ function computeStats(contributions) {
   return { total, activeDays, longest, current }
 }
 
-const WEEKDAY_SET = new Set([1, 3, 5])
-
-export default function GitHubHeatmap({ username, year = new Date().getFullYear(), labels }) {
+export default function GitHubHeatmap({ username, year = new Date().getFullYear() }) {
   const [data, setData] = useState(null)
   const [failed, setFailed] = useState(false)
 
@@ -97,104 +95,82 @@ export default function GitHubHeatmap({ username, year = new Date().getFullYear(
   const stats = data ? computeStats(data.contributions) : null
 
   return (
-    <div className="glass rounded-2xl p-6">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-semibold text-white">{labels.heatmapTitle}</h3>
-        {stats ? (
-          <span className="font-mono text-xs text-neon-cyan">
-            {stats.total} {labels.heatmapSub}
-          </span>
-        ) : (
-          <span className="font-mono text-xs text-slate-500">loading…</span>
-        )}
+    <div className="gh rv">
+      <div className="sec-title-wrap">
+        <span className="label">GitHub</span>
+        <h3 className="d-m">这一年提交了多少</h3>
+        <p className="lead sec-sub">
+          {stats ? <>共 {stats.total} 次提交。</> : <>读一下今年的提交记录……</>}
+        </p>
       </div>
 
-      {!data ? (
-        <div className="flex gap-[3px] overflow-hidden py-1" style={{ height: '112px' }}>
-          {[...Array(53)].map((_, i) => (
-            <div key={i} className="flex flex-col gap-[3px]">
-              {[...Array(7)].map((__, j) => (
-                <div
-                  key={j}
-                  className="h-[11px] w-[11px] animate-pulse rounded-[2px] bg-white/[0.03]"
-                  style={{ animationDelay: `${((i * 7 + j) % 20) * 60}ms` }}
-                />
+      <div className="gh-heat">
+        <div className="gh-inner">
+          <div className="gh-months">
+            {/* 起点 = 星期栏宽度(16) + 间距(6)；每列 11 + 3 */}
+            {monthMarks.map(({ month, col }) => (
+              <span key={month} style={{ left: `${22 + col * 14}px` }}>{MONTHS[month - 1]}</span>
+            ))}
+          </div>
+          <div className="gh-grid">
+            <div className="gh-weekdays">
+              {[...Array(7)].map((_, i) => (
+                <span key={i}>{WEEKDAY_SET.has(i) ? WEEKDAY_LABEL[i] : ''}</span>
               ))}
             </div>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="overflow-x-auto pb-2">
-            <div className="inline-block min-w-full">
-              <div className="relative mb-1 h-4">
-                {monthMarks.map(({ month, col }) => (
-                  <span
-                    key={month}
-                    className="absolute font-mono text-[9px] uppercase tracking-wider text-slate-500"
-                    style={{ left: `${28 + col * 14}px` }}
-                  >
-                    {(labels.months ?? [])[month - 1] ?? month}
-                  </span>
-                ))}
-              </div>
-              <div className="flex gap-[3px]">
-                <div className="mr-1 flex w-6 shrink-0 flex-col gap-[3px]">
-                  {[...Array(7)].map((_, i) => (
-                    <span key={i} className="h-[11px] font-mono text-[8px] leading-[11px] text-slate-600">
-                      {WEEKDAY_SET.has(i) ? (labels.weekdayShort ?? [])[i] ?? '' : ''}
-                    </span>
-                  ))}
-                </div>
-                {weeks.map((week, wi) => (
-                  <div key={wi} className="flex flex-col gap-[3px]">
+            {weeks.length
+              ? weeks.map((week, wi) => (
+                  <div className="gh-col" key={wi}>
                     {week.map((cell, di) =>
                       cell ? (
-                        <div
+                        <i
                           key={cell.date}
-                          title={`${cell.count} contributions · ${cell.date}`}
-                          className="h-[11px] w-[11px] rounded-[2px] transition-transform hover:scale-125"
-                          style={{
-                            background: LEVEL_COLORS[cell.level],
-                            boxShadow: cell.level === 4 ? '0 0 6px rgba(232,121,249,0.6)' : 'none',
-                          }}
+                          className={`gh-cell lv${cell.level}`}
+                          title={`${cell.count} 次提交 · ${cell.date}`}
                         />
                       ) : (
-                        <div key={`pad-${wi}-${di}`} className="h-[11px] w-[11px]" />
+                        <i key={`pad-${wi}-${di}`} className="gh-cell lv0 blank" />
                       )
                     )}
                   </div>
+                ))
+              : [...Array(53)].map((_, i) => (
+                  <div className="gh-col" key={i}>
+                    {[...Array(7)].map((__, j) => (
+                      <i
+                        key={j}
+                        className="gh-cell lv0"
+                        style={{ animationDelay: `${((i * 7 + j) % 20) * 60}ms` }}
+                      />
+                    ))}
+                  </div>
                 ))}
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="mt-4 flex items-center justify-between gap-4 border-t border-white/5 pt-4">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-2 sm:grid-cols-4">
-              {[
-                { label: labels.stats?.total ?? 'Total', value: stats.total },
-                { label: labels.stats?.active ?? 'Active days', value: stats.activeDays },
-                { label: labels.stats?.longest ?? 'Longest streak', value: stats.longest },
-                { label: labels.stats?.current ?? 'Current streak', value: stats.current },
-              ].map((item) => (
-                <div key={item.label}>
-                  <p className="font-display text-xl font-bold text-white">{item.value}</p>
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
+      <div className="gh-legend">
+        少
+        <i className="gh-cell lv0" /><i className="gh-cell lv1" /><i className="gh-cell lv2" />
+        <i className="gh-cell lv3" /><i className="gh-cell lv4" />
+        多
+      </div>
+
+      {stats ? (
+        <div className="gh-stats" style={{ marginTop: 'clamp(22px,3.4vh,32px)' }}>
+          {[
+            ['今年提交', stats.total],
+            ['有提交的天数', stats.activeDays],
+            ['最长连续', stats.longest],
+            ['当前连续', stats.current],
+          ].map(([label, value]) => (
+            <div className="gh-stat" key={label}>
+              <b className="tnum">{value}</b>
+              <span>{label}</span>
             </div>
-            <div className="hidden items-center gap-1.5 font-mono text-[10px] text-slate-500 sm:flex">
-              {labels.less ?? 'Less'}
-              {LEVEL_COLORS.map((color) => (
-                <span key={color} className="h-[10px] w-[10px] rounded-[2px]" style={{ background: color }} />
-              ))}
-              {labels.more ?? 'More'}
-            </div>
-          </div>
-        </>
-      )}
+          ))}
+        </div>
+      ) : null}
     </div>
   )
 }

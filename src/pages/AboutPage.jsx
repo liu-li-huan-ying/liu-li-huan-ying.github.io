@@ -1,141 +1,102 @@
-import { useMemo } from 'react'
 import GitHubHeatmap from '../components/GitHubHeatmap'
-import { MapPinIcon } from '../components/Icons'
-import FadeIn from '../components/FadeIn'
-import SectionHeader from '../components/SectionHeader'
-import { navigate } from '../hooks/useHashRoute'
-import { useLang } from '../i18n/use-lang'
-import { ui } from '../i18n/ui'
 import { githubProfileUrl, profile } from '../data/profile'
 
-const CHIP_COLORS = [
-  'border-neon-cyan/30 bg-neon-cyan/10 text-neon-cyan',
-  'border-neon-violet/30 bg-neon-violet/10 text-neon-violet',
-  'border-neon-pink/30 bg-neon-pink/10 text-neon-pink',
-]
+/* 关于 · 卷外
+   手卷上放的是摘要，这一页是完整的那一份：自述全文、技术栈、近况、指标、经历。
+   正文数据全在 profile.js —— 首页「叁 · 自述」与本页读的是同一份，不重抄。
+   GitHub 数据块也挂在这里：热力图要够宽才读得清，卷上放不下。 */
+const USERNAME = githubProfileUrl.split('/').pop()
 
 export default function AboutPage() {
-  const { lang } = useLang()
-  const a = ui[lang].apage
-  const data = profile[lang]
-  const username = githubProfileUrl.split('/').pop()
-
-  const recentProjects = useMemo(() => {
-    const sorted = [...data.projects].sort(
-      (a, b) => Number(b.detail.year) - Number(a.detail.year),
-    )
-    return sorted.slice(0, 3)
-  }, [data.projects])
-
-  const nowItems = useMemo(
-    () => recentProjects.map((p) => ({ name: p.title, desc: p.desc })),
-    [recentProjects],
-  )
-
-  const focusChips = useMemo(() => {
-    const tags = recentProjects.flatMap((p) => p.tags)
-    return [...new Set(tags)]
-  }, [recentProjects])
-
   return (
-    <section className="relative mx-auto max-w-5xl px-6 pb-24 pt-32">
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-10 right-0 z-0 select-none font-display text-[9rem] font-bold leading-none text-white/[0.03] md:text-[15rem]"
-      >
-        01
-      </span>
+    <section className="page">
+      <div className="wrap">
+        <a className="backlink" href="#/">
+          <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true" style={{ transform: 'scaleX(-1)' }}><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+          回卷首
+        </a>
 
-      <div className="relative z-10">
-        <SectionHeader index="01" eyebrow={a.eyebrow} title={a.title} />
+        <div className="sec-head rv">
+          <div className="slip"><span className="slip-num">外</span><span className="slip-line"></span><span className="slip-name">关于</span></div>
+          <div className="sec-title-wrap">
+            <span className="label">About</span>
+            <h2 className="d-l"><span className="mask"><span className="ch">把审美当作工程约束</span></span></h2>
+            <p className="lead sec-sub">{profile.tagline}</p>
+          </div>
+        </div>
 
-        <FadeIn className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs text-slate-500">
-          <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="h-3.5 w-3.5 text-neon-violet" />
-            {data.location}
-          </span>
-          <a
-            href={githubProfileUrl}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor-label="GITHUB"
-            className="text-neon-cyan transition-colors hover:text-white"
-          >
-            @{username}
-          </a>
-        </FadeIn>
-
-        <div className="space-y-8">
-          <FadeIn delay={0.05}>
-            <GitHubHeatmap username={username} year={new Date().getFullYear()} labels={a} />
-          </FadeIn>
-
-          <div className="grid gap-8 md:grid-cols-2">
-            <FadeIn delay={0.1}>
-              <div className="glass h-full rounded-2xl p-6">
-                <h3 className="font-semibold text-white">{a.langTitle}</h3>
-                <ul className="mt-4 space-y-4">
-                  {a.langs.map((item) => (
-                    <li key={item.name} className="flex items-start justify-between gap-4">
-                      <span className="font-medium text-slate-200">{item.name}</span>
-                      <span className="text-right font-mono text-xs text-slate-500">{item.level}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.16}>
-              <div className="glass h-full rounded-2xl p-6">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-semibold text-white">{a.nowTitle}</h3>
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                  </span>
-                </div>
-                <p className="mt-1 font-mono text-[11px] text-slate-500">{a.nowSubtitle}</p>
-                <ul className="mt-4 space-y-4">
-                  {nowItems.map((item) => (
-                    <li key={item.name} className="flex items-start gap-3">
-                      <span className="mt-1 text-neon-cyan">✦</span>
-                      <div>
-                        <p className="font-medium text-slate-200">{item.name}</p>
-                        <p className="mt-0.5 text-sm text-slate-500">{item.desc}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </FadeIn>
+        <div className="about-grid">
+          <div className="about-body rv">
+            {profile.about.map((paragraph, i) => (
+              <p className={i === 0 ? 'dropcap' : undefined} key={paragraph.slice(0, 12)}>{paragraph}</p>
+            ))}
+            <p>
+              {profile.school} · {profile.location}。
+              <span className="seal-slot" style={{ '--w': '19px', verticalAlign: '-4px', marginLeft: '9px', '--tilt': '-1.6deg' }} data-seal="幻影|1|1|bai" aria-hidden="true"></span>
+            </p>
           </div>
 
-          <FadeIn delay={0.2}>
-            <div className="glass rounded-2xl p-6">
-              <h3 className="font-semibold text-white">{a.focusTitle}</h3>
-              <div className="mt-4 flex flex-wrap gap-2.5">
-                {focusChips.map((chip, i) => (
-                  <span
-                    key={chip}
-                    className={`rounded-lg border px-3.5 py-1.5 font-mono text-xs ${CHIP_COLORS[i % CHIP_COLORS.length]}`}
-                  >
-                    {chip}
-                  </span>
-                ))}
+          <div className="rv" style={{ '--d': '100' }}>
+            <h3 className="label" style={{ marginBottom: '18px' }}>技术栈</h3>
+            <ul className="skill-list">
+              {profile.skills.map(([name, note]) => (
+                <li key={name}>{name} <span>{note}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <GitHubHeatmap username={USERNAME} year={new Date().getFullYear()} />
+
+        <div className="now rv">
+          <h3 className="label">近况 · Now</h3>
+          <ul className="now-list">
+            {profile.now.map(([k, text]) => (
+              <li key={k}>
+                <span className="now-k">{k}</span>
+                <p>{text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="figures rv">
+          {profile.figures.map((f) => (
+            <div className="figure" key={f.label}>
+              <b className="tnum">
+                {f.prefix || null}<span data-count={f.value}>0</span><i>{f.unit}</i>
+              </b>
+              <span>{f.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <p className="fig-note rv">
+          <b>指标口径</b>　数字出自 GojiDB 自带的 YCSB 基准与百万 KV 载入测试，
+          脚本与原始输出随仓库 <code>bench/</code> 一并提供，可自行复现。
+        </p>
+
+        <div className="timeline rv">
+          {profile.experience.map((e) => (
+            <div className="tl-item" key={e.period}>
+              <div className="tl-period">{e.period}</div>
+              <div>
+                <div className="tl-role">{e.role}</div>
+                <p className="tl-desc">{e.company}。{e.desc}</p>
               </div>
             </div>
-          </FadeIn>
+          ))}
+        </div>
 
-          <FadeIn delay={0.25}>
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              data-cursor-label="BACK"
-              className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
-            >
-              ← {a.back}
-            </button>
-          </FadeIn>
+        <div className="proj-links rv">
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a href={githubProfileUrl} target="_blank" rel="noreferrer">GitHub @{USERNAME}</a>
+          <a href="#/projects">全部作品
+            <svg viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+          </a>
+          <a href="#/blog">全部手记
+            <svg viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+          </a>
         </div>
       </div>
     </section>

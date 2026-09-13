@@ -1,143 +1,120 @@
-import { useLang } from '../i18n/use-lang'
-import { ui } from '../i18n/ui'
-import { navigate } from '../hooks/useHashRoute'
-import { ExternalIcon, GitHubIcon } from '../components/Icons'
+import { profile } from '../data/profile'
+import { SPECIMENS } from '../components/scroll/specimens'
 import GitHubStats from '../components/GitHubStats'
+import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import { repoSlug } from '../utils/github'
 
-export default function ProjectDetail({ project, index, projects }) {
-  const { lang } = useLang()
-  const t = ui[lang].proj
-  const detail = project.detail
+/* 作品 · 详情
+   承首页「贰 · 作品」那一条的写法：先说是什么，再说丢掉了什么。
+   视觉用解剖图（这东西怎么跑的），没有解剖图的才退回配图。
+   正文与要点用 .prose / .hl-list —— 与手记正文同一套版式，读起来是一本书。 */
+const NUM = ['一', '二', '三', '四', '五', '六', '七', '八']
 
-  const newer = index > 0 ? projects[index - 1] : null
-  const older = index < projects.length - 1 ? projects[index + 1] : null
+export default function ProjectDetail({ project }) {
+  const p = project
+  const all = profile.projects
+  const i = all.indexOf(p)
+  const prev = i > 0 ? all[i - 1] : null
+  const next = i < all.length - 1 ? all[i + 1] : null
+  const slug = repoSlug(p.github || '')
+  const body = p.detail && p.detail.body ? p.detail.body : []
+  const highlights = p.detail && p.detail.highlights ? p.detail.highlights : []
 
   return (
-    <article className="mx-auto max-w-4xl px-6 pb-24 pt-32">
-      <button
-        type="button"
-        onClick={() => navigate('/projects')}
-        data-cursor-label="BACK"
-        className="font-mono text-sm text-neon-cyan transition-colors hover:text-white"
-      >
-        ← {t.back}
-      </button>
+    <article className="page">
+      <div className="wrap">
+        <div className="article">
+          <a className="backlink" href="#/projects">
+            <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true" style={{ transform: 'scaleX(-1)' }}><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+            全部作品
+          </a>
 
-      <div
-        className="relative mt-10 h-52 overflow-hidden rounded-2xl md:h-64"
-        style={{
-          background: `linear-gradient(135deg, ${project.gradient[0]}, ${project.gradient[1]})`,
-        }}
-      >
-        {project.image ? (
-          <img
-            src={project.image}
-            alt={project.title}
-            className="absolute inset-0 h-full w-full object-cover"
-            decoding="async"
-            onError={(e) => { e.target.style.display = 'none' }}
-          />
-        ) : (
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-9xl font-bold text-white/15 md:text-[12rem]">
-            {project.letter}
-          </span>
-        )}
-        <div className="absolute inset-0 bg-night/40" />
-      </div>
+          {/* 用 div 不用 header：样式表里的 header 是固定顶栏（position:fixed），
+              正文里套一个 <header> 会被它按顶栏处理，标题直接飞到视口顶端 */}
+          <div className="article-head">
+            <div className="article-meta">
+              <span>{NUM[i]}</span>
+              <span>{p.kind}</span>
+              <span>{p.role}</span>
+              <span>{p.year}</span>
+            </div>
+            <h1 className="article-title">
+              {p.title}
+              {p.latin ? <span className="lat" style={{ fontSize: '.56em', color: 'var(--ink-3)' }}> {p.latin}</span> : null}
+            </h1>
+            <p className="lead" style={{ marginTop: '20px' }}>{p.desc}</p>
 
-      <h1 className="mt-10 text-3xl font-bold text-white md:text-5xl">{project.title}</h1>
-      <p className="mt-4 leading-relaxed text-slate-400">{project.desc}</p>
-      {(() => {
-        const slug = repoSlug(project.github)
-        return slug ? (
-          <div className="mt-4">
-            <GitHubStats repo={slug} />
+            {slug ? <div className="row-stats"><GitHubStats repo={slug} /></div> : null}
+
+            <div className="tags">
+              {p.tags.map((t) => <span className="tag" key={t}>{t}</span>)}
+            </div>
           </div>
-        ) : null
-      })()}
 
-      <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
-        <div>
-          <p className="font-mono text-xs tracking-widest text-slate-500">{t.role}</p>
-          <p className="mt-1 font-medium text-slate-200">{detail.role}</p>
-        </div>
-        <div>
-          <p className="font-mono text-xs tracking-widest text-slate-500">{t.year}</p>
-          <p className="mt-1 font-medium text-slate-200">{detail.year}</p>
-        </div>
-        <div>
-          <p className="font-mono text-xs tracking-widest text-slate-500">{t.stack}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-neon-violet/20 bg-neon-violet/10 px-2.5 py-1 font-mono text-xs text-neon-violet"
-              >
-                {tag}
-              </span>
-            ))}
+          <div className="specimen">
+            {SPECIMENS[p.specimen] ? (
+              SPECIMENS[p.specimen]
+            ) : p.image ? (
+              <>
+                <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                <span className="sp-blank">{p.title}</span>
+                <img className="sp-img" src={p.image} alt={`${p.title} 配图`} decoding="async"
+                  onError={(e) => { e.currentTarget.style.display = 'none' }} />
+              </>
+            ) : (
+              <>
+                <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                <span className="sp-blank">{p.title}</span>
+              </>
+            )}
           </div>
+
+          {body.length > 0 ? (
+            <div className="prose" style={{ marginTop: 'clamp(34px,5vh,58px)', maxWidth: 'none' }}>
+              {body.map((para) => <p key={para}>{para}</p>)}
+            </div>
+          ) : null}
+
+          {p.tradeoff ? (
+            <div className="tradeoff" style={{ marginTop: 'clamp(32px,4.6vh,52px)' }}>
+              <b>取舍</b>
+              <p>{p.tradeoff}</p>
+            </div>
+          ) : null}
+
+          {highlights.length > 0 ? (
+            <>
+              <h2 className="d-m" style={{ marginTop: 'clamp(38px,5.6vh,64px)' }}>要点</h2>
+              <ul className="hl-list">
+                {highlights.map((h) => <li key={h}>{h}</li>)}
+              </ul>
+            </>
+          ) : null}
+
+          <div className="proj-links">
+            {p.github ? <a href={p.github} target="_blank" rel="noreferrer"><GitHubIcon /> 源码仓库</a> : null}
+            {p.live ? <a href={p.live} target="_blank" rel="noreferrer"><ExternalIcon /> 在线演示</a> : null}
+            <a href="#contact">聊聊这个项目
+              <svg viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+            </a>
+          </div>
+
+          <nav className="pager">
+            {prev ? (
+              <a href={`#/projects/${prev.id}`}>
+                <small>上一件</small>
+                {prev.title}
+              </a>
+            ) : <span />}
+            {next ? (
+              <a className="next" href={`#/projects/${next.id}`}>
+                <small>下一件</small>
+                {next.title}
+              </a>
+            ) : <span />}
+          </nav>
         </div>
       </div>
-
-      <div className="mt-12 space-y-6 leading-8 text-slate-400">
-        {detail.body.map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
-        ))}
-      </div>
-
-      <h2 className="mt-14 text-xl font-bold text-white">{t.highlights}</h2>
-      <ul className="mt-5 space-y-3">
-        {detail.highlights.map((highlight) => (
-          <li key={highlight} className="flex items-start gap-3 leading-7 text-slate-400">
-            <span className="mt-0.5 text-neon-cyan">✦</span>
-            {highlight}
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-12 flex flex-wrap gap-4">
-        {project.live && (
-          <a
-            href={project.live}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor-label="OPEN"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-pink px-6 py-3 font-semibold text-night transition-all hover:scale-[1.03]"
-          >
-            {t.demo}
-            <ExternalIcon className="h-4 w-4" />
-          </a>
-        )}
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noreferrer"
-          data-cursor-label="CODE"
-          className="glass inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-slate-200 transition-all hover:border-neon-cyan/40 hover:text-white"
-        >
-          <GitHubIcon className="h-5 w-5" />
-          {t.code}
-        </a>
-      </div>
-
-      <nav className="mt-16 flex items-center justify-between gap-4 border-t border-white/10 pt-8 font-mono text-sm">
-        {newer ? (
-          <a href={`#/projects/${newer.id}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
-            {t.newer}
-          </a>
-        ) : (
-          <span />
-        )}
-        {older ? (
-          <a href={`#/projects/${older.id}`} className="text-slate-400 transition-colors hover:text-neon-cyan">
-            {t.older}
-          </a>
-        ) : (
-          <span />
-        )}
-      </nav>
     </article>
   )
 }
