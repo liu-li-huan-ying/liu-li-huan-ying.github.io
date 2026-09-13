@@ -13,14 +13,16 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 :root{
-  --serif-cn:'Noto Serif SC','Source Han Serif SC','Songti SC',STSong,SimSun,serif;
+  /* Ext 那片装的是只有手记里才会出现的字，靠回退链按需取用 ——
+     浏览器先在 Noto Serif SC 里找字，命中就不去动 Ext，首页因此完全不会下载它 */
+  --serif-cn:'Noto Serif SC','Noto Serif SC Ext','Source Han Serif SC','Songti SC',STSong,SimSun,serif;
   --serif-lat:'Cormorant Garamond',Garamond,Georgia,'Times New Roman',serif;
   /* 正文走系统字：中文字重动辄数 MB，Google Fonts 那边也没加载 Noto Sans SC，
      与其留一个永远命不中的名字，不如让 apple / 微软雅黑各按平台择优 */
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
 
-  --celadon:#567F68; --celadon-lt:#8FB0A6;
+  --celadon:#4C6E5A; --celadon-lt:#8FB0A6;
   --sky:#8FB0A6; --moon:#DCE1DA; --dai:#2B3138;
   --cinnabar:#A33A2A; --amber:#A9782A;
   /* 三元组：给需要 alpha 的场合拼 rgba() 用，省得处处 color-mix */
@@ -48,21 +50,27 @@
 [data-theme="paper"]{
   color-scheme:light;
   --ground:#EDE8DD; --ground-2:#F5F1E8; --ground-3:#E1DACB;
-  --ink:#1C1A16; --ink-2:#4A463E; --ink-3:#7C766A;
+  /* ink-3 是最次级的小字，压到 4.5:1 才够无障碍 —— 再浅一档就会被判不及格。
+     accent / accent-2 同理：它们也常当正文色用。改这几个值前先算对比度。 */
+  --ink:#1C1A16; --ink-2:#4A463E; --ink-3:#6B6459;
   --rule:rgba(28,26,22,.16); --rule-2:rgba(28,26,22,.075);
-  --accent:#4A7358; --accent-2:#567F68;
+  --accent:#466E53; --accent-2:#4C6E5A;
+  /* accent-deep：给落在 rule-2 那层淡底上的文字用 —— 底纹会把对比度压掉一档，
+     同一个色这里需要比在净宣纸上更深才够 4.5:1 */
+  --accent-deep:#3F614A;
   --seal-ink:#F4EFE6;
   --surf-o:.30; --frame:rgba(28,26,22,.13);
-  --crack:74,115,88;
+  --crack:70,110,83;
   --wash:1;
 }
 /* 墨地 —— 纸墨反转：地是墨，字是宣纸色 */
 [data-theme="ink"]{
   color-scheme:dark;
   --ground:#191714; --ground-2:#211E1A; --ground-3:#100E0C;
-  --ink:#E8E3D8; --ink-2:#A9A395; --ink-3:#6E695E;
+  --ink:#E8E3D8; --ink-2:#A9A395; --ink-3:#8F897B;
   --rule:rgba(232,227,216,.17); --rule-2:rgba(232,227,216,.08);
   --accent:#93BCA2; --accent-2:#7FB08F;
+  --accent-deep:#A9CBB6;
   --seal-ink:#F4EFE6;
   --surf-o:.22; --frame:rgba(232,227,216,.14);
   --crack:147,188,162;
@@ -183,6 +191,21 @@ header{
   transition:transform .5s var(--ease)}
 .navlinks a:hover{color:var(--ink)}
 .navlinks a:hover::after{transform:scaleX(1)}
+
+/* 卷外目录：站级页面，与卷内篇次隔一道乌丝栏。
+   低一档的颜色 —— 它们是「卷外」，不该和五卷抢注意力 */
+.navpages{display:flex;align-items:center;gap:clamp(12px,1.7vw,22px);
+  padding-left:clamp(12px,1.8vw,22px);border-left:1px solid var(--rule-2)}
+.navpages a{font-family:var(--serif-cn);font-size:.79rem;color:var(--ink-3);
+  letter-spacing:.13em;padding-bottom:2px;position:relative;
+  transition:color .4s var(--ease-soft)}
+.navpages a::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .5s var(--ease)}
+.navpages a:hover{color:var(--ink)}
+.navpages a:hover::after{transform:scaleX(1)}
+.navpages a[aria-current="page"]{color:var(--ink)}
+.navpages a[aria-current="page"]::after{transform:scaleX(1)}
 
 .tswitch{flex:none;display:flex;border:1px solid var(--rule);border-radius:100px;
   padding:3px;gap:2px;background:var(--ground-2)}
@@ -625,7 +648,7 @@ html.js .work.in .dw{stroke-dashoffset:0}
   font-size:.755rem;line-height:1.85;color:var(--ink-3)}
 .fig-note b{font-family:var(--serif-cn);font-weight:600;color:var(--ink);
   letter-spacing:.14em;margin-right:.55em;font-size:.72rem}
-.fig-note code{font-family:var(--mono);font-size:.94em;color:var(--accent-2);
+.fig-note code{font-family:var(--mono);font-size:.94em;color:var(--accent-deep);
   background:var(--rule-2);padding:1px 5px;border-radius:3px}
 .timeline{margin-top:clamp(40px,6vh,70px);border-top:1px solid var(--rule);
   padding-top:clamp(26px,4vh,46px)}
@@ -730,7 +753,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,6vh,68px) 0}
   html.js .glaze .glaze-swatch::after,
   html.js .mat .m-ulan i,
   html.js .seal-slot,
-  html.js .toc-list li,html.js .toc-foot{
+  html.js .toc-list li,html.js .toc-out-head,html.js .toc-foot{
     opacity:1!important;transform:none!important;clip-path:none!important}
   /* 解剖图的线：不动画就整条给出来，别留半截描到一半的线 */
   html.js .work .dw{stroke-dashoffset:0!important}
@@ -783,7 +806,14 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,6vh,68px) 0}
 .toc[data-open="true"] .toc-list li:nth-child(4){transition-delay:.28s}
 .toc[data-open="true"] .toc-list li:nth-child(5){transition-delay:.34s}
 .toc[data-open="true"] .toc-list li:nth-child(6){transition-delay:.40s}
-.toc-foot{opacity:0;transition:opacity .5s var(--ease) .46s}
+/* 卷外目录接在五卷后面浮起：同一条帘子落下，条目一条接一条，别挤成一批 */
+.toc-out-head{opacity:0;transform:translateY(11px);
+  transition:opacity .42s var(--ease) .40s,transform .42s var(--ease) .40s}
+.toc[data-open="true"] .toc-out-head{opacity:1;transform:none}
+.toc[data-open="true"] .toc-out li:nth-child(1){transition-delay:.46s}
+.toc[data-open="true"] .toc-out li:nth-child(2){transition-delay:.52s}
+.toc[data-open="true"] .toc-out li:nth-child(3){transition-delay:.58s}
+.toc-foot{opacity:0;transition:opacity .5s var(--ease) .66s}
 .toc[data-open="true"] .toc-foot{opacity:1}
 body.toc-open{overflow-y:hidden}
 .toc-list{list-style:none}
@@ -799,6 +829,7 @@ body.toc-open{overflow-y:hidden}
   color:var(--accent-2);letter-spacing:.2em}
 .toc-lat{margin-left:auto;font-family:var(--mono);font-size:.585rem;
   letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase}
+.toc-out-head{margin-top:32px;color:var(--ink-3);padding-left:calc(1.7em + 16px)}
 .toc-foot{margin-top:26px}
 
 /* ═══ 开卷 · 入场编排 ═══
@@ -901,6 +932,7 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 /* ── 窄屏：换目次导航 ── */
 @media (max-width:820px){
   .navlinks{display:none}
+  .navpages{display:none}      /* 站级页面这一组也收进目次，顶栏只留站名与开关 */
   .toc-btn{display:flex}
   #ear{display:none}            /* 触屏交给目次，右侧栏会挡手势，也抢不到空间 */
 }

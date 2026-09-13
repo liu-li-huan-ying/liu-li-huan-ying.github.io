@@ -15,6 +15,9 @@ dist-ssr
 # Lighthouse 跑完留下的报告，别进仓库
 .lighthouseci
 
+# 子集化字体的源字体缓存（每个 20MB 上下），产物在 public/fonts
+.fontcache
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,8 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fontsource/jetbrains-mono/400.css'
-import '@fontsource/jetbrains-mono/500.css'
-import '@fontsource/jetbrains-mono/600.css'
+// 只要 latin 子集：整包会连 cyrillic / greek / vietnamese 一起给，
+// 每字重六条 @font-face，其中几条还被内联成 base64 塞进渲染阻塞的 CSS 里
+import '@fontsource/jetbrains-mono/latin-400.css'
+import '@fontsource/jetbrains-mono/latin-500.css'
+import '@fontsource/jetbrains-mono/latin-600.css'
 import './index.css'
 import App from './App.jsx'
 

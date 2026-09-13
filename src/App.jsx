@@ -130,7 +130,9 @@ function Routed() {
 
   return (
     <>
-      {isHome && <Toc />}
+      {/* 目次每一页都挂：窄屏下顶栏的篇次与目录都是收起的，它是唯一能换页的入口。
+          书耳跟随首页各卷的滚动进度，只有首页有意义 */}
+      <Toc />
       {isHome && <Ear />}
       <main id="main" key={route}>
         {view}

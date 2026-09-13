@@ -1,6 +1,8 @@
 /* 站点样式入口
+   fonts.css  —— 自托管字体的 @font-face（生成物，见 scripts/build-fonts.mjs）。
    scroll.css —— 设计系统本体，由 design-proposal/index.html 的 <style> 原样抽出。
                  要改观感请改那里，改完同步回设计稿，两边别各写一份。
    site.css   —— 正式站点特有的部分：子页面版式、markdown 正文、焦点态。 */
+@import './styles/fonts.css';
 @import './styles/scroll.css';
 @import './styles/site.css';

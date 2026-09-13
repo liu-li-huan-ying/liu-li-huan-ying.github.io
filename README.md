@@ -36,7 +36,8 @@
 | 🪧 **篆书钤印** | `lib/sealGlyphs.js` 是《说文》小篆字形的**编译产物**（一个字可含多个部件，各带平移与横向压缩），`lib/seals.js` 现场组装成白文/朱文印 |
 | 🖱 **毛笔光标** | `lib/cursor.js`：随动笔锋与落墨点，触屏与降低动效偏好下自动关掉 |
 | 🔒 **联系方式混淆** | QQ / 微信号以 XOR + Base64 密文存在 `data-copy` 上，点击那一刻才在内存里解出并写入剪贴板 |
-| 📄 **子页面** | 手写 hash 路由：作品目录 / 作品详情 / 手记目录 / 手记正文 / 关于 / 404，GitHub Pages 上零配置可用 |
+| 📄 **子页面** | 手写 hash 路由：作品目录 / 作品详情 / 手记目录 / 手记正文 / 关于 / 404，GitHub Pages 上零配置可用。顶栏分两层——「作品目录 / 手记目录 / 关于」是站级页面，五个篇次是卷内锚点；窄屏收进「目次」面板 |
+| 🔤 **字体** | 不连 Google Fonts：按站点实际用字子集化后自托管，可变字体一个文件顶四个字重，见下 |
 | 📊 **GitHub 数据块** | 贡献热力图（青瓷深浅表示当天提交量）+ 仓库星标，读 `api.github.com` 与 `github-contributions-api`，拿不到就整块不显示 |
 
 ## 📁 结构
@@ -44,6 +45,7 @@
 ```
 src/
 ├── styles/
+│   ├── fonts.css    # 生成物：自托管字体的 @font-face（勿手改，见「字体」一节）
 │   ├── scroll.css   # 设计系统本体：令牌 + 版心 + 书耳 + 印章 + 各卷版式
 │   └── site.css     # 站点自有：子页版式、markdown 正文、代码高亮配色、打印
 ├── components/
@@ -108,6 +110,42 @@ node scripts/make-favicon.mjs 影       # 换一个字
 ```
 
 favicon 与站内钤印共用 `src/lib/sealGlyphs.js` 那套字形，所以两者长得一样。
+
+## 🔤 字体
+
+**不连 Google Fonts。** 中日韩字体在那边只能按固定分片下发：首页会拉 23 个 80KB 上下的
+woff2（合计 1.66MB）外加一张 121KB、含 429 条 `@font-face` 的样式表，每片到达都触发一次
+全文重排——实测 Style & Layout 5 秒、LCP 13 秒，Lighthouse 性能分因此掉到 0.52。
+
+现在按站点**实际用字**（扫 `src/` 得到 1195 字）子集化后自托管：
+
+```bash
+npm run build:fonts     # → public/fonts/*.woff2 + src/styles/fonts.css（都是提交进仓库的产物）
+```
+
+两条原则，都是从 Lighthouse 的失败里换来的：
+
+- **可变字体，一个文件顶掉所有字重。** 300/400/600/900 四个静态实例各存一份完整轮廓，合计
+  854KB；保留 `wght` 轴只存一份轮廓加变化量，同样的字只要 407KB。文件少了还有个隐藏收益：
+  字体到达只触发**一次**重排，不是四次。
+- **分两片，靠 `font-family` 回退而不是 `unicode-range`。** 主片 = 首页要用到的 829 字
+  （含手记的 YAML 头，标题/摘要/标签要显示在列表页上）；Ext 片 = 只在手记正文里出现的 366 字。
+  两片用两个 family 名、都不写 `unicode-range`——浏览器先在主片找字，找不到才去 Ext 取，
+  首页因此一个字都不缺、Ext 压根不会被请求。（逐字列举上千字的 `unicode-range` 要近 5KB，
+  塞进渲染阻塞的主 CSS 里，省下的字体字节还不够抵它。）
+
+首页实际下载：中文主片 + 西文两片 = **515KB**；打开手记时才会多取 Ext 那 204KB。
+
+`index.html` 里**刻意不 preload**：实测 preload 会让这条高优先级请求去抢渲染阻塞的 CSS/JS 的
+带宽，Lighthouse 模拟 1.6Mbps 下 FCP 反而从 2.3s 涨到 8.6s。
+
+其余细节：
+
+- 源字体是可变字体（Noto Serif SC 22.6MB + Cormorant Garamond 两份），子集化时保留轴；
+  下过一次就缓存在 `.fontcache/`（已 gitignore），平常构建和 CI 都不需要跑。
+- 依赖 `python` + `fonttools` + `brotli`：`pip install fonttools brotli`，
+  解释器不对就设 `FONTS_PYTHON=/path/to/python`。
+- **改了内容、加了生僻字之后要重跑**。漏掉的字不会报错，只是那一个字退到系统衬线（逐字回退）。
 
 ## ☁️ 部署
 

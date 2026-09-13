@@ -48,7 +48,7 @@ export default function Material() {
               <div className="glaze-meta">
                 <span className="glaze-name">青瓷</span>
                 <span className="glaze-py">Qing Ci</span>
-                <span className="glaze-hex">#567F68</span>
+                <span className="glaze-hex">#4C6E5A</span>
                 <p className="glaze-note">越窑的温润青灰。整页唯一的彩色，用在细线、序号与链接。</p>
                 <div className="glaze-use">主色 · 唯一的彩色</div>
               </div>

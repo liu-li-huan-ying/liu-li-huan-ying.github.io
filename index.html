@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <!-- CSP：只放行页面真正会连的域名 ——
-         字体（Google Fonts）、统计（百度 / Clarity / GoatCounter）、
-         两块 GitHub 数据（仓库信息与贡献记录）。 -->
+         统计（百度 / Clarity / GoatCounter）、两块 GitHub 数据（仓库信息与贡献记录）。
+         字体已经自托管（public/fonts，同源），不再需要放行任何第三方字体域。 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: https: blob:; connect-src 'self' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at https://*.goatcounter.com https://api.github.com https://github-contributions-api.jogruber.de; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https: blob:; connect-src 'self' https://hm.baidu.com https://www.clarity.ms https://gc.zgo.at https://*.goatcounter.com https://api.github.com https://github-contributions-api.jogruber.de; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
     <title>琉璃幻影 · Glazed Mirage</title>
     <meta
@@ -20,19 +20,12 @@
     <meta name="theme-color" content="#EDE8DD" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#191714" media="(prefers-color-scheme: dark)" />
 
-    <!-- 衬线字体异步加载：普通 <link rel=stylesheet> 会阻塞脚本，
-         而 fonts.googleapis.com 在本地网络下时常不可达，一卡就是几十秒，
-         入场动画、冰裂、换地色会集体失效，页面看着像坏了。
-         media="print" 既不阻塞渲染也不阻塞脚本，加载完再切回 all。
-         兜底字体栈已备好系统中文衬线，最坏情况只是衬线略变，功能不受影响 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all';this.onload=null"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600;900&display=swap"
-    />
+    <!-- 字体自托管：public/fonts 下的 woff2 是按站点实际用字子集化过的。
+         分档与字重全在 src/styles/fonts.css（生成物），
+         重做字体：npm run build:fonts（见 README「字体」一节）
+         这里刻意不 preload：实测 preload 会让这条高优先级请求去抢
+         渲染阻塞的 CSS/JS 的带宽，Lighthouse 模拟 1.6Mbps 下 FCP 从 2.3s 涨到 8.6s，
+         得不偿失。字体与样式表同源，本来就在同一条连接上排队，不缺那一次提前。 -->
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />

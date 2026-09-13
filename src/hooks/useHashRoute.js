@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 
+/* 全站就一条 hash 约定，别在别处再解析一次：
+   #/projects、#/blog、#/projects/:id、#/blog/:slug、#/about 是站级页面（路由）；
+   #work、#material 这种只是首页某卷的页内锚点，parse 出来的仍是 '/'。
+   所以写链接时看清前缀带不带斜杠 —— 带了才是换页。 */
 function parse() {
   const raw = window.location.hash
   if (!raw.startsWith('#/')) return '/'
@@ -20,31 +24,4 @@ export function useHashRoute() {
   }, [])
 
   return route
-}
-
-export function navigate(path) {
-  const target = `#${path}`
-  if (window.location.hash === target) return
-  window.history.pushState(null, '', target)
-  window.dispatchEvent(new HashChangeEvent('hashchange'))
-}
-
-export function goSection(id) {
-  if (!window.location.hash.startsWith('#/')) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    window.history.replaceState(null, '', `#/${id}`)
-    return
-  }
-  navigate('/')
-  let attempts = 0
-  const tryScroll = () => {
-    const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
-    } else if (attempts < 20) {
-      attempts++
-      requestAnimationFrame(tryScroll)
-    }
-  }
-  requestAnimationFrame(tryScroll)
 }

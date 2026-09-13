@@ -23,12 +23,14 @@ export default function Closing() {
 
           <div className="socials rv" style={{ '--d': "80" }}>
             {profile.socials.map((s) =>
+              // 复制按钮的 aria-label 必须把可见文本整个包含进去：
+              // note（账号）也看得见，漏了它无障碍会判「可访问名不含可见文本」
               s.url ? (
                 <a key={s.label} href={s.url} target="_blank" rel="noopener">
                   {s.label} <span>{s.note}</span>
                 </a>
               ) : (
-                <button key={s.label} type="button" className="copy" data-copy={s.enc} aria-label={`复制${s.label}`}>
+                <button key={s.label} type="button" className="copy" data-copy={s.enc} aria-label={`复制${s.label} ${s.note}`}>
                   {s.label} <span>{s.note}</span>
                 </button>
               ),
