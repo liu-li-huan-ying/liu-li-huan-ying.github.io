@@ -199,9 +199,12 @@ export function initScrollDrive(){
 
   /* 换页后 DOM 整个换了，缓存的布局量全部作废（scrollHeight 也变了）。
      重挂监听会重复计一遍，所以留这个 refresh 给外面在换页后调。
-     animateHeal 供 deckNav 在引首把「破镜重圆」当动画播一次 */
+     animateHeal / resetHeal / getHeal 供 deckNav 驱动引首的「破镜重圆」：
+     播一次愈合、回到卷首重置为裂满（可重播）、读当前愈合进度 */
   return {
     refresh: function(){ measure(); onScroll() },
-    animateHeal: animateHeal
+    animateHeal: animateHeal,
+    resetHeal: function(){ healLocked = false; renderHeal(0) },
+    getHeal: function(){ return lastH < 0 ? 0 : lastH }
   }
 }

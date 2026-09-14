@@ -7,11 +7,11 @@ import { getRollTransition } from './rollTransition.js'
    翻屏不自己滚，而是复用换篇转场 rollTransition（View Transition + 木轴），
    与点导航 / 目次是同一段「手卷滚过一格」——观感不分叉。
 
-   引首（首屏）例外：往下翻时先播完「破镜重圆」（冰裂愈合 0→1），
-   播完再卷轴翻到「壹 · 琉璃」——一次手势，愈合一帧不跳。
-   回到卷首由 rollTransition 负责把冰裂重置为裂满，可再看一次。
+   引首（首屏）分两段走：往下第一滚只播「破镜重圆」（冰裂愈合 0→1）并停在引首，
+   让人看清愈合、读完合上后浮现的那句话；已合上之后再滚，才卷轴翻到「壹 · 琉璃」。
+   回到卷首时把冰裂重置为裂满，可再看一次。
    ══════════════════════════════════════════════════════════════ */
-var HEAL_MS = 900
+var HEAL_MS = 1200
 
 export function initDeckNav(drive){
   var root = document.documentElement
@@ -48,19 +48,22 @@ export function initDeckNav(drive){
     i = Math.max(0, Math.min(i, els.length - 1))
     var from = currentIndex(els)
     if (i === from) return
-    lock = true
 
-    function done(){ lock = false }
-    function rollNow(){
-      Promise.resolve(roll.go(els[i]).finished).then(done, done)
-    }
-
-    /* 引首往下一格：先把破镜重圆播完，再卷轴翻屏（一次手势，愈合一帧不跳） */
-    if (i === from + 1 && from === 0 && drive && !reduce){
-      drive.animateHeal(1, HEAL_MS, rollNow)
+    /* 引首（首屏）往下一格分两段 ——
+       第一滚只播「破镜重圆」、停在引首，愈合后浮现的那句话才留得住给人欣赏；
+       已合上之后再滚，才卷轴翻到下一屏。 */
+    if (i === from + 1 && from === 0 && drive && !reduce && drive.getHeal() < 0.999){
+      lock = true
+      drive.animateHeal(1, HEAL_MS, function(){ lock = false })
       return
     }
-    rollNow()
+
+    lock = true
+    function done(){ lock = false }
+    var opts = {}
+    /* 落到卷首：把冰裂重置为裂满，好再看一次破镜重圆（可重播） */
+    if (i === 0 && drive) opts.onEnter = function(){ drive.resetHeal() }
+    Promise.resolve(roll.go(els[i], opts).finished).then(done, done)
   }
 
   function guard(){

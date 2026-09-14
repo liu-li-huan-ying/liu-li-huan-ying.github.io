@@ -1,9 +1,8 @@
-import { redrawCrackles, setCrackleHeal } from './crackle.js'
+import { redrawCrackles } from './crackle.js'
 /* ══════════════════════════════════════════════════════════════
    换篇转场（卷轴）· 共享控制器
    点导航 / 目次 / 书耳，以及首页整屏吸附（deck）的跳屏，都走这里 ——
    同一次「手卷滚过一格」（View Transition + #rollRod），行为与观感不分叉。
-   落在卷首（y ≤ 0，即引首）时把冰裂重置为「裂满」，好再看一次破镜重圆。
    ══════════════════════════════════════════════════════════════ */
 var ctrl = null
 
@@ -38,18 +37,15 @@ export function getRollTransition(){
   }
 
   /* opts.onEnter 在 VT 的「新快照」生成之前跑（就在快照回调里），
-     用来同步改 DOM 状态。落在卷首时把冰裂重置为裂满 —— 这样落定的那一帧
-     就已经是裂开的引首，可再看一次破镜重圆（用户选「重置·可重播」）。
-     必须同步做：光等滚动事件异步回调，新快照会先定格在已合上，再突兀地回裂。 */
+     用来同步改 DOM 状态 —— 必须同步：异步等滚动事件回调，
+     新快照会先定格在旧状态，再突兀地跳变 */
   function go(el, opts){
     opts = opts || {}
     var rod = rodEl()
     var y = targetY(el)
-    var toTop = y <= 0
 
     function after(){
       redrawCrackles()
-      if (toTop) setCrackleHeal(0)
       if (opts.onEnter) opts.onEnter()
     }
 
