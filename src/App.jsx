@@ -28,6 +28,7 @@ import { initTheme } from './lib/theme'
 import { initContacts } from './lib/contacts'
 import { initToc } from './lib/toc'
 import { initRoll } from './lib/roll'
+import { initDeckNav } from './lib/deckNav'
 import { initSeals } from './lib/seals'
 import { initReveal } from './lib/reveal'
 import { initCount } from './lib/count'
@@ -85,6 +86,7 @@ function Routed() {
     initContacts()
     initToc()
     initRoll()
+    initDeckNav()
     drive.current = initScrollDrive()
   }, [])
 
@@ -105,6 +107,14 @@ function Routed() {
     if (!m) return
     document.getElementById(m[1])?.scrollIntoView()
   }, [route])
+
+  /* 首页 deck 模式：整屏吸附 + 滚轮跳屏。
+     deck-mode 类只在首页挂上、子页面摘掉，保证 deckNav 的 guard 在子页失效。
+     进首页顺手滚回卷首，避免从子页（保留的滚动位置）回来落在半屏 */
+  useEffect(() => {
+    document.documentElement.classList.toggle('deck-mode', isHome)
+    if (isHome) window.scrollTo(0, 0)
+  }, [isHome])
 
   const blogMatch = route.match(/^\/blog\/(.+)$/)
   const projMatch = route.match(/^\/projects\/(.+)$/)

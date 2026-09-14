@@ -6,7 +6,7 @@ import { profile } from '../../data/profile'
 export default function Colophon() {
   return (
     <>
-      <footer>
+      <footer id="colophon">
         <div className="wrap foot">
           <div>
             <span className="seal-slot" style={{ '--w': "27px", verticalAlign: "-8px", marginRight: "11px", '--tilt': "-1.4deg" }} data-seal="璃|1|1|zhu" aria-hidden="true"></span>
