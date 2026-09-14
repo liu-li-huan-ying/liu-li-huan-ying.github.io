@@ -4,11 +4,9 @@ import { setCrackleHeal } from './crackle.js'
    全部合进一个 rAF，滚动监听 passive
    ══════════════════════════════════════════════════════════════ */
 export function initScrollDrive(){
-  var bar = document.getElementById('progress')
-  var hero = document.querySelector('.hero')
-  var fill = document.getElementById('healFill')
-  var cap = document.getElementById('healCap')
-  var healBox = document.getElementById('heal')
+  /* 引首这一组节点随首页挂载/卸载而整批换掉（React key={route}）——
+     别在 init 时缓存旧引用，每次 measure 重新取，否则换页回来进度条就不动了 */
+  var bar, hero, fill, cap, healBox
   var doc = document.documentElement
   var ticking = false
 
@@ -31,6 +29,11 @@ export function initScrollDrive(){
 
   function measure(){
     var y = window.pageYOffset || doc.scrollTop
+    bar = document.getElementById('progress')
+    hero = document.querySelector('.hero')
+    fill = document.getElementById('healFill')
+    cap = document.getElementById('healCap')
+    healBox = document.getElementById('heal')
     /* innerHeight 直接用，避免 scrollHeight 触发额外布局 */
     maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight)
     if (hero){
@@ -88,6 +91,36 @@ export function initScrollDrive(){
     })
   }
 
+  /* 愈合的统一落点：canvas + 进度条 + 「裂过，然后合上」标签，只在这一处写 */
+  function renderHeal(h){
+    if (Math.abs(h - lastH) <= 0.0012) return
+    setCrackleHeal(h)
+    if (fill) fill.style.transform = 'scaleX(' + h.toFixed(4) + ')'
+    if (cap) cap.classList.toggle('on', h > 0.9)
+    lastH = h
+  }
+
+  /* 破镜重圆：deck 下首屏整屏跳，走不到滚动行程 —— 由 deckNav 在手势里调这个
+     把愈合当动画一次播完（0→1），播完再翻屏。期间 healLocked 置位挡住滚动计算，
+     免得两边抢同一个 heal 值。缓动与站点 --ease-inout 同感 */
+  var healLocked = false
+  function animateHeal(to, dur, done){
+    if (!hero){ if (done) done(); return }
+    var from = lastH < 0 ? 0 : lastH
+    if (Math.abs(to - from) < 0.0015){ if (done) done(); return }
+    healLocked = true
+    var t0 = performance.now()
+    function step(now){
+      var p = (now - t0) / dur
+      p = p < 0 ? 0 : (p > 1 ? 1 : p)
+      var e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2
+      renderHeal(from + (to - from) * e)
+      if (p < 1) requestAnimationFrame(step)
+      else { healLocked = false; if (done) done() }
+    }
+    requestAnimationFrame(step)
+  }
+
   function frame(){
     var y = window.pageYOffset || doc.scrollTop
 
@@ -127,8 +160,9 @@ export function initScrollDrive(){
 
     /* 裂缝愈合：在引首的滚动行程里完成，提前 18% 收尾好让人看清合上的样子。
        首屏没撑出滚动行程时（矮屏摊平 / 降级），退回「0.62 屏」的虚拟行程 ——
-       否则要么拿接近 0 的除数算出跳飞的值，要么直接跳到已合上，动画就白做了 */
-    if (hero){
+       否则要么拿接近 0 的除数算出跳飞的值，要么直接跳到已合上，动画就白做了。
+       deck 下整屏跳不走滚动，改由 deckNav 调 animateHeal 播一次（healLocked 让位） */
+    if (hero && !healLocked){
       var h = 1
       var range = heroRange > 60 ? heroRange : window.innerHeight * 0.62
       if (range > 0){
@@ -141,12 +175,7 @@ export function initScrollDrive(){
             String(Math.max(0, 1 - Math.max(0, raw - 0.9) / 0.1))
         }
       }
-      if (Math.abs(h - lastH) > 0.0012){
-        setCrackleHeal(h)
-        if (fill) fill.style.transform = 'scaleX(' + h.toFixed(4) + ')'
-        if (cap) cap.classList.toggle('on', h > 0.9)
-        lastH = h
-      }
+      renderHeal(h)
     }
     ticking = false
   }
@@ -169,6 +198,10 @@ export function initScrollDrive(){
   frame()
 
   /* 换页后 DOM 整个换了，缓存的布局量全部作废（scrollHeight 也变了）。
-     重挂监听会重复计一遍，所以留这个 refresh 给外面在换页后调 */
-  return { refresh: function(){ measure(); onScroll() } }
+     重挂监听会重复计一遍，所以留这个 refresh 给外面在换页后调。
+     animateHeal 供 deckNav 在引首把「破镜重圆」当动画播一次 */
+  return {
+    refresh: function(){ measure(); onScroll() },
+    animateHeal: animateHeal
+  }
 }

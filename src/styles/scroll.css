@@ -1177,7 +1177,7 @@ html[data-theme="ink"].vt-roll.cursor-on,html[data-theme="ink"].vt-roll.cursor-o
    各卷在 deck 下重排进单屏、收紧间距，保证单屏内容完整不被截断；
    过矮的视口（≤640px 高）退回普通滚动，绝不裁切内容。
    ══════════════════════════════════════════════════════════════ */
-html.deck-mode{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+html.deck-mode{scroll-snap-type:y mandatory}
 /* deck 下每卷自带上内边距避开顶栏，锚点/跳屏须落在卷的绝对顶端 ——
    抵消全局给锚点留的 scroll-margin-top，否则整屏跳会差一截（落在上一卷尾巴上） */
 html.deck-mode [id]{scroll-margin-top:0}

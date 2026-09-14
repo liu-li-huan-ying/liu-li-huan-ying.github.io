@@ -32,7 +32,8 @@
 | --- | --- |
 | 🖋 **手卷排版** | 版心 / 天头地脚 / 乌丝栏（界格当 12 栏栅格用）全在 CSS 令牌里，纸墨两套只在 `:root` 与暗色块各定义一次，不写死颜色 |
 | 📜 **整屏吸附（首页）** | 首页每卷占满一整屏（100svh），滚动改为一屏一跳而非连续下拉：一次滚轮 / 一滑 / 一按方向键直接落到上一或下一整屏。滚动逻辑在 `lib/deckNav.js`，版式在 `scroll.css` 的 `html.deck-mode` 块；整屏重排保证单屏内容不被截断，过矮视口（≤640px 高）退回普通滚动，绝不用裁切换整屏 |
-| ❄️ **冰裂与愈合** | `lib/crackle.js`：按 Voronoi 开片切出裂纹细胞，滚动进度驱动 `heal` 由 0 → 1，逐段合上；`prefers-reduced-motion` 下直接跳到愈合态 |
+| 🎞 **翻屏＝卷轴转场** | 跳屏不自己平滑滚，而是复用换篇转场 `lib/rollTransition.js`（View Transition + `#rollRod` 木轴）—— 点导航 / 目次与整屏跳是同一段「手卷滚过一格」，观感不分叉。落在卷首时把冰裂重置为裂满，好再看一次破镜重圆 |
+| ❄️ **冰裂与愈合（破镜重圆）** | `lib/crackle.js`：按 Voronoi 开片切出裂纹细胞，`heal` 由 0 → 1 逐段合上（由外向内圆拢）；引首整屏跳时由 `deckNav` 播一次愈合动画（约 0.9s）**播完再翻屏**，一帧不跳；`prefers-reduced-motion` 下直接跳到愈合态 |
 | 🖌 **洇墨换地色** | `lib/theme.js`：优先 View Transition + `feDisplacementMap` 遮罩；缺能力时退回 clip-path 圆形硬边的降级路径 |
 | 🪧 **篆书钤印** | `lib/sealGlyphs.js` 是《说文》小篆字形的**编译产物**（一个字可含多个部件，各带平移与横向压缩），`lib/seals.js` 现场组装成白文/朱文印 |
 | 🖱 **毛笔光标** | `lib/cursor.js`：随动笔锋与落墨点，触屏与降低动效偏好下自动关掉 |
@@ -55,9 +56,10 @@ src/
 │   │                #    specimens.jsx 是四张手绘 SVG 解剖图
 │   ├── GitHubStats.jsx / GitHubHeatmap.jsx
 │   └── BackToTop.jsx / ErrorBoundary.jsx / Analytics.jsx
-├── lib/             # 运行时模块：cursor / theme / contacts / toc / roll / deckNav /
-│                    #   seals / reveal / count / crackle / scrollDrive
-│                    #   deckNav 只在首页（html.deck-mode）拦截滚动做整屏跳转
+├── lib/             # 运行时模块：cursor / theme / contacts / toc / roll / rollTransition /
+│                    #   seals / reveal / count / crackle / scrollDrive / deckNav
+│                    #   deckNav 只在首页（html.deck-mode）拦截滚动做整屏跳；
+│                    #   转场本体在 rollTransition（roll 与 deckNav 共用同一份卷轴转场）
 ├── pages/           # Home / ProjectList / ProjectDetail / BlogList / BlogPost /
 │                    #   AboutPage / NotFound
 ├── data/profile.js  # 唯一内容源：作品、自述、技能、近况、经历、文章清单

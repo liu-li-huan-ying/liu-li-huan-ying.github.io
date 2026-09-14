@@ -86,8 +86,9 @@ function Routed() {
     initContacts()
     initToc()
     initRoll()
-    initDeckNav()
     drive.current = initScrollDrive()
+    /* deckNav 需要 drive 来在引首把「破镜重圆」当动画播一次，故在其后接线 */
+    initDeckNav(drive.current)
   }, [])
 
   /* 扫 DOM 的模块：每次换页重扫一遍。React 已经提交完 DOM，量到的是真实尺寸 */
