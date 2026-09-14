@@ -91,35 +91,24 @@ export function initScrollDrive(){
     })
   }
 
-  /* 愈合的统一落点：canvas + 进度条 + 「裂过，然后合上」标签，只在这一处写 */
+  /* 愈合的统一落点：canvas + 进度条 + 「裂过，然后合上」标签，只在这一处写。
+     浮现的话随愈合进度**渐显**（约 0.78→1 淡入），于是半途也看得见、合上后留住人看 */
   function renderHeal(h){
     if (Math.abs(h - lastH) <= 0.0012) return
     setCrackleHeal(h)
     if (fill) fill.style.transform = 'scaleX(' + h.toFixed(4) + ')'
-    if (cap) cap.classList.toggle('on', h > 0.9)
+    if (cap){
+      var o = (h - 0.78) / 0.22
+      o = o < 0 ? 0 : (o > 1 ? 1 : o)
+      cap.style.opacity = o.toFixed(3)
+      cap.classList.toggle('on', h > 0.78)
+    }
     lastH = h
   }
 
-  /* 破镜重圆：deck 下首屏整屏跳，走不到滚动行程 —— 由 deckNav 在手势里调这个
-     把愈合当动画一次播完（0→1），播完再翻屏。期间 healLocked 置位挡住滚动计算，
-     免得两边抢同一个 heal 值。缓动与站点 --ease-inout 同感 */
+  /* healLocked：deck 下引首愈合由 deckNav 全权驱动（搓进度），这里不参与；
+     防两边抢同一个 heal 值。非 deck 时此锁恒为 false，滚动行程照常驱动愈合 */
   var healLocked = false
-  function animateHeal(to, dur, done){
-    if (!hero){ if (done) done(); return }
-    var from = lastH < 0 ? 0 : lastH
-    if (Math.abs(to - from) < 0.0015){ if (done) done(); return }
-    healLocked = true
-    var t0 = performance.now()
-    function step(now){
-      var p = (now - t0) / dur
-      p = p < 0 ? 0 : (p > 1 ? 1 : p)
-      var e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2
-      renderHeal(from + (to - from) * e)
-      if (p < 1) requestAnimationFrame(step)
-      else { healLocked = false; if (done) done() }
-    }
-    requestAnimationFrame(step)
-  }
 
   function frame(){
     var y = window.pageYOffset || doc.scrollTop
@@ -161,8 +150,12 @@ export function initScrollDrive(){
     /* 裂缝愈合：在引首的滚动行程里完成，提前 18% 收尾好让人看清合上的样子。
        首屏没撑出滚动行程时（矮屏摊平 / 降级），退回「0.62 屏」的虚拟行程 ——
        否则要么拿接近 0 的除数算出跳飞的值，要么直接跳到已合上，动画就白做了。
-       deck 下整屏跳不走滚动，改由 deckNav 调 animateHeal 播一次（healLocked 让位） */
-    if (hero && !healLocked){
+
+       ⚠️ deck 下引首愈合由 deckNav 全权驱动（可逆转：往下愈合 / 往上回裂），
+       这里不参与 —— 否则整屏停在卷首（y=0）会被算成 h=0，把已合上的又打回裂满。
+       过矮视口（≤640，与 CSS 兜底一致）deckNav 不接管，仍走这里的滚动行程 */
+    var deckOwnsHeal = doc.classList.contains('deck-mode') && window.innerHeight > 640
+    if (hero && !healLocked && !deckOwnsHeal){
       var h = 1
       var range = heroRange > 60 ? heroRange : window.innerHeight * 0.62
       if (range > 0){
@@ -199,12 +192,13 @@ export function initScrollDrive(){
 
   /* 换页后 DOM 整个换了，缓存的布局量全部作废（scrollHeight 也变了）。
      重挂监听会重复计一遍，所以留这个 refresh 给外面在换页后调。
-     animateHeal / resetHeal / getHeal 供 deckNav 驱动引首的「破镜重圆」：
-     播一次愈合、回到卷首重置为裂满（可重播）、读当前愈合进度 */
+     setHeal / getHeal 供 deckNav 搓引首「破镜重圆」的进度：同步定住某一愈合度、读当前进度 */
   return {
     refresh: function(){ measure(); onScroll() },
-    animateHeal: animateHeal,
-    resetHeal: function(){ healLocked = false; renderHeal(0) },
+    setHeal: function(h){
+      healLocked = false
+      renderHeal(h < 0 ? 0 : (h > 1 ? 1 : h))
+    },
     getHeal: function(){ return lastH < 0 ? 0 : lastH }
   }
 }
