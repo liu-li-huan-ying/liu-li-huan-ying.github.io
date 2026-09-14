@@ -25,10 +25,24 @@ function computeStats(contributions) {
     }
   }
 
+  /* 「当前连续」不能从数组末尾往回数：接口给的是**整年**（含未来日期），
+     未来那几天 count 恒为 0，从末条 12-31 起数第一格就断，永远得 0 ——
+     图上明明连着好几天，底下却写「0 天」。
+     先去到今天，再从今天往回数；今天还没提交不算断（这一天没过完），
+     从昨天接着算，与 GitHub 自己的口径一致。 */
+  const now = new Date()
+  const todayKey = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('-')
+  let i = contributions.length - 1
+  while (i >= 0 && contributions[i].date > todayKey) i -= 1
+  if (i >= 0 && contributions[i].date === todayKey && contributions[i].count === 0) i -= 1
   let current = 0
-  for (let i = contributions.length - 1; i >= 0; i -= 1) {
-    if (contributions[i].count > 0) current += 1
-    else break
+  while (i >= 0 && contributions[i].count > 0) {
+    current += 1
+    i -= 1
   }
 
   return { total, activeDays, longest, current }
@@ -90,6 +104,18 @@ export default function GitHubHeatmap({ username, year = new Date().getFullYear(
     return Object.entries(marks).map(([month, col]) => ({ month: Number(month), col }))
   }, [weeks])
 
+  /* 月份标签按「第几周」落进等宽的槽里（与格子列一一对应，随屏宽一起收放）。
+     窄屏槽窄到「10月11月」会挤在一起，这时改成隔月标一个。 */
+  const [coarse, setCoarse] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 600px)')
+    const on = () => setCoarse(mq.matches)
+    on()
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  const monthByCol = useMemo(() => new Map(monthMarks.map((m) => [m.col, m.month])), [monthMarks])
+
   if (failed) return null
 
   const stats = data ? computeStats(data.contributions) : null
@@ -105,12 +131,22 @@ export default function GitHubHeatmap({ username, year = new Date().getFullYear(
       </div>
 
       <div className="gh-heat">
-        <div className="gh-inner">
-          <div className="gh-months">
-            {/* 起点 = 星期栏宽度(16) + 间距(6)；每列 11 + 3 */}
-            {monthMarks.map(({ month, col }) => (
-              <span key={month} style={{ left: `${22 + col * 14}px` }}>{MONTHS[month - 1]}</span>
-            ))}
+        <div className="gh-frame">
+          <div className="gh-bar">
+            <i></i><i></i><i></i>
+            <span className="gh-bar-name">提交录</span>
+            <span className="gh-bar-gz">岁次 <span data-gz>丙午</span></span>
+          </div>
+          <div className="gh-inner">
+          <div className="gh-months" aria-hidden="true">
+            {/* 空格占位 = 左侧星期栏；其余 53 个槽与下面的 53 列等宽对齐，
+                格距一改、屏宽一变，标签自动跟着走，不再写死像素 */}
+            <span className="gh-mspace" />
+            {[...Array(53)].map((_, wi) => {
+              const m = monthByCol.get(wi)
+              const label = m && (!coarse || m % 2 === 1) ? MONTHS[m - 1] : ''
+              return <span className="gh-mcol" key={wi}>{label}</span>
+            })}
           </div>
           <div className="gh-grid">
             <div className="gh-weekdays">
@@ -134,26 +170,23 @@ export default function GitHubHeatmap({ username, year = new Date().getFullYear(
                     )}
                   </div>
                 ))
-              : [...Array(53)].map((_, i) => (
+                      : [...Array(53)].map((_, i) => (
                   <div className="gh-col" key={i}>
                     {[...Array(7)].map((__, j) => (
-                      <i
-                        key={j}
-                        className="gh-cell lv0"
-                        style={{ animationDelay: `${((i * 7 + j) % 20) * 60}ms` }}
-                      />
+                      <i key={j} className="gh-cell lv0" />
                     ))}
                   </div>
                 ))}
+          </div>
           </div>
         </div>
       </div>
 
       <div className="gh-legend">
-        少
+        疏
         <i className="gh-cell lv0" /><i className="gh-cell lv1" /><i className="gh-cell lv2" />
         <i className="gh-cell lv3" /><i className="gh-cell lv4" />
-        多
+        密
       </div>
 
       {stats ? (

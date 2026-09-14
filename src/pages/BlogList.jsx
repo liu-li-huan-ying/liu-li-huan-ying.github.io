@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { profile } from '../data/profile'
+import PageHead from '../components/PageHead'
+import PageFoot from '../components/PageFoot'
 
 /* 手记 · 目录
    标签签条 + 一条搜索线；按 / 聚焦搜索（和多数站点一致的习惯）。
@@ -47,13 +49,14 @@ export default function BlogList() {
           回卷首
         </a>
 
-        <div className="sec-head rv">
-          <div className="slip"><span className="slip-num">肆</span><span className="slip-line"></span><span className="slip-name">手记</span></div>
-          <div className="sec-title-wrap">
-            <span className="label">Writing</span>
-            <h2 className="d-l"><span className="mask"><span className="ch">{filtered.length === posts.length ? `全部${posts.length}篇` : `${filtered.length}篇`}</span></span></h2>
-            <p className="lead sec-sub">存储、性能，以及一些与代码无关的书。</p>
-          </div>
+        <div className="page-head">
+          <PageHead
+            num="肆"
+            name="手记"
+            latin="Writing"
+            title={filtered.length === posts.length ? `全部${posts.length}篇` : `${filtered.length}篇`}
+            sub="存储、性能，以及一些与代码无关的书。"
+          />
         </div>
 
         <div className="chips rv">
@@ -110,6 +113,12 @@ export default function BlogList() {
             ))}
           </div>
         )}
+
+        <PageFoot
+          num="肆"
+          name="手记"
+          note={`本卷共 ${posts.length} 篇。写存储与性能，也写几本与代码无关的书 —— 长的那几篇挂了篇内目次，可以挑着读。`}
+        />
       </div>
     </section>
   )

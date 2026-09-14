@@ -17,7 +17,10 @@ export default function Masthead() {
 
   return (
     <>
-      <header>
+      {/* 顶栏的样式挂在 .site-head 上，不用裸 header 选择器 ——
+          页面正文里也会出现语义正确的 <header>（如子页的卷首题识），
+          裸选择器会把它们一并当成固定顶栏，标题直接飞到视口顶端 */}
+      <header className="site-head">
         <nav className="nav">
           <span className="seal-slot" style={{ '--w': "34px", '--tilt': "-1.2deg" }} data-seal="璃|1|1|zhu" aria-hidden="true"></span>
           <span className="wordmark">琉璃幻影</span>

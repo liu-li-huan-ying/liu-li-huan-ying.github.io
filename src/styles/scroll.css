@@ -165,7 +165,7 @@ a{color:inherit;text-decoration:none}
 .skip:focus{left:12px;top:12px}
 
 /* ═══ 卷首题签 ═══ */
-header{
+.site-head{
   position:fixed;top:0;left:0;right:0;z-index:60;
   padding-top:var(--inset-t);      /* 让毛玻璃底延展到刘海后面，内容则避让 */
   background:color-mix(in srgb,var(--ground) 85%,transparent);
@@ -243,13 +243,27 @@ html.vt-ink.vt-theme::view-transition-new(root){
    顶栏与书耳各自命名，不跟着卷 —— 否则导航会在转场里凭空消失。
    这三个名字只在转场期间挂上，平时不留 view-transition-name，
    免得同名的隐藏元素在别的转场里打架 */
-html.vt-roll header{view-transition-name:site-head}
+html.vt-roll .site-head{view-transition-name:site-head}
 html.vt-roll #ear{view-transition-name:site-ear}
 html.vt-roll #rollRod{view-transition-name:roll-rod}
-html.vt-roll::view-transition-old(site-head),
-html.vt-roll::view-transition-new(site-head),
+/* 顶栏在转场里淡出：旧快照（可见）淡出，新快照（脚本已挂 vt-hide-nav → 不可见）
+   保持空 —— 整段转场顶栏都是空的，落定后由 live 顶栏的 transition 淡入。
+   书耳在右侧、不挡题名，维持原样硬切（同内容，看不出变化）。 */
+html.vt-roll::view-transition-old(site-head){animation:nav-out .35s ease both}
+html.vt-roll::view-transition-new(site-head){animation:none}
 html.vt-roll::view-transition-old(site-ear),
 html.vt-roll::view-transition-new(site-ear){animation:none}
+@keyframes nav-out{from{opacity:1}to{opacity:0}}
+/* 转场中由脚本在 VT 回调里挂上 vt-hide-nav：新快照的顶栏即不可见；
+   done 里摘掉后，下面这条 transition 让 live 顶栏淡回。
+   ⚠️ 隐去必须**瞬时**（transition:none）。新快照是在回调返回后的下一帧才拍的，
+   若这一刻 opacity 还在从 1 往 0 的路上，新快照就会把半透明的顶栏一起拍进去 ——
+   而 ::view-transition-new(site-head) 是 animation:none 的静态图，它压在最上层，
+   于是顶栏先「弹」一下、等转场收尾再淡进来，看起来就是闪了两下。
+   带着 vt-hide-nav 时禁用过渡，拍到的才是干干净净的空；摘掉后 .3s 的过渡
+   才接管，把顶栏一次淡回。 */
+html.vt-hide-nav .site-head{opacity:0;transition:none}
+.site-head{transition:opacity .3s ease}
 
 /* 旧的一屏：卷口从下往上收。opacity 留一点，好让「卷起来的那截」还有厚度 */
 /* 一个「格」1.1s 滚完 —— 原来 0.42s / 0.56s 并错开 0.26s 起步，两屏各滚各的，
@@ -841,7 +855,7 @@ html.js .ulan{animation:ulan-draw 1.5s var(--ease) .12s both}
   from{clip-path:inset(0 0 100% 0)}
   to{clip-path:inset(0 0 0 0)}
 }
-html.js header{animation:head-drop .95s var(--ease) both}
+html.js .site-head{animation:head-drop .95s var(--ease) both}
 @keyframes head-drop{
   from{transform:translateY(-101%)}
   to{transform:none}
@@ -858,7 +872,7 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 
 /* ═══ 书耳 · 卷次表 ═══
    刻意不做「一根从头拖到尾的进度条」—— 那是均匀的、不带信息的。
-   这里用古籍的「卷次」：六篇各按自己真实的篇幅占长度，篇与篇之间有界格刻度，
+   这里用古籍的「卷次」：五卷各按自己真实的篇幅占长度，篇与篇之间有界格刻度，
    整根轴就是这一页的缩微。在哪一篇、这篇还剩多少，一眼看得出。
    「鱼尾」是版心对折的基准记号，用来指位置；
    「书耳」是版框外那块小空格，内刻简化篇题，专为「便于翻检」。
@@ -1163,7 +1177,7 @@ html[data-theme="ink"].vt-roll.cursor-on,html[data-theme="ink"].vt-roll.cursor-o
 
 /* ── 打印 ── */
 @media print{
-  .surface,.ulan,.glaze-panel,header,.toc,.heal,.heal-cap,#progress,#fx,#cursor{display:none!important}
+  .surface,.ulan,.glaze-panel,.site-head,.toc,.heal,.heal-cap,#progress,#fx,#cursor{display:none!important}
   .hero{height:auto}
   .hero-sticky{position:static;height:auto}
   html.js .rv,html.js .mask>.ch{opacity:1!important;transform:none!important}

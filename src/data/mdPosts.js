@@ -35,5 +35,17 @@ export const posts = Object.entries(rawFiles)
 export async function renderMarkdown(markdown) {
   const { marked } = await import('marked')
   marked.setOptions({ gfm: true, breaks: true })
-  return DOMPurify.sanitize(marked.parse(markdown), { ADD_TAGS: ['iframe'] })
+  const clean = DOMPurify.sanitize(marked.parse(markdown), { ADD_TAGS: ['iframe'] })
+
+  /* 篇内目次要有锚点，id 就必须**跟着正文一起落进这段 HTML**。
+     不能事后用副作用往 DOM 上补 —— 实测补完 id 后 2ms 内 React 又把同一段
+     innerHTML 写了一遍（StrictMode 下 renderMarkdown 会被跑两次），补上的 id
+     全被冲掉：目次的 href 还在、getElementById 却是 null，点了毫无反应。
+     在这里就地编号，字符串里带着 id 出去，之后写多少遍都在。 */
+  const tpl = document.createElement('template')
+  tpl.innerHTML = clean
+  tpl.content.querySelectorAll('h2, h3').forEach((h, i) => {
+    h.id = `sec-${i}`
+  })
+  return tpl.innerHTML
 }

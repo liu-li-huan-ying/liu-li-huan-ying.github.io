@@ -22,12 +22,19 @@ var TOUCH_DIV = 320             /* 触摸拖动像素折算系数 */
 var INTRO_BUFFER = 0.6         /* 合上后到翻屏之间的「空白容错滚程」（约 3 格），制造段落感、防一滚而过 */
 var MAX_STEP = 0.35            /* 单次手势最多推进的虚拟进度，避免一次猛滚直接跳过愈合/缓冲 */
 var HEAL_RANGE = 1 + INTRO_BUFFER
+/* 触控板一次轻扫会连发十几条 wheel 事件（每条 deltaY 只有几像素），
+   鼠标一格却是上百。所以翻屏不能「一条事件跳一屏」。 */
+var WHEEL_TRIGGER = 60         /* 累计到这个量才算一次「明确的手势」 */
+var WHEEL_IDLE = 130           /* 这么久没有新事件，就认为手势结束 */
 
 export function initDeckNav(drive){
   var root = document.documentElement
   var roll = getRollTransition()
   var reduce = roll.reduce
   var lock = false
+  var wheelAcc = 0               /* 当前手势累计的滚动量 */
+  var wheelIdle = 0              /* 「手势结束」的定时器 */
+  var wheelHeld = false          /* 本场手势已经翻过一屏了，余波不再翻 */
 
   /* 首页七屏的 id 顺序，必须与 DOM 顺序一致 */
   var SECTIONS = ['top', 'material', 'work', 'about', 'writing', 'contact', 'colophon']
@@ -94,6 +101,7 @@ export function initDeckNav(drive){
     var cur = stageAt(els)
     if (st === cur) return
     lock = true
+    wheelHeld = true                    /* 一场手势只翻一屏，触控板惯性的余波全归这场 */
     function done(){ lock = false }
 
     /* 其余一律卷轴翻屏。落到引首时在 VT 新快照前**同步**定住愈合状态，
@@ -114,18 +122,33 @@ export function initDeckNav(drive){
 
   function onWheel(e){
     if (!guard()) return
-    if (Math.abs(e.deltaY) < 8) return
-    if (!canNav()){ e.preventDefault(); return }   /* 转场中：吞掉手势 */
+    var dy = e.deltaY
+    if (!dy) return
     e.preventDefault()                       /* 吞掉原生连续滚动，只留整屏跳 */
-    if (!reduce){
-      var els = list()
-      /* 还在引首（section 0）：愈合 + 空白容错滚程都走 advanceIntro，单一虚拟进度 v */
-      if (sectionAt(els) === 0){
-        advanceIntro(e.deltaY / WHEEL_DIV)
-        return
-      }
+
+    /* 每来一条事件就把「手势结束」的定时器往后推；一旦静了 130ms 以上，
+       就算这场手势完了，累计量与封条一起清零。
+       —— 触控板一次轻扫会连发十几条 wheel（每条 deltaY 只有几像素），
+       鼠标一格却是上百；凭单条事件翻屏的话，一次轻扫能连翻好几屏。
+       所以这里按「一场连续的手势最多翻一屏」来算：够量才动，动过就封，
+       封到手势停为止。惯性的长尾巴也一并被这场手势吸收掉。 */
+    clearTimeout(wheelIdle)
+    wheelIdle = setTimeout(function(){ wheelAcc = 0; wheelHeld = false }, WHEEL_IDLE)
+
+    if (wheelHeld) return
+    if (!canNav()) return
+    var els = list()
+    if (!reduce && sectionAt(els) === 0){
+      /* 引首：愈合是「滚多少合多少」，按原始增量走，不吃下面的累积阈值 */
+      advanceIntro(dy / WHEEL_DIV)
+      wheelAcc = 0
+      return
     }
-    goToStage(stageAt(list()) + (e.deltaY > 0 ? 1 : -1))
+    wheelAcc += dy
+    if (Math.abs(wheelAcc) < WHEEL_TRIGGER) return
+    var dir = wheelAcc > 0 ? 1 : -1
+    wheelAcc = 0
+    goToStage(stageAt(els) + dir)
   }
 
   function onKey(e){

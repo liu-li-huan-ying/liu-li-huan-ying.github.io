@@ -11,7 +11,7 @@ export default function Ear() {
         </span>
         <ul className="ear-tabs" id="earTabs">
           <li><a href="#material" data-sec="material"><span className="ear-ord">壹</span><span className="ear-name">琉璃</span></a></li>
-          <li><a href="#work" data-sec="work"><span className="ear-ord">貳</span><span className="ear-name">作品</span></a></li>
+          <li><a href="#work" data-sec="work"><span className="ear-ord">贰</span><span className="ear-name">作品</span></a></li>
           <li><a href="#about" data-sec="about"><span className="ear-ord">叁</span><span className="ear-name">自述</span></a></li>
           <li><a href="#writing" data-sec="writing"><span className="ear-ord">肆</span><span className="ear-name">手记</span></a></li>
           <li><a href="#contact" data-sec="contact"><span className="ear-ord">伍</span><span className="ear-name">落款</span></a></li>

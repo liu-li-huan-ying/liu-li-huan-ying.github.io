@@ -1,5 +1,6 @@
 import { profile } from '../data/profile'
 import { SPECIMENS } from '../components/scroll/specimens'
+import PageFoot from '../components/PageFoot'
 import GitHubStats from '../components/GitHubStats'
 import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import { repoSlug } from '../utils/github'
@@ -23,14 +24,12 @@ export default function ProjectDetail({ project }) {
   return (
     <article className="page">
       <div className="wrap">
-        <div className="article">
+        <div className="article article-wide">
           <a className="backlink" href="#/projects">
             <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true" style={{ transform: 'scaleX(-1)' }}><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
             全部作品
           </a>
 
-          {/* 用 div 不用 header：样式表里的 header 是固定顶栏（position:fixed），
-              正文里套一个 <header> 会被它按顶栏处理，标题直接飞到视口顶端 */}
           <div className="article-head">
             <div className="article-meta">
               <span>{NUM[i]}</span>
@@ -51,44 +50,52 @@ export default function ProjectDetail({ project }) {
             </div>
           </div>
 
-          <div className="specimen">
-            {SPECIMENS[p.specimen] ? (
-              SPECIMENS[p.specimen]
-            ) : p.image ? (
-              <>
-                <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
-                <span className="sp-blank">{p.title}</span>
-                <img className="sp-img" src={p.image} alt={`${p.title} 配图`} decoding="async"
-                  onError={(e) => { e.currentTarget.style.display = 'none' }} />
-              </>
-            ) : (
-              <>
-                <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
-                <span className="sp-blank">{p.title}</span>
-              </>
-            )}
+          <div className="art-rule" aria-hidden="true"><span className="phead-fish"></span></div>
+
+          {/* 解剖图与「取舍 / 要点」并置：图占左，批注占右 ——
+              原先图只铺到一半宽，右半边空着，重心全歪在左侧 */}
+          <div className="detail-pair">
+            <div className="specimen">
+              {SPECIMENS[p.specimen] ? (
+                SPECIMENS[p.specimen]
+              ) : p.image ? (
+                <>
+                  <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                  <span className="sp-blank">{p.title}</span>
+                  <img className="sp-img" src={p.image} alt={`${p.title} 配图`} decoding="async"
+                    onError={(e) => { e.currentTarget.style.display = 'none' }} />
+                </>
+              ) : (
+                <>
+                  <div className="sp-bar"><i></i><i></i><i></i><span>{p.id} — {p.year}</span></div>
+                  <span className="sp-blank">{p.title}</span>
+                </>
+              )}
+            </div>
+
+            <div className="detail-side">
+              {p.tradeoff ? (
+                <div className="tradeoff">
+                  <b>取舍</b>
+                  <p>{p.tradeoff}</p>
+                </div>
+              ) : null}
+
+              {highlights.length > 0 ? (
+                <>
+                  <h2 className="d-m">要点</h2>
+                  <ul className="hl-list">
+                    {highlights.map((h) => <li key={h}>{h}</li>)}
+                  </ul>
+                </>
+              ) : null}
+            </div>
           </div>
 
           {body.length > 0 ? (
-            <div className="prose" style={{ marginTop: 'clamp(34px,5vh,58px)', maxWidth: 'none' }}>
+            <div className="prose" style={{ marginTop: 'clamp(34px,5vh,58px)' }}>
               {body.map((para) => <p key={para}>{para}</p>)}
             </div>
-          ) : null}
-
-          {p.tradeoff ? (
-            <div className="tradeoff" style={{ marginTop: 'clamp(32px,4.6vh,52px)' }}>
-              <b>取舍</b>
-              <p>{p.tradeoff}</p>
-            </div>
-          ) : null}
-
-          {highlights.length > 0 ? (
-            <>
-              <h2 className="d-m" style={{ marginTop: 'clamp(38px,5.6vh,64px)' }}>要点</h2>
-              <ul className="hl-list">
-                {highlights.map((h) => <li key={h}>{h}</li>)}
-              </ul>
-            </>
           ) : null}
 
           <div className="proj-links">
@@ -113,6 +120,12 @@ export default function ProjectDetail({ project }) {
               </a>
             ) : <span />}
           </nav>
+
+          <PageFoot
+            num={NUM[i]}
+            name={p.title}
+            note={`${p.role} · ${p.year} · ${p.kind}。`}
+          />
         </div>
       </div>
     </article>

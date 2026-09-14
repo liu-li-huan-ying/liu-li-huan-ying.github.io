@@ -106,10 +106,6 @@ export function initScrollDrive(){
     lastH = h
   }
 
-  /* healLocked：deck 下引首愈合由 deckNav 全权驱动（搓进度），这里不参与；
-     防两边抢同一个 heal 值。非 deck 时此锁恒为 false，滚动行程照常驱动愈合 */
-  var healLocked = false
-
   function frame(){
     var y = window.pageYOffset || doc.scrollTop
 
@@ -155,7 +151,7 @@ export function initScrollDrive(){
        这里不参与 —— 否则整屏停在卷首（y=0）会被算成 h=0，把已合上的又打回裂满。
        过矮视口（≤640，与 CSS 兜底一致）deckNav 不接管，仍走这里的滚动行程 */
     var deckOwnsHeal = doc.classList.contains('deck-mode') && window.innerHeight > 640
-    if (hero && !healLocked && !deckOwnsHeal){
+    if (hero && !deckOwnsHeal){
       var h = 1
       var range = heroRange > 60 ? heroRange : window.innerHeight * 0.62
       if (range > 0){
@@ -196,7 +192,6 @@ export function initScrollDrive(){
   return {
     refresh: function(){ measure(); onScroll() },
     setHeal: function(h){
-      healLocked = false
       renderHeal(h < 0 ? 0 : (h > 1 ? 1 : h))
     },
     getHeal: function(){ return lastH < 0 ? 0 : lastH }

@@ -167,7 +167,9 @@
 
 /* ═══ 手记正文页 ═══
    宽屏右侧挂一条常驻的篇内目次；窄屏收起来（正文自己够短） */
-.article { max-width: 720px }
+/* 正文栏窄于版心，必须自己居中：贴左会像没排完。
+   详情页用 .article-wide（max-width:none）铺满，这条对它是空转 */
+.article { max-width: 720px; margin-inline: auto }
 .article-head { margin-bottom: clamp(30px, 5vh, 52px) }
 .article-meta {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
@@ -181,7 +183,17 @@
 }
 .sidenote { display: none }
 @media (min-width: 1180px) {
-  .article-cols { display: grid; grid-template-columns: minmax(0, 1fr) 196px; gap: clamp(28px, 4vw, 56px) }
+  /* 第一栏就按正文的行长定宽。旧版是 1fr（≈870px）而正文只占 563px，
+     正栏与目次之间空出 300~370px 的死区，右侧那条目次像是被甩到了隔壁 ——
+     栏宽改成 68ch，.prose 在栅格里不再叠自己的 max-width，
+     于是「行长」只有栅格一个来源，正文与目次之间只剩一条正常的天头栏距 */
+  .article-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 68ch) clamp(164px, 15vw, 200px);
+    gap: clamp(40px, 5vw, 72px);
+    justify-content: center;
+  }
+  .article-cols .prose { max-width: none }
   .sidenote { display: block }
   .sidenote nav { position: sticky; top: calc(var(--nav-h) + 40px); border-left: 1px solid var(--rule); padding-left: 18px }
   .sidenote a {
@@ -201,6 +213,66 @@
 .pager a { font-family: var(--serif-cn); font-size: .88rem; color: var(--ink-2); max-width: 46%; transition: color .4s var(--ease-soft) }
 .pager a:hover { color: var(--ink) }
 .pager a.next { margin-left: auto; text-align: right }
+
+/* ═══ 子页 · 卷首题识 ═══
+   沿用 .sec-head / .slip / .sec-title-wrap 那一套，只补首页没有的三样：
+   题识行末的干支朱印、卷首底下的双线界格、界格正中的鱼尾。 */
+.phead { margin-bottom: 0 }
+.phead-foot { display: flex; align-items: flex-end; gap: 20px; justify-content: space-between }
+.phead-seal { flex: none; margin-bottom: -2px }
+.phead-rule,
+.art-rule { position: relative; height: 8px; border-top: 3px double var(--rule) }
+.phead-rule { grid-column: 1 / -1; margin-top: clamp(20px, 3vh, 30px) }
+/* 详情页的署名行下面也要一道同样的界格，但间隔另有讲究（上面是 .article-head 的外边距） */
+.art-rule { margin-bottom: clamp(26px, 3.8vh, 42px) }
+.phead-fish {
+  position: absolute; left: 50%; top: 0;
+  width: 13px; height: 9px; background: var(--accent-2);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform: translateX(-50%);
+}
+/* 卷首与正文之间留一口气，但不留一个大洞 */
+.page-head .phead { margin-bottom: clamp(30px, 4.6vh, 52px) }
+
+/* ═══ 子页 · 篇末牌记 ═══
+   四周双边与页脚 .foot 同一形制：外一圈、内退三像素再一圈 */
+.pfoot { margin-top: clamp(52px, 8vh, 96px) }
+.pfoot-box {
+  position: relative; display: flex; align-items: center; gap: clamp(18px, 3vw, 34px);
+  justify-content: space-between;
+  border: 1px solid var(--rule-2);
+  padding: clamp(18px, 2.8vh, 26px) clamp(18px, 2.8vw, 30px);
+  background: color-mix(in srgb, var(--ground-2) 52%, transparent);
+}
+.pfoot-box::after {
+  content: ''; position: absolute; inset: 3px;
+  border: 1px solid var(--rule-2); pointer-events: none;
+}
+.pfoot-main { min-width: 0 }
+.pfoot-tag {
+  font-family: var(--serif-cn); font-size: .8rem;
+  letter-spacing: .22em; color: var(--accent-2);
+}
+.pfoot-note { margin-top: 9px; font-size: .88rem; line-height: 1.9; color: var(--ink-2); text-wrap: pretty }
+.pfoot-date { margin-top: 7px }
+.pfoot-seal { flex: none }
+/* 牌记是收卷，标题行不必再顶得那么开 */
+.pfoot + .pfoot { margin-top: 0 }
+
+/* ═══ 作品详情 · 图文并置 ═══
+   解剖图在左、批注（取舍 / 要点）在右。原先图只铺一半宽、右半边空着，
+   重心全歪向左侧。窄屏（<900px）落回单栏，批注接在图下面。 */
+.detail-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(26px, 3.6vw, 44px) }
+@media (min-width: 900px) {
+  .detail-pair { grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr) }
+}
+/* 作品详情比手记正文宽：正文自己仍守 68ch 的阅读行长，
+   让出来的宽度交给「图 + 批注」那一对并置，别把右半边空着 */
+.article-wide { max-width: none }
+.article-wide .article-head .lead { max-width: 68ch }
+.detail-side .tradeoff:first-child { margin-top: 0 }
+.detail-side .hl-list { margin-top: 20px }
+.detail-side > * + * { margin-top: clamp(26px, 3.6vh, 38px) }
 .pager small { display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; color: var(--ink-3); margin-bottom: 6px }
 
 /* ═══ 404 ═══
@@ -226,21 +298,46 @@
 }
 
 /* ═══ GitHub 数据块 ═══
-   热力图用青瓷深浅表示当天的提交量；统计读成一组「数字 + 标签」，与自述卷同一套 .figure */
-.gh { margin-top: clamp(46px, 7vh, 84px) }
-.gh-heat { margin-top: 22px; overflow-x: auto; padding-bottom: 6px }
-.gh-inner { display: inline-block; min-width: 100% }
-.gh-months { position: relative; height: 15px }
-.gh-months span {
-  position: absolute; top: 0; font-family: var(--mono); font-size: .58rem;
-  letter-spacing: .08em; color: var(--ink-3); white-space: nowrap;
-}
-.gh-grid { display: flex; gap: 3px }
-.gh-col { display: flex; flex-direction: column; gap: 3px }
-.gh-weekdays { display: flex; flex-direction: column; gap: 3px; width: 16px; margin-right: 6px; flex: none }
-.gh-weekdays span { height: 11px; line-height: 11px; font-family: var(--mono); font-size: .55rem; color: var(--ink-3) }
-/* 格子：青瓷由浅到深表示当天提交量；地色翻转时靠 color-mix 自动跟着变 */
-.gh-cell { display: block; width: 11px; height: 11px; border-radius: 1px; background: var(--rule-2) }
+   热力图用青瓷深浅表示当天的提交量；统计读成一组「数字 + 标签」，与自述卷同一套 .figure。
+   53 个周列用 flex:1 等分整幅宽 —— 屏宽多大就铺多满（格子随列宽等比放缩，aspect-ratio:1），
+   既不在左边留一片空，也不需要横向滚动。只调「格距 / 星期栏宽」两处即可。 */
+.gh { margin-top: clamp(46px, 7vh, 84px);
+  --gh-gap: 4px; --gh-wd: 16px; --gh-wdm: 6px }
+@media (max-width:1080px){ .gh { --gh-gap: 3.4px } }
+@media (max-width:900px){ .gh { --gh-gap: 3px; --gh-wd: 15px } }
+@media (max-width:700px){ .gh { --gh-gap: 2.4px; --gh-wd: 13px; --gh-wdm: 5px } }
+@media (max-width:520px){ .gh { --gh-gap: 1.8px; --gh-wd: 12px; --gh-wdm: 4px } }
+@media (max-width:400px){ .gh { --gh-gap: 1.4px } }
+
+.gh-heat { margin-top: 22px }
+/* 界格 + 题签头：与作品的解剖图 .specimen / .sp-bar 同一套形制 ——
+   一圈细线框住，顶上一道 30px 签条（三点 + 名目 + 干支），像贴在卷上的一方小牌记 */
+.gh-frame { border: 1px solid var(--rule-2); background: var(--ground-2) }
+.gh-bar { height: 30px; border-bottom: 1px solid var(--rule-2);
+  display: flex; align-items: center; gap: 6px; padding: 0 12px }
+.gh-bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); display: block }
+.gh-bar-name { font-family: var(--mono); font-size: .595rem; color: var(--ink-3);
+  margin-left: 8px; letter-spacing: .08em }
+.gh-bar-gz { margin-left: auto; font-family: var(--mono); font-size: .595rem;
+  color: var(--ink-3); letter-spacing: .08em }
+.gh-inner { display: block; padding: 16px 16px 15px; overflow: hidden }
+/* 月份行：与格子共用「星期栏 + 53 等宽列」的骨架，标签落进对应槽即自动对位 */
+.gh-months { display: flex; gap: var(--gh-gap); margin-bottom: 7px }
+.gh-mspace { flex: 0 0 var(--gh-wd); margin-right: var(--gh-wdm) }
+.gh-mcol { flex: 1 1 0; min-width: 0; font-family: var(--mono); font-size: .58rem;
+  letter-spacing: .08em; color: var(--ink-3); white-space: nowrap }
+.gh-grid { display: flex; gap: var(--gh-gap) }
+/* 星期栏：与格子同高（stretch），7 个槽等分、标签居中 —— 行位天然与格子对齐 */
+.gh-weekdays { display: flex; flex-direction: column; gap: var(--gh-gap);
+  flex: 0 0 var(--gh-wd); margin-right: var(--gh-wdm) }
+.gh-weekdays span { flex: 1 1 0; display: flex; align-items: center;
+  font-family: var(--mono); font-size: .55rem; color: var(--ink-3) }
+/* 周列：等分剩余宽度 —— 这是「铺满整幅」的关键；格子按列宽取正方形 */
+.gh-col { display: flex; flex-direction: column; gap: var(--gh-gap); flex: 1 1 0; min-width: 0 }
+/* 格子：青瓷由浅到深表示当天提交量；地色翻转时靠 color-mix 自动跟着变。
+   圆角用百分比，跟着格子大小一起缩放（大格 ~2px、小格近乎方角） */
+.gh-cell { display: block; width: 100%; aspect-ratio: 1;
+  border-radius: 12%; background: var(--rule-2) }
 .gh-cell.lv1 { background: color-mix(in srgb, var(--accent-2) 26%, var(--ground-3)) }
 .gh-cell.lv2 { background: color-mix(in srgb, var(--accent-2) 48%, var(--ground-3)) }
 .gh-cell.lv3 { background: color-mix(in srgb, var(--accent-2) 72%, var(--ground-3)) }
@@ -252,6 +349,12 @@
   margin-top: 14px;
 }
 .gh-legend i { margin: 0 1px }
+/* 色阶图例的格子是固定 11px 小样，不参与等比放缩 */
+.gh-legend .gh-cell { width: 11px; height: 11px; aspect-ratio: auto }
+/* 窄屏：星期标签行高被压到 6px 以下会糊成一团，索性隐去（列宽照留，不破坏对位） */
+@media (max-width:600px){ .gh-weekdays { visibility: hidden } }
+/* 窄屏统计改成 2×2，别让第 4 项掉单（3+1 会留一格空的界格底） */
+@media (max-width:620px){ .gh-stats { grid-template-columns: repeat(2, 1fr) } }
 .gh-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--rule-2); border: 1px solid var(--rule-2) }
 .gh-stat { background: var(--ground); padding: 18px 20px }
 .gh-stat b { display: block; font-family: var(--serif-cn); font-size: 1.5rem; font-weight: 600; line-height: 1.2 }
@@ -289,7 +392,7 @@
 /* ═══ 打印 ═══
    手记是给别人读的，打印时去掉顶栏、书耳、卷轴与所有固定层 */
 @media print {
-  header, #ear, #toc, #rollRod, #fx, #cursor, .surface, .ulan, .totop, .toc-btn { display: none !important }
+  .site-head, #ear, #toc, #rollRod, #fx, #cursor, .surface, .ulan, .totop, .toc-btn { display: none !important }
   body { background: #fff; color: #000 }
   .page { padding-top: 0 }
   .prose { max-width: none }

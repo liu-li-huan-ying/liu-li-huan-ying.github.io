@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { profile } from '../data/profile'
 import { SPECIMENS } from '../components/scroll/specimens'
+import PageHead from '../components/PageHead'
+import PageFoot from '../components/PageFoot'
 import GitHubStats from '../components/GitHubStats'
 import { ExternalIcon, GitHubIcon } from '../components/Icons'
 import { repoSlug } from '../utils/github'
@@ -31,15 +33,14 @@ export default function ProjectList() {
           回卷首
         </a>
 
-        <div className="sec-head rv">
-          <div className="slip"><span className="slip-num">贰</span><span className="slip-line"></span><span className="slip-name">作品</span></div>
-          <div className="sec-title-wrap">
-            <span className="label">Selected Work</span>
-            <h2 className="d-l"><span className="mask"><span className="ch">{shown.length === projects.length ? `共 ${projects.length} 件` : `${shown.length} 件`}</span></span></h2>
-            <p className="lead sec-sub">
-              横跨界面、系统、图形三层。每一件都写清了最费劲的那个决定，以及为此丢掉了什么。
-            </p>
-          </div>
+        <div className="page-head">
+          <PageHead
+            num="贰"
+            name="作品"
+            latin="Selected Work"
+            title={shown.length === projects.length ? `共 ${projects.length} 件` : `${shown.length} 件`}
+            sub="横跨界面、系统、图形三层。每一件都写清了最费劲的那个决定，以及为此丢掉了什么。"
+          />
         </div>
 
         <div className="chips rv">
@@ -122,6 +123,12 @@ export default function ProjectList() {
             )
           })
         )}
+
+        <PageFoot
+          num="贰"
+          name="作品"
+          note={`本卷共 ${projects.length} 件，按形态分作 ${kinds.length} 类。每一件都留了源码与演示的入口，点进去是它自己的那一页。`}
+        />
       </div>
     </section>
   )

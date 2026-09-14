@@ -1,4 +1,6 @@
 import GitHubHeatmap from '../components/GitHubHeatmap'
+import PageHead from '../components/PageHead'
+import PageFoot from '../components/PageFoot'
 import { githubProfileUrl, profile } from '../data/profile'
 
 /* 关于 · 卷外
@@ -16,13 +18,14 @@ export default function AboutPage() {
           回卷首
         </a>
 
-        <div className="sec-head rv">
-          <div className="slip"><span className="slip-num">外</span><span className="slip-line"></span><span className="slip-name">关于</span></div>
-          <div className="sec-title-wrap">
-            <span className="label">About</span>
-            <h2 className="d-l"><span className="mask"><span className="ch">把审美当作工程约束</span></span></h2>
-            <p className="lead sec-sub">{profile.tagline}</p>
-          </div>
+        <div className="page-head">
+          <PageHead
+            num="外"
+            name="关于"
+            latin="About"
+            title="把审美当作工程约束"
+            sub={profile.tagline}
+          />
         </div>
 
         <div className="about-grid">
@@ -98,6 +101,12 @@ export default function AboutPage() {
             <svg viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
           </a>
         </div>
+
+        <PageFoot
+          num="外"
+          name="关于"
+          note="以上是卷外的那一份。卷上的「叁 · 自述」只放了摘要，全文都在这里了。"
+        />
       </div>
     </section>
   )

@@ -43,6 +43,26 @@
 | 🔤 **字体** | 不连 Google Fonts：按站点实际用字子集化后自托管，可变字体一个文件顶四个字重，见下 |
 | 📊 **GitHub 数据块** | 贡献热力图（青瓷深浅表示当天提交量）+ 仓库星标，读 `api.github.com` 与 `github-contributions-api`，拿不到就整块不显示 |
 
+### 子页用的是同一套语汇
+
+子页不另起炉灶，卷首与卷尾各由一个共用件拼出来，作品 / 手记 / 关于三处目录页与两处详情页都走它们：
+
+| 件 | 长什么样 |
+| --- | --- |
+| `components/PageHead.jsx` | **卷首题识**：竖排题签（篇次 + 卷名）、英文小题、大标题、提要；行末一颗**干支朱印**，底下压一道**双线界格**、界格正中一枚**鱼尾** |
+| `components/PageFoot.jsx` | **收卷牌记**：卷次 + 篇目 + 篆书钤印 + 岁次干支 + 地点，如古籍刻本卷末的牌子 |
+
+三条容易踩的坑，改子页前先看一眼：
+
+- **顶栏样式收在 `.site-head` 上，别再用裸 `header` 选择器。** 原规则是 `header{position:fixed;…}`，
+  正文里只要写一个语义化的 `<header>`（写详情页时很自然会写）就会被当成固定顶栏 ——
+  标题直接飞到视口顶端，还平白多出一条盖住页面的栏。现在固定顶栏全挂在 `.site-head`。
+- **手记正文的行长只有一处来源。** 宽屏（≥1180px）是 `.article-cols` 两栏：第一栏 `68ch` 就是正文行长，
+  第二栏是篇内目次，整对居中；`.prose` 在栅格里**不再叠自己的 `max-width`**。旧版第一栏是 `1fr`（≈870px）
+  而正文只占 563px，正栏与目次之间空出 300~370px 的死区，右侧那条目次看着像别的栏目的东西。
+- **篇内锚点的 id 由渲染管线给，不在组件里补。** 补是补不住的：`dangerouslySetInnerHTML`
+  会把事后补上的属性一并冲掉（实测补完 2ms 后就被冲掉）。点目次只滚动、不改 hash —— 改 hash 路由会以为要换页。
+
 ## 📁 结构
 
 ```
@@ -55,6 +75,8 @@ src/
 │   ├── scroll/      # 手卷的固定层与各卷（Chrome / Masthead / Ear / Toc / Intro /
 │   │                #    Material / Works / SelfNote / Writing / Closing / Colophon）
 │   │                #    specimens.jsx 是四张手绘 SVG 解剖图
+│   ├── PageHead.jsx # 子页共用的卷首题识（题签 + 篇次 + 干支朱印 + 双线界格 + 鱼尾）
+│   ├── PageFoot.jsx # 子页共用的收卷牌记
 │   ├── GitHubStats.jsx / GitHubHeatmap.jsx
 │   └── BackToTop.jsx / ErrorBoundary.jsx / Analytics.jsx
 ├── lib/             # 运行时模块：cursor / theme / contacts / toc / roll / rollTransition /
@@ -100,6 +122,8 @@ readTime: 7             # 可选，缺省按字数估算（中文 400 字/分钟
 ---
 正文支持 GFM：标题、列表、引用、围栏代码块、链接、图片。
 代码高亮按需加载（只带 go / bash / javascript / xml 四种）。
+篇内目次读的就是 `h2` / `h3`：`sec-N` 的 id 在渲染时由 `data/mdPosts.js` 就地编好，
+**别在前端事后补**（`dangerouslySetInnerHTML` 会把它冲掉）。
 ```
 
 **改内容**：作品、自述、技能、近况、指标、经历都在 `src/data/profile.js`——首页各卷与子页面读的是同一份，不在组件里重抄文案。
@@ -177,16 +201,66 @@ npm run build:fonts     # → public/fonts/*.woff2 + src/styles/fonts.css（都�
 整体完成度很高：设计语言统一（纸 / 墨 / 青瓷 / 朱砂 / 琥珀 + 手卷形制 + 篆书钤印 + 冰裂愈合），
 可访问性已修到满分。以下按优先级列仍可打磨处：
 
-| 层级 | 严重度 | 位置 | 问题 / 优化空间 | 建议 |
+| 层级 | 严重度 | 位置 | 问题 / 优化空间 | 结论 |
 | --- | --- | --- | --- | --- |
-| 实用性 | 低 | `public/projects/*.jpg` | 详情页头图偏大：yujian 2.0M、phantom-video 2.0M、lucent 1.1M | 压到 ≤1600px 宽，省 60%+ 字节；首页已用解剖图，详情页才是它们的唯一出口 |
-| 美学 | 低 | `data/profile.js` Lucent | `latin:'新标签页'` 是中文，却以意大利体西文字号渲染，读起来冗余、字重错位 | **本次已改为 `'New Tab'`**（与 `YuJian`/`BeiBei` 同套「罗马化副名」语义） |
-| 实用性 | 低 | `styles/scroll.css` `:root` | `--sky`/`--moon`/`--dai`/`--celadon-lt` 四个颜色令牌定义后全站零引用 | **本次已删除**，避免令牌膨胀 |
+| 实用性 | 低 | `public/projects/*.jpg` | 配图偏大：yujian 2.0M、phantom-video 1.9M、lucent 1.1M | **已在第二轮重压**（见下），4 张合计 3.6M → 0.81M |
+| 美学 | 低 | `data/profile.js` Lucent | `latin:'新标签页'` 是中文，却以意大利体西文字号渲染，读起来冗余、字重错位 | **已改为 `'New Tab'`**（与 `YuJian`/`BeiBei` 同套「罗马化副名」语义） |
+| 实用性 | 低 | `styles/scroll.css` `:root` | `--sky`/`--moon`/`--dai`/`--celadon-lt` 四个颜色令牌定义后全站零引用 | **已删除**，避免令牌膨胀 |
 | 功能 | 提示 | `components/scroll/Intro.jsx` 元信息「在写」 | 取前 3 个有解剖图的项目名拼成（玉笺·GojiDB·Lucent），与 `profile.now`「在写 LSM 续篇」语义不完全一致 | 若想严格对应，可改读 `profile.now` 对应项；目前算可接受的产品化表达 |
 | 美学 | 提示 | `styles/scroll.css` 注释 | 书耳注释写「六篇」，实际耳签只有 5 条（引首无签），属旧结构遗留措辞 | 顺手把注释改成「五卷」即可，无功能影响 |
 | 美学 | 提示 | 首屏 `glaze-panel` 釉面 | ≤960px 时 `opacity:.55`、≤700px 时 `.5`，墨地（近黑）上可能偏灰发闷 | 可给釉面在墨地主题下单独提一点对比，属可选项 |
+| 功能 | 中 | `lib/scrollDrive.js` | `healLocked` 声明后从未置真，真正的守卫是 `deckOwnsHeal` | **已删**（留着的死变量会误导后来者以为还有一层开关） |
 
-> 本次已落地前两行（Lucent 副名、删除死令牌）。其余为分析结论，待确认是否要做。
+> 第二轮（同日）修掉了 5 处交互缺陷并补齐子页观感，见下一节。
+
+---
+
+## 🩹 第二轮：缺陷修复与子页打磨（2026-09-14）
+
+### 交互缺陷
+
+| 位置 | 症状 | 真因 | 修法 |
+| --- | --- | --- | --- |
+| `pages/ProjectList.jsx` | 按签条筛选，heading 报「1 件 / 2 件」，卡片区却空白 | 筛选后是**新挂载**的 `.rv` 节点，而 `initReveal` 只在换路由时跑一遍，新节点从没进过 IntersectionObserver，永远停在 `opacity:0` | `lib/reveal.js` 加一个常驻 MutationObserver，后来挂上来的 `.rv` 也观察 |
+| `pages/BlogPost.jsx` | 点右侧篇内目次不跳 | 目次链到 `#sec-0`，可标题上根本没有 `sec-0`：`useEffect` 补完 id 之后 **2ms**，同一段 HTML 又被 `dangerouslySetInnerHTML` 写了一遍，id 全被冲掉 | id 改在渲染管线（`data/mdPosts.js`）里就地编号，随字符串一起出去；`BlogPost` 只读不补 |
+| `components/GitHubHeatmap.jsx` | 「当前连续」恒为 0（上方图表明明连着好几天） | 接口返回的是**整年** 365 天：末条 `2026-12-31`，其中 108 个未来日期 count 全 0。从数组末尾往回数，第一格就是 0 → 立刻 break | 先跳过未来日期，再从今天往回数（今天没提交则从昨天起），即 GitHub 口径 |
+| `lib/deckNav.js` | 首页翻屏太灵：一次轻扫连跳好几屏 | 每条 `abs(deltaY) ≥ 8` 的 wheel 都直接 `goToStage`，而触控板一次轻扫连发十几条事件；锁只在 View Transition 期间有效，VT 一完（1.1s）下一条接着跳 | 翻屏改成**攒够 `WHEEL_TRIGGER` 才动**、**一次跳屏后 `WHEEL_COOL` 冷却**吞掉惯性尾巴、**手势静默 `WHEEL_IDLE` 清零**；引首愈合仍按原始增量「滚多少合多少」 |
+| `styles/scroll.css` | 翻屏收尾时顶栏闪两下 | 同一场手势触发两次跳屏，每场转场都把顶栏淡出淡入一次 | 与上一条同源；另把 `vt-hide-nav` 的挂/摘时序对齐到 VT 快照回调（脚本挂上后新快照里的顶栏即不可见，摘掉后由 CSS transition 淡回） |
+
+### 观感
+
+- **子页补上卷首与卷尾**：新增 `PageHead` / `PageFoot` 共用件，作品 / 手记 / 关于的目录页与详情页统一走它们。
+- **作品详情改双栏**：解剖图与「取舍 / 要点」并置；正文自己仍守 68ch，让出来的宽度交给批注栏，不再把右半边空着。
+- **GitHub 热力图**：加题签栏（三点 + 仓库名 + 岁次）、月份标签改成与格子同宽的弹性槽位、图例 少/多 → 疏/密；
+  格子改为 `flex:1` 等分 + `aspect-ratio:1`，**填满整个框并随宽度放缩**
+  （旧版固定 11px 格 + `overflow-x:auto`，宽屏只占左边一截、窄屏横向滚动）。
+- **手记正文栏位**：正栏由 `1fr`（≈870px）改为 `68ch`，消灭正栏与目次之间 300~370px 的死区（细节见上文「子页」三条）。
+
+### 资产重压
+
+| 文件 | 改前 | 改后 |
+| --- | --- | --- |
+| `public/projects/yujian.jpg` | 1.96 MB | **0.20 MB**（−90%，尺寸不变 1456×816） |
+| `public/projects/lucent-newtab.jpg` | 1.08 MB | **0.21 MB**（1920×1080 → 1600×900） |
+| `public/projects/gojidb.jpg` | 0.25 MB | **0.15 MB**（尺寸不变） |
+| `public/projects/phantom-video.jpg` | 1.88 MB | **0.22 MB**（4096×2304 → 1600×900） |
+
+> ⚠️ **更正上一轮的一处误判**：当时记「`yujian.jpg` 是 32753×65015、21 亿像素的解码地雷」是**读错了** ——
+> 那是临时脚本解析 JPEG 的 SOF 段解析错了，用 Pillow 复核实际是 **1456×816**。
+> 所以这几张**并不构成解码地雷**；又因为四件作品都填了 `specimen`，它们在列表页与详情页
+> **根本不会被请求**（列表与详情都优先用解剖图，配图只作兜底），单纯压在部署包里占体积。
+> 想真正清干净，可以考虑把这三张兜底图移出仓库；目前保留，只压到 Web 尺度。
+
+### 验证方式
+
+一律用无头 Edge + CDP 真跑页面，不靠「看着还行」：
+
+- **响应式溢出体检**：5 条路由 × 5 档宽度（1440 / 1024 / 820 / 640 / 390），量 `scrollWidth - clientWidth`，
+  全部为 0（`pre` 内部的横向滚动是它自己的 `overflow-x:auto`，不算溢出）。
+- **翻屏**：在页面内合成精确时序的 wheel 事件（CDP 往返 100~250ms/条，从外面喂不出触控板的 16ms 流），
+  确认轻扫 = 恰好一整屏、猛扫不会连翻两屏。
+- **篇内目次**：点目次后量到标题进入视口（`y=770`），且 hash 未被改动。
+- **栏位**：同趟里既量几何又截图，保证数字与图描述同一次渲染 —— 早前「3.6MB 地雷」的教训就是只信了数字。
 
 ---
 

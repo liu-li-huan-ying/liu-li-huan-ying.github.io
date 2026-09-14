@@ -61,12 +61,15 @@ export function getRollTransition(){
     root.classList.add('vt-roll')
     var t = document.startViewTransition(function(){
       if (rod) rod.classList.add('on')
+      /* 顶栏淡出：在 VT 新快照定格前挂上 vt-hide-nav，让新快照里的顶栏即不可见，
+         旧快照（回调前已拍）仍是可见的 —— 于是转场里顶栏淡出、落定时再淡入 */
+      root.classList.add('vt-hide-nav')
       jump(y)
       after()
     })
     var done = function(){
       if (rod) rod.classList.remove('on')
-      root.classList.remove('vt-roll', 'vt-back')
+      root.classList.remove('vt-roll', 'vt-back', 'vt-hide-nav')
       busy = false
     }
     t.finished.then(done, done)

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data/profile'
 import { renderMarkdown } from '../data/mdPosts'
+import PageFoot from '../components/PageFoot'
 
 /* 手记 · 正文
    正文是 markdown（content/posts/*.md），marked 渲染 + DOMPurify 消毒，
@@ -34,10 +35,9 @@ export default function BlogPost({ post }) {
     const container = bodyRef.current
     if (!container) return undefined
 
-    const headings = [...container.querySelectorAll('h2, h3')]
-    headings.forEach((heading, i) => {
-      heading.id = `sec-${i}`
-    })
+    /* id 由渲染管线（mdPosts.renderMarkdown）随正文一起给出，这里只读不补 ——
+       补是补不住的：dangerouslySetInnerHTML 会把补上的属性一并冲掉 */
+    const headings = [...container.querySelectorAll('h2, h3')].filter((h) => h.id)
     setToc(headings.map((h) => ({ id: h.id, text: h.textContent, level: h.tagName.toLowerCase() })))
 
     const observer = new IntersectionObserver(
@@ -94,8 +94,6 @@ export default function BlogPost({ post }) {
               全部手记
             </a>
 
-            {/* 用 div 不用 header：样式表里的 header 是固定顶栏（position:fixed），
-                正文里套一个 <header> 会被它按顶栏处理，标题直接飞到视口顶端 */}
             <div className="article-head">
               <div className="article-meta">
                 <time dateTime={post.date}>{day(post.date)}</time>
@@ -106,6 +104,8 @@ export default function BlogPost({ post }) {
               </div>
               <h1 className="article-title">{post.title}</h1>
             </div>
+
+            <div className="art-rule" aria-hidden="true"><span className="phead-fish"></span></div>
 
             <div ref={bodyRef} className="prose" dangerouslySetInnerHTML={{ __html: html }} />
 
@@ -127,6 +127,12 @@ export default function BlogPost({ post }) {
                 <span />
               )}
             </nav>
+
+            <PageFoot
+              num="肆"
+              name="手记"
+              note={`《${post.title}》 · ${day(post.date)} · ${post.readTime} 分钟`}
+            />
           </article>
 
           {toc.length > 0 && (
