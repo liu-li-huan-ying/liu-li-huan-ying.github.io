@@ -153,4 +153,36 @@ npm run build:fonts     # → public/fonts/*.woff2 + src/styles/fonts.css（都�
 
 ---
 
+## 🧹 清理与审计（2026-09-14）
+
+上一阶段（自托管子集化字体 + 通过 Lighthouse CI）落地后，做了一次仓库与机器上的遗留清理，
+并从**美学 / 功能 / 实用性**三角度通读审计。
+
+### 临时与过时遗留清理
+
+- **`.fontcache/`**：上一版改走可变字体后不再需要的 5 个 `@wght*` 静态实例缓存（约 46M）已删除，
+  从 69.6M 降到 24M，只保留源可变字体（Noto Serif SC / Cormorant Garamond 的 VF）
+  与 `axes-report.json` / `jobs.json`。
+- **机器临时目录**：扫描到的 `D:/tmp`（echarts，别的项目）、`D:/tmp-shot`（github-profile，别的项目）、
+  `design-proposal/manor-3d`（正在活跃修改）均**非本项目产生或正在使用，未擅删**。
+- **`D:/tmp-lh/`**：本机独立安装的 Lighthouse 环境（176M），与 CI 同配置可复用，保留。
+
+### 审计结论（优化空间）
+
+整体完成度很高：设计语言统一（纸 / 墨 / 青瓷 / 朱砂 / 琥珀 + 手卷形制 + 篆书钤印 + 冰裂愈合），
+可访问性已修到满分。以下按优先级列仍可打磨处：
+
+| 层级 | 严重度 | 位置 | 问题 / 优化空间 | 建议 |
+| --- | --- | --- | --- | --- |
+| 实用性 | 低 | `public/projects/*.jpg` | 详情页头图偏大：yujian 2.0M、phantom-video 2.0M、lucent 1.1M | 压到 ≤1600px 宽，省 60%+ 字节；首页已用解剖图，详情页才是它们的唯一出口 |
+| 美学 | 低 | `data/profile.js` Lucent | `latin:'新标签页'` 是中文，却以意大利体西文字号渲染，读起来冗余、字重错位 | **本次已改为 `'New Tab'`**（与 `YuJian`/`BeiBei` 同套「罗马化副名」语义） |
+| 实用性 | 低 | `styles/scroll.css` `:root` | `--sky`/`--moon`/`--dai`/`--celadon-lt` 四个颜色令牌定义后全站零引用 | **本次已删除**，避免令牌膨胀 |
+| 功能 | 提示 | `components/scroll/Intro.jsx` 元信息「在写」 | 取前 3 个有解剖图的项目名拼成（玉笺·GojiDB·Lucent），与 `profile.now`「在写 LSM 续篇」语义不完全一致 | 若想严格对应，可改读 `profile.now` 对应项；目前算可接受的产品化表达 |
+| 美学 | 提示 | `styles/scroll.css` 注释 | 书耳注释写「六篇」，实际耳签只有 5 条（引首无签），属旧结构遗留措辞 | 顺手把注释改成「五卷」即可，无功能影响 |
+| 美学 | 提示 | 首屏 `glaze-panel` 釉面 | ≤960px 时 `opacity:.55`、≤700px 时 `.5`，墨地（近黑）上可能偏灰发闷 | 可给釉面在墨地主题下单独提一点对比，属可选项 |
+
+> 本次已落地前两行（Lucent 副名、删除死令牌）。其余为分析结论，待确认是否要做。
+
+---
+
 © 2026 [琉璃幻影 · Liu-Li-Huan-Ying](https://github.com/liu-li-huan-ying)

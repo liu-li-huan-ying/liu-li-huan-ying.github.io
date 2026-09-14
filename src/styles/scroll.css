@@ -22,8 +22,7 @@
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
 
-  --celadon:#4C6E5A; --celadon-lt:#8FB0A6;
-  --sky:#8FB0A6; --moon:#DCE1DA; --dai:#2B3138;
+  --celadon:#4C6E5A;
   --cinnabar:#A33A2A; --amber:#A9782A;
   /* 三元组：给需要 alpha 的场合拼 rgba() 用，省得处处 color-mix */
   --cinnabar-rgb:163,58,42; --amber-rgb:169,120,42;

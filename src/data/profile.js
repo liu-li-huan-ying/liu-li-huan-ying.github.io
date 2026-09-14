@@ -106,7 +106,7 @@ export const profile = {
     {
       id: 'lucent-newtab',
       title: 'Lucent',
-      latin: '新标签页',
+      latin: 'New Tab',
       kind: '浏览器扩展',
       role: '独立开发者',
       year: '2026',
