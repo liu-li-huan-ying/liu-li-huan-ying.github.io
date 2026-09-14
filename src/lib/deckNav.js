@@ -11,12 +11,17 @@ import { getRollTransition } from './rollTransition.js'
    方向键 / 触摸的位移直接换算成愈合增量——滚多少、合多少，松手就定格在半裂半合，
    往回搓就裂回去。引首因此占「两站」：0 裂满 / 1 合上。在非 deck（普通滚动）下，
    愈合本来就由滚动行程驱动、同样可停在半途，这里只是把 deck 的整屏跳也接成同一种手感。
-   —— 直到裂满愈合（heal≈1）后，再往前一格才卷轴翻到「壹 · 琉璃」；往回搓则裂回最初。
+   —— 合上之后还有一段「空白容错滚程」：继续搓只走这段空白、屏不动、愈合保持合上、
+   浮现的话留着，把这段走完才卷轴翻到「壹 · 琉璃」；且单次手势封顶，猛滚也得过好几下，
+   不用小心翼翼算力度。往回搓则先退出空白带、再裂回最初。
    ══════════════════════════════════════════════════════════════ */
 var LAST_STAGE = 7              /* 引首占 0(裂)/1(合)，其后 2..7 依次是六屏 */
 var HEAL_STEP = 0.2             /* 键盘每按一下、折合的愈合增量（约 5 下搓满） */
 var WHEEL_DIV = 600             /* 滚轮 deltaY 折算系数：约 5 个刻度搓满 */
 var TOUCH_DIV = 320             /* 触摸拖动像素折算系数 */
+var INTRO_BUFFER = 0.6         /* 合上后到翻屏之间的「空白容错滚程」（约 3 格），制造段落感、防一滚而过 */
+var MAX_STEP = 0.35            /* 单次手势最多推进的虚拟进度，避免一次猛滚直接跳过愈合/缓冲 */
+var HEAL_RANGE = 1 + INTRO_BUFFER
 
 export function initDeckNav(drive){
   var root = document.documentElement
@@ -62,17 +67,22 @@ export function initDeckNav(drive){
   }
   function lastStage(){ return reduce ? SECTIONS.length - 1 : LAST_STAGE }
 
-  /* 引首愈合进度：把一次手势的位移量折算成愈合增量并定格，**不播放动画**。
-     滚多少合多少、松手就停在半裂半合；往回搓就裂回去。deck 下 scrollDrive 不碰
-     引首愈合（deckOwnsHeal），所以这里 setHeal 是唯一的进度来源 */
-  function scrub(amount){
-    if (!drive) return
-    var next = drive.getHeal() + amount
-    next = next < 0 ? 0 : (next > 1 ? 1 : next)
-    drive.setHeal(next)
+  /* 引首虚拟进度 v：0=裂满 … 1=合上 … 1+INTRO_BUFFER=翻屏阈值。
+     0..1 是愈合（滚多少合多少、可停半途），1..1+INTRO_BUFFER 是「合上后到翻屏之间的
+     空白容错滚程」——合上后继续搓只走这段空白、屏不动，给出段落感，也容错（不至于
+     一不小心多滚一下就直接翻过去）。v 全程由手势累加，单次手势封顶 MAX_STEP，
+     所以再猛的滚动也得搓好几下才过得去，不用小心翼翼算力度。 */
+  var v = reduce ? 1 : 0
+  function advanceIntro(step){
+    if (!drive){ if (step > 0) goToStage(2); return }
+    if (step > MAX_STEP) step = MAX_STEP
+    else if (step < -MAX_STEP) step = -MAX_STEP
+    v += step
+    if (v < 0) v = 0
+    if (v > HEAL_RANGE) v = HEAL_RANGE
+    drive.setHeal(v > 1 ? 1 : v)       /* 1 之后愈合不再变，只耗空白滚程 */
+    if (v >= HEAL_RANGE - 1e-6){ v = 1; goToStage(2) }
   }
-  /* 引首是否已「合上」：合上后才放行进屏，再往前一格翻屏 */
-  function introFull(){ return !drive || drive.getHeal() >= 0.999 }
 
   function canNav(){ return !lock && !roll.isBusy() && guard() }
 
@@ -89,7 +99,7 @@ export function initDeckNav(drive){
     /* 其余一律卷轴翻屏。落到引首时在 VT 新快照前**同步**定住愈合状态，
        这样落定的那一帧就对（异步等滚动事件会让它先定格成旧状态再突兀跳变） */
     var opts = {}
-    if (st <= 1 && drive) opts.onEnter = function(){ drive.setHeal(st) }
+    if (st <= 1 && drive) opts.onEnter = function(){ drive.setHeal(st); v = st }
     Promise.resolve(roll.go(els[sectionOfStage(st)], opts).finished).then(done, done)
   }
 
@@ -109,15 +119,9 @@ export function initDeckNav(drive){
     e.preventDefault()                       /* 吞掉原生连续滚动，只留整屏跳 */
     if (!reduce){
       var els = list()
-      /* 还在引首（section 0）：裂满→合上是可搓的进度，没合上不翻屏；回搓则裂回 */
+      /* 还在引首（section 0）：愈合 + 空白容错滚程都走 advanceIntro，单一虚拟进度 v */
       if (sectionAt(els) === 0){
-        if (e.deltaY > 0){
-          if (introFull()) goToStage(2)          /* 已合上 → 翻到壹 */
-          else scrub(e.deltaY / WHEEL_DIV)        /* 往前搓一点 */
-        } else {
-          if (drive && drive.getHeal() <= 0.001) return   /* 已裂满，无前屏 */
-          scrub(e.deltaY / WHEEL_DIV)                      /* 往后裂回去 */
-        }
+        advanceIntro(e.deltaY / WHEEL_DIV)
         return
       }
     }
@@ -138,18 +142,10 @@ export function initDeckNav(drive){
     e.preventDefault()
     var els = list()
     if (forward){
-      if (!reduce && sectionAt(els) === 0){
-        if (introFull()) goToStage(2)
-        else scrub(HEAL_STEP)
-        return
-      }
+      if (!reduce && sectionAt(els) === 0){ advanceIntro(HEAL_STEP); return }
       goToStage(stageAt(els) + 1)
     } else if (backward){
-      if (!reduce && sectionAt(els) === 0){
-        if (drive && drive.getHeal() <= 0.001) return
-        scrub(-HEAL_STEP)
-        return
-      }
+      if (!reduce && sectionAt(els) === 0){ advanceIntro(-HEAL_STEP); return }
       goToStage(stageAt(els) - 1)
     } else if (k === 'Home'){ goToStage(0) }
     else if (k === 'End'){ goToStage(lastStage()) }
@@ -166,13 +162,7 @@ export function initDeckNav(drive){
     if (!reduce){
       var els = list()
       if (sectionAt(els) === 0){
-        if (dy > 0){
-          if (introFull()) goToStage(2)
-          else scrub(dy / TOUCH_DIV)
-        } else {
-          if (drive && drive.getHeal() <= 0.001) return
-          scrub(dy / TOUCH_DIV)
-        }
+        advanceIntro(dy / TOUCH_DIV)
         return
       }
     }
