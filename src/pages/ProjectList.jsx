@@ -39,7 +39,7 @@ export default function ProjectList() {
             name="作品"
             latin="Selected Work"
             title={shown.length === projects.length ? `共 ${projects.length} 件` : `${shown.length} 件`}
-            sub="横跨界面、系统、图形三层。每一件都写清了最费劲的那个决定，以及为此丢掉了什么。"
+            sub="横跨界面、系统、图形三层。"
           />
         </div>
 

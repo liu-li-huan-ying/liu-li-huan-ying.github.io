@@ -1,13 +1,13 @@
 /* ══════════════════════════════════════════════════════════════
-   7 · 器物反馈 & 自绘光标
+   7 · 器物反馈
    语言统一于「纸与釉」：触碰釉面起涟漪（青瓷细环 + 琥珀内环）、
-   换地色时先起一笔小墨点再交由 1.8s 大洇、点到印章落款则钤印。
-   克制优先——涟漪铺满，墨点只给换地色，钤印只给印。
+   换地色时先起一笔小墨点再交由洇墨（theme.js，500ms）、点到印章落款则钤印。
+   克制优先——涟漪只认真正的可交互对象，墨点只给换地色，钤印只给印。
    全部只动 transform / opacity；位置只用 clientX/Y，绝不读布局。
+   光标不在这里：指针是用户从系统借来的能力，原样交还。
    ══════════════════════════════════════════════════════════════ */
 export function initCursor(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
   var root = document.documentElement
 
   /* ── 反馈层 ── */
@@ -37,7 +37,9 @@ export function initCursor(){
     if (ex) return ex.getAttribute('data-fb')
     if (el.closest('.seal-slot')) return 'seal'
     if (el.closest('[data-theme-btn]')) return 'ink'
-    if (el.closest('a[href], button, .ulink, .work, .glaze, .hero')) return 'ripple'
+    /* 不再把整块 .hero 算作热区：首屏任意空白处一点就起涟漪，
+       等于到处都响 —— 到处都响和到处都不响，信息量一样是零 */
+    if (el.closest('a[href], button, .ulink, .work, .glaze')) return 'ripple'
     return null
   }
   /* 导航 / 目次 / 书耳里的链接点击频繁，涟漪调小调淡 */
@@ -62,29 +64,7 @@ export function initCursor(){
     if (type) spawn(type, e.clientX, e.clientY, e.target)
   }, true)
 
-  /* ── 自绘光标：仅精确指针设备；触摸 / 无 JS / reduced-motion 一律原生 ── */
-  if (!fine || reduce) return
-  root.classList.add('cursor-on')
-  var cur = document.createElement('div')
-  cur.id = 'cursor'; cur.setAttribute('aria-hidden', 'true')
-  cur.innerHTML = '<i class="cur-ring"></i><i class="cur-dot"></i>'
-  document.body.appendChild(cur)
-
-  var HOT = 'a[href], button, .ulink, .work, .glaze, .seal-slot, [data-theme-btn], [data-fb]'
-  var shown = false
-  document.addEventListener('pointermove', function(e){
-    cur.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)'
-    if (!shown){ shown = true; cur.style.opacity = '1' }
-    var hot = (e.target && e.target.closest) ? e.target.closest(HOT) : null
-    cur.classList.toggle('hot', !!hot)
-  }, { passive: true })
-  document.addEventListener('pointerdown', function(){ cur.classList.add('down') }, true)
-  document.addEventListener('pointerup', function(){ cur.classList.remove('down') }, true)
-  /* 指针移出窗口就藏起来，别钉在屏幕边缘 */
-  document.addEventListener('mouseout', function(e){
-    if (!e.relatedTarget && !e.toElement){ cur.style.opacity = '0'; shown = false }
-  })
-  document.addEventListener('mouseover', function(){
-    if (!shown){ shown = true; cur.style.opacity = '1' }
-  })
+  /* 光标一律交给系统：指针是用户从操作系统借来的能力，
+     夺走它再画一个，等于让用户用作者的手感替代自己的手感。
+     涟漪 / 墨点 / 钤印三套反馈保留 —— 反馈是"回应"，光标是"能力"，两者不是一回事。 */
 }

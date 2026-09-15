@@ -12,7 +12,7 @@ export function initCount(){
     var t0 = 0
     function step(ts){
       if (!t0) t0 = ts
-      var p = Math.min(1, (ts - t0) / 1400)
+      var p = Math.min(1, (ts - t0) / 600)
       el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))))
       if (p < 1) requestAnimationFrame(step)
     }

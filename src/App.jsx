@@ -110,10 +110,28 @@ function Routed() {
   }, [route])
 
   /* 首页 deck 模式：整屏吸附 + 滚轮跳屏。
-     deck-mode 类只在首页挂上、子页面摘掉，保证 deckNav 的 guard 在子页失效。
-     进首页顺手滚回卷首，避免从子页（保留的滚动位置）回来落在半屏 */
+     deck-mode 类是**唯一判据** —— CSS、deckNav.guard()、scrollDrive 都只认这个类，
+     所以「什么视口算装得下」只在这里定义一次，别在三处各写一份。
+
+     两个条件缺一不可：
+     · 高 ≥641px —— 更矮的视口一屏根本装不下，摊平随流（否则要裁内容）；
+     · 宽 ≥821px —— 窄屏（手机）下作品卷是「四件作品」，一屏无论如何装不下；
+       而且那里本来就已经换成目次导航，两栏排版是给桌面写的。
+     以前只判了高度，手机竖屏（390×844）被误判成 deck：作品卷 / 自述卷
+     各被裁掉 100px 上下，卡片互相压住、标题看不见。
+
+     挂上 change 监听而不是进页面时判一次 —— 转屏 / 拖窗口跨过断点要跟着变。 */
   useEffect(() => {
-    document.documentElement.classList.toggle('deck-mode', isHome)
+    const mq = window.matchMedia('(min-width:821px) and (min-height:641px)')
+    const sync = () =>
+      document.documentElement.classList.toggle('deck-mode', isHome && mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [isHome])
+
+  /* 进首页顺手滚回卷首，避免从子页（保留的滚动位置）回来落在半屏 */
+  useEffect(() => {
     if (isHome) window.scrollTo(0, 0)
   }, [isHome])
 

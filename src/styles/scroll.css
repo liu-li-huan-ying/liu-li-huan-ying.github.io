@@ -43,6 +43,44 @@
   --ease:cubic-bezier(.16,1,.3,1);
   --ease-soft:cubic-bezier(.32,.72,.28,1);
   --ease-inout:cubic-bezier(.66,0,.34,1);
+  /* 换地色（洇墨）的总时长：唯一来源 —— JS 逐帧驱动与下面的 CSS 转场都读它。
+     500ms 是 M3 的 long2 上限：换地色是「用户点出来的反应」，不是氛围动画。
+     调这一行就是调整段洇墨，别在 JS 或关键帧里再写一份时长。 */
+  --ink-dur:500ms;
+
+  /* ── 字阶 · 9 级（固定尺寸只用这 9 个）────────────────────────────
+     手挑的 0.1rem 阶梯 + 一档 .45 微注，级差 1.11–1.36。
+     级值是拿全站 107 处固定字号量出来的：最大位移 0.80px、平均 0.378px、
+     107 处里 0 处位移超过 1px。别随手加第 10 级 —— 加一级就是加一个要背的数，
+     先问「能不能并进已有的一级」。 */
+  --fs-1:.45rem;   /*  7.2  微注 · 解剖图里的等宽小注 */
+  --fs-2:.5rem;    /*  8    细注 · 色值 / 刻度 / 标签 / 周历 */
+  --fs-3:.6rem;    /*  9.6  注   · 图注 / 助文 / 元信息 / 导航辅字 */
+  --fs-4:.7rem;    /* 11.2  小字 · 卷签题字 / 表头 / 解剖图的中文标注 */
+  --fs-5:.8rem;    /* 12.8  小正文 · 取舍 / 技能表 / 说明句 / 路引 */
+  --fs-6:.9rem;    /* 14.4  正文辅 · 自述 / 元信息值 / 导航 / 正文里的表 */
+  --fs-7:1rem;     /* 16    正文 · 作品描述 / 手记正文（body 也在这：rem 的锚） */
+  --fs-8:1.1rem;   /* 17.6  小标题 · 色卡名 / 目次条目 */
+  --fs-9:1.5rem;   /* 24    标题 · 牌记上的大字 / 统计数字 */
+  /* ── display 族（流体尺寸：范围跨 3 档以上，塞进阶梯会把别处挤变形）──
+     每个令牌对应一处具体版面。断点与 deck 的差异不在这里改，
+     而是在对应的媒体查询 / html.deck-mode 里重定义同一个令牌。 */
+  --fs-hero:clamp(2.2rem,min(5.6vw,9vh),5.9rem);
+  --fs-title:clamp(1.8rem,4.1vw,2.9rem);
+  --fs-title-work:clamp(1.25rem,2.2vw,1.7rem);
+  --fs-head:clamp(1.2rem,2.12vw,1.55rem);
+  --fs-subhead:clamp(1.04rem,1.75vw,1.25rem);
+  --fs-lead:clamp(1rem,1.5vw,1.14rem);
+  --fs-lat:clamp(.95rem,min(2.2vw,3.4vh),1.7rem);
+  --fs-fig:clamp(2rem,4.3vw,3.2rem);
+  --fs-worknum:clamp(1.5rem,2.7vw,2.1rem);
+  --fs-worktitle:clamp(1.3rem,2.35vw,1.85rem);
+  --fs-slipnum:clamp(1.05rem,1.8vw,1.35rem);
+  --fs-slipname:clamp(.86rem,1.25vw,1rem);
+  --fs-sign:clamp(1.05rem,1.9vw,1.45rem);
+  --fs-colo:clamp(1.35rem,4.8vw,3.5rem);
+  --fs-giant:clamp(3.4rem,13vw,8rem);
+  --fs-article:clamp(1.5rem,3.6vw,2.35rem);
 }
 
 /* 宣纸地 */
@@ -130,17 +168,17 @@ body{
    所以字级同时钳住 vw 与 vh，用 min() 取小者 —— 宽屏大屏不会过小，
    矮屏（笔记本 1366×768 / 分屏窗口）也不会顶出视口 */
 .d-xl{font-family:var(--serif-cn);font-weight:900;
-  font-size:clamp(2.2rem,min(5.6vw,9vh),5.9rem);
+  font-size:var(--fs-hero);
   line-height:1;letter-spacing:.04em}
 .d-l{font-family:var(--serif-cn);font-weight:600;
-  font-size:clamp(1.8rem,4.1vw,2.9rem);line-height:1.22;letter-spacing:.02em;text-wrap:balance}
+  font-size:var(--fs-title);line-height:1.22;letter-spacing:.02em;text-wrap:balance}
 .d-m{font-family:var(--serif-cn);font-weight:600;
-  font-size:clamp(1.2rem,2.15vw,1.6rem);line-height:1.42;letter-spacing:.02em}
+  font-size:var(--fs-head);line-height:1.42;letter-spacing:.02em}
 .lat{font-family:var(--serif-lat);font-style:italic;letter-spacing:.01em}
-.label{font-family:var(--mono);font-size:.665rem;font-weight:500;letter-spacing:.24em;
+.label{font-family:var(--mono);font-size:var(--fs-4);font-weight:500;letter-spacing:.24em;
   text-transform:uppercase;color:var(--ink-3)}
-.lead{font-size:clamp(1rem,1.5vw,1.14rem);line-height:1.98;color:var(--ink-2);text-wrap:pretty}
-.small{font-size:.85rem;line-height:1.85;color:var(--ink-3);text-wrap:pretty}
+.lead{font-size:var(--fs-lead);line-height:1.98;color:var(--ink-2);text-wrap:pretty}
+.small{font-size:var(--fs-5);line-height:1.85;color:var(--ink-3);text-wrap:pretty}
 .tnum{font-variant-numeric:tabular-nums}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--accent);outline-offset:4px}
@@ -161,7 +199,7 @@ a{color:inherit;text-decoration:none}
   padding-right:calc(var(--gut) + var(--inset-r));
 }
 .skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);
-  color:var(--ground);padding:10px 18px;font-size:.8rem}
+  color:var(--ground);padding:10px 18px;font-size:var(--fs-5)}
 .skip:focus{left:12px;top:12px}
 
 /* ═══ 卷首题签 ═══ */
@@ -180,10 +218,10 @@ a{color:inherit;text-decoration:none}
   padding-left:calc(var(--gut) + var(--inset-l));
   padding-right:calc(var(--gut) + var(--inset-r));
   display:flex;align-items:center;gap:clamp(14px,3.4vw,40px)}
-.wordmark{font-family:var(--serif-cn);font-weight:600;font-size:1.02rem;
+.wordmark{font-family:var(--serif-cn);font-weight:600;font-size:var(--fs-7);
   letter-spacing:.16em;white-space:nowrap}
 .navlinks{display:flex;gap:clamp(14px,2.2vw,28px);margin-left:auto}
-.navlinks a{font-family:var(--serif-cn);font-size:.9rem;color:var(--ink-2);
+.navlinks a{font-family:var(--serif-cn);font-size:var(--fs-6);color:var(--ink-2);
   letter-spacing:.1em;padding-bottom:2px;position:relative}
 .navlinks a::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;
   background:var(--accent);transform:scaleX(0);transform-origin:left;
@@ -195,7 +233,7 @@ a{color:inherit;text-decoration:none}
    低一档的颜色 —— 它们是「卷外」，不该和五卷抢注意力 */
 .navpages{display:flex;align-items:center;gap:clamp(12px,1.7vw,22px);
   padding-left:clamp(12px,1.8vw,22px);border-left:1px solid var(--rule-2)}
-.navpages a{font-family:var(--serif-cn);font-size:.79rem;color:var(--ink-3);
+.navpages a{font-family:var(--serif-cn);font-size:var(--fs-5);color:var(--ink-3);
   letter-spacing:.13em;padding-bottom:2px;position:relative;
   transition:color .4s var(--ease-soft)}
 .navpages a::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;
@@ -209,7 +247,7 @@ a{color:inherit;text-decoration:none}
 .tswitch{flex:none;display:flex;border:1px solid var(--rule);border-radius:100px;
   padding:3px;gap:2px;background:var(--ground-2)}
 .tswitch button{border:0;background:transparent;color:var(--ink-3);cursor:pointer;
-  font-family:var(--serif-cn);font-size:.75rem;letter-spacing:.12em;padding:5px 12px;
+  font-family:var(--serif-cn);font-size:var(--fs-5);letter-spacing:.12em;padding:5px 12px;
   border-radius:100px;transition:.35s var(--ease-soft)}
 .tswitch button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
 
@@ -220,17 +258,20 @@ a{color:inherit;text-decoration:none}
    改用 SVG 湍流位移遮罩把新地色从按钮位置「洇」出来；
    动画完全由 JS 逐帧驱动（rAF 改写 #inkBlot 的 transform），
    所以这里只负责挂遮罩、关掉 clip-path 动画，并把整段转场
-   拉长到与 rAF 同一节拍（2.4s）——否则旧的 group 0.25s
-   默认时长会把快照提前撤掉，洇墨只演到一半。 */
+   拉长到与 rAF 同一节拍 ——否则旧的 group 0.25s
+   默认时长会把快照提前撤掉，洇墨只演到一半。
+   ⚠️ 这个节拍必须**等于** --ink-dur，两处一起改：rAF 在 --ink-dur 之后就不再写 transform，
+   若转场的组时长还更长（早先这里写死 2.4s），转场会空转一大段才结束，
+   期间遮罩一直挂着、也没法再点第二次。 */
 ::view-transition-old(root),::view-transition-new(root){animation:none}
-html.vt-theme::view-transition-new(root){animation:ink-wipe 2.4s var(--ease-inout)}
+html.vt-theme::view-transition-new(root){animation:ink-wipe var(--ink-dur) var(--ease-inout)}
 @keyframes ink-wipe{
   from{clip-path:circle(0% at var(--vt-x,90%) var(--vt-y,4%))}
   to{clip-path:circle(150% at var(--vt-x,90%) var(--vt-y,4%))}
 }
 /* 洇墨路径：用 SVG 遮罩替掉 clip-path；旧/新快照都无动画，
    全靠 #inkBlot 的 transform 在 JS 里逐帧放大（含落墨 → 洇开 → 爬行三段） */
-html.vt-ink.vt-theme::view-transition-group(root){animation-duration:2.4s}
+html.vt-ink.vt-theme::view-transition-group(root){animation-duration:var(--ink-dur)}
 html.vt-ink.vt-theme::view-transition-new(root){
   animation:none;
   -webkit-mask:url(#ink-mask);
@@ -266,18 +307,18 @@ html.vt-hide-nav .site-head{opacity:0;transition:none}
 .site-head{transition:opacity .3s ease}
 
 /* 旧的一屏：卷口从下往上收。opacity 留一点，好让「卷起来的那截」还有厚度 */
-/* 一个「格」1.1s 滚完 —— 原来 0.42s / 0.56s 并错开 0.26s 起步，两屏各滚各的，
+/* 一个「格」500ms 滚完 —— 原来 0.42s / 0.56s 并错开 0.26s 起步，两屏各滚各的，
    卷口是断的，轴也就没地方可骑。现在两屏共用同一时长、同一缓动、不延迟：
    旧屏被裁掉的部分恰好是新屏露出的部分，中间永远只有一道缝，
    轴就骑在这道缝上往上走 —— 这才是一次「滚过一格」。 */
 html.vt-roll::view-transition-old(root){
-  animation:roll-away 1.1s var(--ease-inout) both}
+  animation:roll-away 500ms var(--ease-inout) both}
 html.vt-roll::view-transition-new(root){
-  animation:roll-in 1.1s var(--ease-inout) both}
+  animation:roll-in 500ms var(--ease-inout) both}
 html.vt-roll.vt-back::view-transition-old(root){
-  animation:roll-away-back 1.1s var(--ease-inout) both}
+  animation:roll-away-back 500ms var(--ease-inout) both}
 html.vt-roll.vt-back::view-transition-new(root){
-  animation:roll-in-back 1.1s var(--ease-inout) both}
+  animation:roll-in-back 500ms var(--ease-inout) both}
 @keyframes roll-away{
   from{clip-path:inset(0 0 0 0);opacity:1}
   to{clip-path:inset(0 0 100% 0);opacity:.6}
@@ -406,21 +447,13 @@ html.js .rv.in{opacity:1;transform:none}
 .hero-title-row .seal-slot{margin-top:.5em}
 .hero-name{display:block}
 .lat-sub{font-family:var(--serif-lat);font-style:italic;font-weight:300;
-  font-size:clamp(.95rem,min(2.2vw,3.4vh),1.7rem);letter-spacing:.06em;color:var(--ink-3)}
-.hero-stmt{margin-top:clamp(24px,4.4vh,50px);max-width:46ch;
-  font-family:var(--serif-cn);font-weight:300;
-  font-size:clamp(.95rem,min(1.5vw,2.2vh),1.15rem);line-height:2.05;color:var(--ink-2)}
-.hero-stmt em{font-style:normal;color:var(--ink);position:relative;
-  background:linear-gradient(to top,color-mix(in srgb,var(--accent-2) 24%,transparent) 0 32%,transparent 32%);
-  background-size:0% 100%;background-repeat:no-repeat;
-  transition:background-size 1.2s var(--ease) .6s}
-.hero-stmt.in em{background-size:100% 100%}
+  font-size:var(--fs-lat);letter-spacing:.06em;color:var(--ink-3)}
 
 .meta{margin-top:clamp(32px,6vh,66px);display:grid;
   grid-template-columns:repeat(auto-fit,minmax(146px,1fr));
   border-top:1px solid var(--rule);padding-top:22px;gap:20px 28px}
 .meta dt{margin-bottom:7px}
-.meta dd{font-size:.915rem;color:var(--ink-2)}
+.meta dd{font-size:var(--fs-6);color:var(--ink-2)}
 .status{display:inline-flex;align-items:center;gap:8px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--amber);flex:none;
   box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 22%,transparent);
@@ -434,7 +467,7 @@ html.js .rv.in{opacity:1;transform:none}
 .hero-cta{margin-top:clamp(30px,5vh,52px);display:flex;flex-wrap:wrap;
   gap:clamp(20px,4vw,44px);align-items:center}
 .ulink{display:inline-flex;align-items:center;gap:11px;font-family:var(--serif-cn);
-  font-size:.98rem;letter-spacing:.1em;color:var(--ink);padding-bottom:5px;position:relative}
+  font-size:var(--fs-7);letter-spacing:.1em;color:var(--ink);padding-bottom:5px;position:relative}
 .ulink::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;
   background:var(--accent);transition:transform .6s var(--ease)}
 .ulink:hover::after{transform:scaleX(.3)}
@@ -448,7 +481,7 @@ html.js .rv.in{opacity:1;transform:none}
 .heal-line{width:clamp(70px,13vw,150px);height:1px;background:var(--rule);position:relative}
 .heal-line i{position:absolute;inset:0;background:var(--accent);transform:scaleX(0);
   transform-origin:left;will-change:transform}
-.heal .h-a,.heal .h-b{font-family:var(--serif-cn);font-size:.85rem;
+.heal .h-a,.heal .h-b{font-family:var(--serif-cn);font-size:var(--fs-5);
   color:var(--ink-3);letter-spacing:.16em}
 .heal .h-b{color:var(--accent-2)}
 
@@ -460,9 +493,8 @@ html.js .rv.in{opacity:1;transform:none}
   transition:opacity 1s var(--ease),transform 1s var(--ease)}
 .heal-cap.on{opacity:1;transform:none}
 .heal-cap b{display:block;font-family:var(--serif-cn);font-weight:600;
-  font-size:clamp(1.05rem,1.9vw,1.5rem);letter-spacing:.06em;color:var(--ink);
+  font-size:var(--fs-sign);letter-spacing:.06em;color:var(--ink);
   margin-bottom:9px}
-.heal-cap span{font-size:.79rem;color:var(--ink-3);line-height:1.75}
 
 /* ═══ 章节 ═══ */
 section{padding:var(--sec-y) 0;position:relative}
@@ -476,9 +508,9 @@ section{padding:var(--sec-y) 0;position:relative}
   padding:clamp(14px,2.4vh,22px) clamp(6px,1vw,9px);
   background:color-mix(in srgb,var(--ground-2) 70%,transparent);
 }
-.slip-num{font-family:var(--serif-cn);font-size:clamp(1.05rem,1.8vw,1.35rem);
+.slip-num{font-family:var(--serif-cn);font-size:var(--fs-slipnum);
   color:var(--accent-2);letter-spacing:.2em;line-height:1}
-.slip-name{font-family:var(--serif-cn);font-size:clamp(.86rem,1.25vw,1rem);
+.slip-name{font-family:var(--serif-cn);font-size:var(--fs-slipname);
   color:var(--ink-2);letter-spacing:.34em;line-height:1}
 .slip-line{width:1px;height:0;background:var(--rule);
   transition:height 1.1s var(--ease) .2s}
@@ -510,17 +542,14 @@ section{padding:var(--sec-y) 0;position:relative}
   clip-path:inset(0 100% 0 0);transition:clip-path 1.3s var(--ease) .3s}
 html.js .glaze.in .glaze-swatch::after{clip-path:inset(0 0 0 0)}
 .glaze-meta{padding:15px 15px 18px;border-top:1px solid var(--rule-2)}
-.glaze-name{font-family:var(--serif-cn);font-weight:600;font-size:1.08rem;
+.glaze-name{font-family:var(--serif-cn);font-weight:600;font-size:var(--fs-8);
   letter-spacing:.18em;display:block;margin-bottom:4px}
-.glaze-py{font-family:var(--mono);font-size:.645rem;letter-spacing:.16em;
+.glaze-py{font-family:var(--mono);font-size:var(--fs-3);letter-spacing:.16em;
   color:var(--ink-3);text-transform:uppercase}
-.glaze-hex{font-family:var(--mono);font-size:.67rem;color:var(--ink-3);
+.glaze-hex{font-family:var(--mono);font-size:var(--fs-4);color:var(--ink-3);
   letter-spacing:.06em;margin-top:9px;display:block}
-.glaze-note{font-size:.78rem;color:var(--ink-2);margin-top:10px;line-height:1.72;min-height:3.5em}
 .glaze-use{margin-top:11px;padding-top:10px;border-top:1px dashed var(--rule-2);
-  font-family:var(--mono);font-size:.615rem;color:var(--ink-3);letter-spacing:.04em}
-.origin{margin-top:clamp(32px,5vh,56px);border-left:2px solid var(--accent-2);
-  padding:6px 0 6px clamp(18px,2.6vw,30px);max-width:66ch}
+  font-family:var(--mono);font-size:var(--fs-3);color:var(--ink-3);letter-spacing:.04em}
 
 /* ═══ 材质板 ═══ */
 .material{margin-top:clamp(50px,7.5vh,92px)}
@@ -531,15 +560,10 @@ html.js .glaze.in .glaze-swatch::after{clip-path:inset(0 0 0 0)}
   display:flex;flex-direction:column;gap:14px;min-height:clamp(190px,23vw,232px)}
 .mat:last-child{border-right:0}
 .mat-stage{flex:1;display:grid;place-items:center;position:relative;overflow:hidden}
-.mat-name{font-family:var(--serif-cn);font-size:.9rem;letter-spacing:.2em;color:var(--ink-2)}
-.mat-name em{display:block;font-style:normal;font-family:var(--mono);font-size:.585rem;
+.mat-name{font-family:var(--serif-cn);font-size:var(--fs-6);letter-spacing:.2em;color:var(--ink-2)}
+.mat-name em{display:block;font-style:normal;font-family:var(--mono);font-size:var(--fs-3);
   letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-top:5px}
-.mat-desc{font-size:.735rem;color:var(--ink-3);line-height:1.68}
-/* 宣纸纤维 */
-.m-fiber{position:absolute;inset:0;opacity:.85;mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014 0.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)'/%3E%3C/svg%3E");
-  background-size:300px 300px}
-[data-theme="ink"] .m-fiber{mix-blend-mode:screen}
+.mat-desc{font-size:var(--fs-4);color:var(--ink-3);line-height:1.68}
 /* 乌丝栏 */
 .m-ulan{width:100%;height:100%;display:flex;gap:11px}
 .m-ulan i{flex:1;background:var(--rule);display:block;transform-origin:top;
@@ -550,14 +574,6 @@ html.js .mat:not(.in) .m-ulan i{transform:scaleY(0)}
 .m-crack{width:100%;height:100%;display:block;opacity:.92}
 /* 印章 */
 .m-seal{display:flex;align-items:center;gap:12px}
-/* 墨韵：纸上一摊水 */
-.m-wash{width:100%;height:100%;position:relative;overflow:hidden}
-.m-wash::before{content:'';position:absolute;inset:-14%;
-  background:
-    radial-gradient(38% 34% at 40% 44%,rgba(var(--crack),.5),transparent 62%),
-    radial-gradient(26% 30% at 66% 58%,rgba(var(--crack),.34),transparent 66%),
-    radial-gradient(20% 22% at 30% 66%,rgba(var(--crack),.22),transparent 68%);
-  filter:blur(1px)}
 
 /* ═══ 贰 · 作品 ═══ */
 .work{border-top:1px solid var(--rule);padding:clamp(36px,5.6vh,66px) 0;
@@ -567,19 +583,19 @@ html.js .mat:not(.in) .m-ulan i{transform:scaleY(0)}
 .work.flip .work-visual{order:-1}
 .work-top{display:flex;align-items:baseline;gap:16px;margin-bottom:14px}
 .work-num{font-family:var(--serif-cn);font-weight:400;
-  font-size:clamp(1.5rem,2.7vw,2.1rem);color:var(--accent-2);line-height:1;flex:none}
+  font-size:var(--fs-worknum);color:var(--accent-2);line-height:1;flex:none}
 .work-title{font-family:var(--serif-cn);font-weight:600;
-  font-size:clamp(1.3rem,2.35vw,1.85rem);letter-spacing:.04em}
-.work-role{font-family:var(--mono);font-size:.655rem;letter-spacing:.16em;
+  font-size:var(--fs-worktitle);letter-spacing:.04em}
+.work-role{font-family:var(--mono);font-size:var(--fs-4);letter-spacing:.16em;
   color:var(--ink-3);text-transform:uppercase;margin-bottom:20px}
-.work-desc{color:var(--ink-2);max-width:50ch;font-size:.935rem;line-height:1.92}
+.work-desc{color:var(--ink-2);max-width:50ch;font-size:var(--fs-6);line-height:1.92}
 /* 取舍：工程判断发生的地方，单独成块 */
 .tradeoff{margin-top:22px;border-left:2px solid var(--accent-2);padding:3px 0 3px 16px}
-.tradeoff b{display:block;font-family:var(--serif-cn);font-size:.83rem;
+.tradeoff b{display:block;font-family:var(--serif-cn);font-size:var(--fs-5);
   letter-spacing:.22em;color:var(--ink-3);font-weight:600;margin-bottom:7px}
-.tradeoff p{font-size:.88rem;color:var(--ink-2);line-height:1.88}
+.tradeoff p{font-size:var(--fs-6);color:var(--ink-2);line-height:1.88}
 .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
-.tag{font-family:var(--mono);font-size:.645rem;letter-spacing:.09em;
+.tag{font-family:var(--mono);font-size:var(--fs-3);letter-spacing:.09em;
   border:1px solid var(--rule);border-radius:100px;padding:4px 11px;color:var(--ink-3)}
 
 .specimen{position:relative;border:1px solid var(--frame);background:var(--ground-2);
@@ -590,7 +606,7 @@ html.js .mat:not(.in) .m-ulan i{transform:scaleY(0)}
 .sp-bar{height:30px;border-bottom:1px solid var(--rule-2);display:flex;
   align-items:center;gap:6px;padding:0 12px}
 .sp-bar i{width:7px;height:7px;border-radius:50%;background:var(--rule);display:block}
-.sp-bar span{font-family:var(--mono);font-size:.595rem;color:var(--ink-3);
+.sp-bar span{font-family:var(--mono);font-size:var(--fs-3);color:var(--ink-3);
   margin-left:8px;letter-spacing:.08em}
 /* ═══ 解剖图 ═══
    四件作品各画一张剖面：不问「界面长什么样」，而问「它到底怎么跑的」。
@@ -605,11 +621,11 @@ html.js .mat:not(.in) .m-ulan i{transform:scaleY(0)}
 .a-f{fill:color-mix(in srgb,var(--ink) 32%,transparent)}
 .a-f-hi{fill:var(--accent-2)}
 .a-f-hot{fill:var(--cinnabar)}
-.a-cn{font-family:var(--serif-cn);font-size:9px;letter-spacing:.1em;fill:var(--ink-2)}
-.a-cn-hi{font-family:var(--serif-cn);font-size:9px;letter-spacing:.1em;fill:var(--accent-2)}
-.a-cn-hot{font-family:var(--serif-cn);font-size:9px;letter-spacing:.1em;fill:var(--cinnabar)}
-.a-m{font-family:var(--mono);font-size:7px;letter-spacing:.1em;fill:var(--ink-3)}
-.a-cap{font-family:var(--serif-cn);font-size:8.4px;fill:var(--ink-3);letter-spacing:.03em}
+.a-cn{font-family:var(--serif-cn);font-size:var(--fs-3);letter-spacing:.1em;fill:var(--ink-2)}
+.a-cn-hi{font-family:var(--serif-cn);font-size:var(--fs-3);letter-spacing:.1em;fill:var(--accent-2)}
+.a-cn-hot{font-family:var(--serif-cn);font-size:var(--fs-3);letter-spacing:.1em;fill:var(--cinnabar)}
+.a-m{font-family:var(--mono);font-size:var(--fs-1);letter-spacing:.1em;fill:var(--ink-3)}
+.a-cap{font-family:var(--serif-cn);font-size:var(--fs-2);fill:var(--ink-3);letter-spacing:.03em}
 
 /* 标本随入场逐件装配 */
 html.js .work .anim{opacity:0;transform:translateY(9px);
@@ -626,52 +642,52 @@ html.js .work.in .dw{stroke-dashoffset:0}
 /* ═══ 叁 · 自述 ═══ */
 .about-grid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);
   gap:clamp(30px,6vw,92px);align-items:start}
-.about-body p{margin-bottom:1.35em;color:var(--ink-2);font-size:.95rem;line-height:2.08}
+.about-body p{margin-bottom:1.35em;color:var(--ink-2);font-size:var(--fs-6);line-height:2.08}
 .about-body p:last-child{margin-bottom:0}
 .dropcap::first-letter{font-family:var(--serif-cn);font-weight:900;font-size:3.2em;
   float:left;line-height:.82;margin:.06em .12em 0 0;color:var(--accent)}
 .skill-list{border-top:1px solid var(--rule)}
 .skill-list li{list-style:none;display:flex;justify-content:space-between;
   align-items:baseline;padding:11px 0;border-bottom:1px solid var(--rule-2);
-  font-size:.86rem;color:var(--ink-2)}
-.skill-list li span{font-family:var(--mono);font-size:.61rem;color:var(--ink-3);
+  font-size:var(--fs-6);color:var(--ink-2)}
+.skill-list li span{font-family:var(--mono);font-size:var(--fs-3);color:var(--ink-3);
   letter-spacing:.12em}
 .now{margin-top:clamp(38px,5.5vh,66px);border-top:1px solid var(--rule);
   padding-top:clamp(24px,3.6vh,40px)}
 .now-list{display:flex;flex-direction:column;gap:16px;margin-top:20px}
 .now-list li{list-style:none;display:grid;grid-template-columns:var(--rail) 1fr;
   gap:clamp(14px,3vw,34px);align-items:baseline}
-.now-k{font-family:var(--serif-cn);font-size:.87rem;color:var(--accent-2);letter-spacing:.22em}
-.now-list p{font-size:.885rem;color:var(--ink-2);line-height:1.85}
+.now-k{font-family:var(--serif-cn);font-size:var(--fs-6);color:var(--accent-2);letter-spacing:.22em}
+.now-list p{font-size:var(--fs-6);color:var(--ink-2);line-height:1.85}
 .figures{margin-top:clamp(42px,6vh,74px);display:grid;
   grid-template-columns:repeat(auto-fit,minmax(168px,1fr));border-top:1px solid var(--rule)}
 .figure{border-right:1px solid var(--rule-2);padding:clamp(20px,3vw,30px) clamp(14px,2vw,22px)}
 .figure:last-child{border-right:0}
 .figure b{display:block;font-family:var(--serif-lat);font-weight:300;
-  font-size:clamp(2rem,4.3vw,3.2rem);line-height:1;color:var(--ink);
+  font-size:var(--fs-fig);line-height:1;color:var(--ink);
   font-variant-numeric:tabular-nums}
 .figure b i{font-style:normal;font-size:.42em;color:var(--accent-2);margin-left:5px;
   font-family:var(--serif-cn);letter-spacing:.06em}
 /* 用直接子选择器：数字也在 <span data-count> 里，用 .figure span 会把大数字
    一并缩成说明字号，还会让「<50MB」折行 */
-.figure>span{display:block;margin-top:11px;font-size:.775rem;color:var(--ink-3);line-height:1.62}
+.figure>span{display:block;margin-top:11px;font-size:var(--fs-5);color:var(--ink-3);line-height:1.62}
 /* 指标口径：贴在数字下方，朱砂细线起头，与「落款」同一语汇 */
 .fig-note{margin-top:clamp(24px,3.4vh,38px);max-width:84ch;
   border-left:2px solid var(--cinnabar);padding:3px 0 3px 15px;
-  font-size:.755rem;line-height:1.85;color:var(--ink-3)}
+  font-size:var(--fs-5);line-height:1.85;color:var(--ink-3)}
 .fig-note b{font-family:var(--serif-cn);font-weight:600;color:var(--ink);
-  letter-spacing:.14em;margin-right:.55em;font-size:.72rem}
+  letter-spacing:.14em;margin-right:.55em;font-size:var(--fs-4)}
 .fig-note code{font-family:var(--mono);font-size:.94em;color:var(--accent-deep);
   background:var(--rule-2);padding:1px 5px;border-radius:3px}
 .timeline{margin-top:clamp(40px,6vh,70px);border-top:1px solid var(--rule);
   padding-top:clamp(26px,4vh,46px)}
 .tl-item{display:grid;grid-template-columns:var(--rail) 1fr;
   gap:clamp(14px,3vw,34px);padding-bottom:22px}
-.tl-period{font-family:var(--mono);font-size:.685rem;color:var(--accent-2);
+.tl-period{font-family:var(--mono);font-size:var(--fs-4);color:var(--accent-2);
   letter-spacing:.1em;padding-top:5px}
-.tl-role{font-family:var(--serif-cn);font-weight:600;font-size:1.04rem;
+.tl-role{font-family:var(--serif-cn);font-weight:600;font-size:var(--fs-7);
   margin-bottom:4px;letter-spacing:.04em}
-.tl-desc{font-size:.85rem;color:var(--ink-3);line-height:1.82}
+.tl-desc{font-size:var(--fs-5);color:var(--ink-3);line-height:1.82}
 
 /* ═══ 肆 · 手记 ═══ */
 .posts{border-top:1px solid var(--rule)}
@@ -681,29 +697,29 @@ html.js .work.in .dw{stroke-dashoffset:0}
   transition:padding-left .6s var(--ease)}
 .post:hover{padding-left:clamp(6px,1.4vw,20px)}
 .post:hover .post-title{color:var(--accent)}
-.post-date{font-family:var(--mono);font-size:.685rem;color:var(--ink-3);
+.post-date{font-family:var(--mono);font-size:var(--fs-4);color:var(--ink-3);
   letter-spacing:.08em;white-space:nowrap}
 .post-title{font-family:var(--serif-cn);font-weight:400;
-  font-size:clamp(1rem,1.8vw,1.28rem);letter-spacing:.03em;
+  font-size:var(--fs-subhead);letter-spacing:.03em;
   transition:color .5s var(--ease)}
-.post-tags{font-family:var(--serif-cn);font-size:.72rem;color:var(--ink-3);
+.post-tags{font-family:var(--serif-cn);font-size:var(--fs-4);color:var(--ink-3);
   letter-spacing:.16em;white-space:nowrap}
 
 /* ═══ 伍 · 落款 ═══ */
 .colo-mail{display:inline-block;font-family:var(--serif-lat);font-weight:300;
-  font-size:clamp(1.35rem,4.8vw,3.5rem);line-height:1.16;position:relative;word-break:break-all}
+  font-size:var(--fs-colo);line-height:1.16;position:relative;word-break:break-all}
 .colo-mail::after{content:'';position:absolute;left:0;bottom:.06em;height:1px;
   width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;
   transition:transform .85s var(--ease)}
 .colo-mail:hover::after{transform:scaleX(1)}
 .socials{display:flex;flex-wrap:wrap;gap:clamp(18px,3.4vw,40px);
   margin-top:clamp(32px,4.6vh,52px)}
-.socials a,.socials button{font-family:var(--serif-cn);font-size:.94rem;color:var(--ink-2);
+.socials a,.socials button{font-family:var(--serif-cn);font-size:var(--fs-6);color:var(--ink-2);
   display:inline-flex;align-items:baseline;gap:9px;padding:0 0 3px;
   background:transparent;border:0;border-bottom:1px solid transparent;cursor:pointer;
   transition:.4s var(--ease-soft);letter-spacing:.08em}
 .socials a:hover,.socials button:hover{color:var(--ink);border-bottom-color:var(--accent-2)}
-.socials a span,.socials button span{font-family:var(--mono);font-size:.59rem;color:var(--ink-3);letter-spacing:.1em}
+.socials a span,.socials button span{font-family:var(--mono);font-size:var(--fs-3);color:var(--ink-3);letter-spacing:.1em}
 /* 可复制的联系方式：点一下，朱砂色换「已复制」，像在落款旁补钤一枚小印 */
 .socials button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .socials button.done{color:var(--ink);border-bottom-color:var(--accent)}
@@ -715,8 +731,8 @@ html:not(.js) .socials button.copy{display:none}
   justify-content:flex-end;gap:clamp(12px,2vw,22px)}
 .sign-txt{text-align:right}
 .sign-name{font-family:var(--serif-cn);font-weight:600;
-  font-size:clamp(1.05rem,1.9vw,1.4rem);letter-spacing:.2em;color:var(--ink)}
-.sign-date{font-family:var(--serif-cn);font-size:.85rem;color:var(--ink-3);
+  font-size:var(--fs-sign);letter-spacing:.2em;color:var(--ink)}
+.sign-date{font-family:var(--serif-cn);font-size:var(--fs-5);color:var(--ink-3);
   letter-spacing:.2em;margin-top:9px}
 .sign-seals{flex:none;display:flex;align-items:flex-start;
   gap:clamp(8px,1.2vw,13px);margin-top:2px}
@@ -724,26 +740,26 @@ html:not(.js) .socials button.copy{display:none}
 /* ═══ 附 · 方案说明 ═══ */
 .spec-sheet{background:var(--ground-2);border-top:1px solid var(--rule);
   border-bottom:1px solid var(--rule)}
-.compare{width:100%;border-collapse:collapse;font-size:.85rem}
+.compare{width:100%;border-collapse:collapse;font-size:var(--fs-5)}
 .compare th,.compare td{text-align:left;padding:14px 16px 14px 0;
   border-bottom:1px solid var(--rule-2);vertical-align:top}
-.compare th{font-family:var(--mono);font-size:.635rem;letter-spacing:.16em;
+.compare th{font-family:var(--mono);font-size:var(--fs-3);letter-spacing:.16em;
   text-transform:uppercase;color:var(--ink-3);font-weight:500;padding-bottom:11px}
-.compare td:first-child{font-family:var(--serif-cn);font-size:.84rem;letter-spacing:.14em;
+.compare td:first-child{font-family:var(--serif-cn);font-size:var(--fs-5);letter-spacing:.14em;
   color:var(--ink-3);white-space:nowrap;width:1%;padding-right:clamp(18px,4vw,54px)}
 .compare .old{color:var(--ink-3)}
 .compare .new{color:var(--ink)}
 .compare .new::before{content:'→ ';color:var(--accent-2);font-family:var(--mono);font-size:.8em}
 .spec-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(222px,1fr));
   gap:clamp(24px,4vw,52px)}
-.spec-block h4{font-family:var(--serif-cn);font-weight:600;font-size:1rem;
+.spec-block h4{font-family:var(--serif-cn);font-weight:600;font-size:var(--fs-7);
   letter-spacing:.14em;margin-bottom:18px;padding-bottom:11px;
   border-bottom:1px solid var(--rule)}
 .spec-list{display:flex;flex-direction:column;gap:11px}
 .spec-row{display:flex;justify-content:space-between;align-items:baseline;
-  gap:14px;font-size:.81rem;color:var(--ink-2)}
+  gap:14px;font-size:var(--fs-5);color:var(--ink-2)}
 .spec-row b{font-weight:500;color:var(--ink)}
-.spec-row em{font-style:normal;font-family:var(--mono);font-size:.645rem;
+.spec-row em{font-style:normal;font-family:var(--mono);font-size:var(--fs-3);
   color:var(--ink-3);letter-spacing:.06em;text-align:right}
 .chipdot{display:inline-block;width:11px;height:11px;border-radius:50%;
   margin-right:8px;vertical-align:-1px;box-shadow:inset 0 0 0 1px var(--rule)}
@@ -783,7 +799,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,6vh,68px) 0}
   display:none;flex:none;width:40px;height:40px;margin-left:auto;
   border:1px solid var(--rule);border-radius:2px;background:transparent;
   color:var(--ink-2);cursor:pointer;
-  font-family:var(--serif-cn);font-size:.8rem;letter-spacing:.1em;
+  font-family:var(--serif-cn);font-size:var(--fs-5);letter-spacing:.1em;
   align-items:center;justify-content:center;
   transition:.35s var(--ease-soft);
 }
@@ -834,13 +850,13 @@ body.toc-open{overflow-y:hidden}
   display:flex;align-items:center;gap:16px;
   min-height:54px;                                   /* 触摸目标 ≥44px */
   border-bottom:1px solid var(--rule-2);
-  font-family:var(--serif-cn);font-size:1.08rem;
+  font-family:var(--serif-cn);font-size:var(--fs-8);
   letter-spacing:.16em;color:var(--ink-2);
 }
 .toc-list a:active{color:var(--ink)}
-.toc-num{flex:none;width:1.7em;font-size:.82rem;
+.toc-num{flex:none;width:1.7em;font-size:var(--fs-5);
   color:var(--accent-2);letter-spacing:.2em}
-.toc-lat{margin-left:auto;font-family:var(--mono);font-size:.585rem;
+.toc-lat{margin-left:auto;font-family:var(--mono);font-size:var(--fs-3);
   letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase}
 .toc-out-head{margin-top:32px;color:var(--ink-3);padding-left:calc(1.7em + 16px)}
 .toc-foot{margin-top:26px}
@@ -916,7 +932,7 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 .ear-tabs li:first-child::before{width:13px}
 .ear-tabs a{
   display:flex;align-items:center;gap:6px;white-space:nowrap;
-  font-family:var(--serif-cn);font-size:.7rem;letter-spacing:.16em;
+  font-family:var(--serif-cn);font-size:var(--fs-4);letter-spacing:.16em;
   color:var(--ink-3);padding:2px 7px;border-radius:2px 0 0 2px;
   opacity:0;transform:translateX(10px);
   transition:opacity .4s var(--ease),transform .4s var(--ease),
@@ -926,7 +942,7 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 /* 当前篇的签条从页边「抽」出来，露出篇题 —— 书耳被抽出的样子 */
 .ear-tabs a[aria-current="true"]{color:var(--ink);
   background:color-mix(in srgb,var(--ground) 86%,transparent)}
-.ear-ord{flex:none;font-size:.66rem;color:var(--accent-2);letter-spacing:.1em}
+.ear-ord{flex:none;font-size:var(--fs-4);color:var(--accent-2);letter-spacing:.1em}
 .ear-name{max-width:0;opacity:0;overflow:hidden;
   transition:max-width .5s var(--ease),opacity .35s var(--ease)}
 .ear-tabs a[aria-current="true"] .ear-name{max-width:5em;opacity:1}
@@ -957,23 +973,22 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 
 /* ── 手机 ── */
 @media (max-width:700px){
-  :root{--sec-y:clamp(62px,9vh,104px);--gut:clamp(18px,5vw,26px)}
+  :root{--sec-y:clamp(62px,9vh,104px);--gut:clamp(18px,5vw,26px);
+    --fs-hero:clamp(2.1rem,min(12.6vw,7.4vh),3.5rem);--fs-lat:clamp(.9rem,min(4.2vw,2.5vh),1.2rem)}
 
   .hero{height:172vh;height:172svh}
   .glaze-panel{right:-34%;opacity:.5}
 
-  /* ── 手机首屏：字号再收一档，靠留白撑高级感 ──
-     390×844 实测内容总高约 560px，可用高约 730px（已扣顶栏与安全区） */
-  .d-xl{font-size:clamp(2.1rem,min(12.6vw,7.4vh),3.5rem);letter-spacing:.03em}
-  .lat-sub{font-size:clamp(.9rem,min(4.2vw,2.5vh),1.2rem)}
+  /* ── 手机首屏：字号再收一档（--fs-hero / --fs-lat 已在本块的 :root 里换值），
+     靠留白撑高级感。390×844 实测内容总高约 560px，可用高约 730px（扣顶栏与安全区）*/
+  .d-xl{letter-spacing:.03em}
   .hero-eyebrow{margin-bottom:clamp(15px,2.5vh,25px)}
   .hero-title-row{gap:13px}
   .hero-title-row .seal-slot{--w:25px;margin-top:.34em}
-  .hero-stmt{margin-top:clamp(19px,3.2vh,32px);font-size:.99rem;line-height:1.95}
   .meta{margin-top:clamp(21px,3.6vh,38px);padding-top:18px;
     gap:15px 18px;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .meta dt{font-size:.6rem}
-  .meta dd{font-size:.875rem}
+  .meta dt{font-size:var(--fs-3)}
+  .meta dd{font-size:var(--fs-6)}
   .hero-cta{margin-top:clamp(21px,3.5vh,36px);gap:22px}
 
   .sec-head{grid-template-columns:1fr;gap:16px}
@@ -1005,15 +1020,13 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
   .hero-sticky{position:relative;height:auto;min-height:100svh;
     padding-bottom:calc(70px + var(--inset-b))}
   .glaze-panel{top:30%;width:min(94vw,540px);height:min(94vw,540px);opacity:.44}
-  .hero-stmt{line-height:1.88}
 }
 
 /* ── 超窄屏（≤380px）：二栏再收，避免退回单栏把首屏拉高 ── */
 @media (max-width:380px){
-  .d-xl{font-size:clamp(2rem,13.6vw,2.9rem)}
-  .hero-stmt{font-size:.94rem;line-height:1.9}
+  :root{--fs-hero:clamp(2rem,13.6vw,2.9rem)}
   .meta{gap:13px 14px}
-  .meta dd{font-size:.84rem}
+  .meta dd{font-size:var(--fs-5)}
 }
 
 /* ── 对比表：窄屏改成堆叠，三栏挤不下 ── */
@@ -1024,17 +1037,17 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
   .compare td{border:0;padding:0}
   .compare td:first-child{
     width:auto;padding-right:0;margin-bottom:10px;
-    font-size:.9rem;color:var(--accent-2);letter-spacing:.2em;
+    font-size:var(--fs-6);color:var(--accent-2);letter-spacing:.2em;
   }
-  .compare .old{font-size:.83rem}
+  .compare .old{font-size:var(--fs-5)}
   .compare .old::before{
     content:'原';display:block;margin-bottom:4px;
-    font-family:var(--mono);font-size:.575rem;letter-spacing:.2em;color:var(--ink-3);
+    font-family:var(--mono);font-size:var(--fs-3);letter-spacing:.2em;color:var(--ink-3);
   }
-  .compare .new{font-size:.885rem;margin-top:9px}
+  .compare .new{font-size:var(--fs-6);margin-top:9px}
   .compare .new::before{
     content:'改';display:block;margin-bottom:4px;
-    font-family:var(--mono);font-size:.575rem;letter-spacing:.2em;color:var(--accent-2);
+    font-family:var(--mono);font-size:var(--fs-3);letter-spacing:.2em;color:var(--accent-2);
   }
 }
 
@@ -1057,7 +1070,6 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
     padding-top:calc(var(--nav-h) + var(--inset-t) + 22px);padding-bottom:56px}
   .meta{margin-top:24px;padding-top:16px}
   .hero-cta{margin-top:22px}
-  .hero-stmt{margin-top:20px}
   .glaze-panel{top:44%;width:min(52vh,420px);height:min(52vh,420px);opacity:.42}
   .heal,.heal-cap{position:static;margin-top:22px}
   .heal-cap{opacity:1;transform:none;text-align:left;max-width:100%}
@@ -1121,63 +1133,10 @@ html.js .seal-slot.in{opacity:1;transform:rotate(var(--tilt,0deg))}
 .fb-flash.on::before{animation:fb-flash 190ms linear forwards}
 @keyframes fb-flash{0%{opacity:.55}100%{opacity:0}}
 
-/* 自绘光标：仅精确指针设备且非 reduced-motion 时才挂上 */
-html.cursor-on,html.cursor-on *{cursor:none!important}
-/* 换篇 / 换地色期间，View Transition 的顶层快照会盖住自绘光标（它在文档流里，
-   进不了 top layer）。此时不能退回系统箭头 —— 全站只有「一支笔」，
-   突然冒出一个系统指针最出戏；也不能干脆不显示，2.4s 找不到鼠标同样难受。
-   于是换上一枚**同款笔锋的原生光标**（SVG data URI，热点就是笔尖 5,27），
-   墨色取当前地色的 --ink：地色是新的，所以墨地时这支笔自动变浅。
-   浏览器不支持 SVG cursor 的，退回 auto。 */
-html.vt-theme.cursor-on,html.vt-theme.cursor-on *,
-html.vt-roll.cursor-on,html.vt-roll.cursor-on *{
-  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M0 0C-1.3-6-5.4-9.4-5.4-16A5.4 5.4 0 0 1 5.4-16C5.4-9.4 1.3-6 0 0Z' fill='%231C1A16'/%3E%3C/g%3E%3C/svg%3E") 5 27,auto!important}
-html[data-theme="ink"].vt-theme.cursor-on,html[data-theme="ink"].vt-theme.cursor-on *,
-html[data-theme="ink"].vt-roll.cursor-on,html[data-theme="ink"].vt-roll.cursor-on *{
-  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M0 0C-1.3-6-5.4-9.4-5.4-16A5.4 5.4 0 0 1 5.4-16C5.4-9.4 1.3-6 0 0Z' fill='%23E8E3D8'/%3E%3C/g%3E%3C/svg%3E") 5 27,auto!important}
-#cursor{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;opacity:0;
-  transition:opacity .22s var(--ease);will-change:transform}
-.cur-dot,.cur-ring{position:absolute;left:0;top:0;
-  transition:transform .2s var(--ease),opacity .2s var(--ease),
-             background .2s var(--ease)}
-/* 笔锋：一枚饱满的羊毫 —— 圆鼓的笔肚，收成一条细尖，笔根留一道「毫根」接缝。
-   形状交给 SVG 蒙版（alpha 即形状），颜色走主题变量：纸地是墨笔、墨地是纸色笔。
-   笔尖落在 (5,27) 即热点：盒子按笔尖反向偏移，再以笔尖为 transform-origin，
-   之后所有缩放 / 旋转都绕笔尖发生 —— 尖端永远咬着指针，不因变形而跑偏 */
-.cur-dot{width:32px;height:32px;transform-origin:5px 27px;
-  transform:translate(-5px,-27px);
-  background:linear-gradient(45deg,
-    color-mix(in srgb,var(--ink) 58%,transparent) 0%,var(--ink) 42%,var(--ink) 100%);
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M0 0C-1.3-6-5.4-9.4-5.4-16A5.4 5.4 0 0 1 5.4-16C5.4-9.4 1.3-6 0 0Z'/%3E%3Cpath d='M-5-13L5-13' stroke='%23000' stroke-opacity='.5'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M0 0C-1.3-6-5.4-9.4-5.4-16A5.4 5.4 0 0 1 5.4-16C5.4-9.4 1.3-6 0 0Z'/%3E%3Cpath d='M-5-13L5-13' stroke='%23000' stroke-opacity='.5'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
-/* 墨渍：笔尖落处洇开的一圈湿痕，圆心就是笔尖 */
-.cur-ring{width:32px;height:32px;border-radius:50%;
-  transform:translate(-50%,-50%) scale(.32);opacity:0;
-  background:radial-gradient(circle at 50% 50%,
-    color-mix(in srgb,var(--accent-2) 24%,transparent) 0%,
-    color-mix(in srgb,var(--accent-2) 13%,transparent) 46%,
-    transparent 72%)}
-/* 悬停可交互处：笔毫蘸朱砂，笔身略涨 —— 绕笔尖缩放，尖端不跑 */
-#cursor.hot .cur-ring{transform:translate(-50%,-50%) scale(1);opacity:1;
-  background:radial-gradient(circle at 50% 50%,
-    color-mix(in srgb,var(--cinnabar) 26%,transparent) 0%,
-    color-mix(in srgb,var(--cinnabar) 14%,transparent) 46%,
-    transparent 72%)}
-#cursor.hot .cur-dot{background:var(--cinnabar);
-  transform:translate(-5px,-27px) scale(1.08)}
-/* 按下：笔毫压到纸上 —— 尖锋被压钝、笔肚铺开成一团，笔身顺势转正一点，
-   墨渍同时涨开一圈。这条只改尺寸、不改颜色，
-   所以「按住某个链接」时仍是朱砂那一团（颜色归 .hot 管）。 */
-#cursor.down .cur-ring{transform:translate(-50%,-50%) scale(1.34);opacity:1}
-#cursor.down .cur-dot{
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M-2.6-.6C-3.2-6.2-7-9.2-7-13A7 7 0 0 1 7-13C7-9.2 3.2-6.2 2.6-.6A2.6 2.6 0 0 1-2.6-.6Z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='translate(5 27) rotate(45)'%3E%3Cpath d='M-2.6-.6C-3.2-6.2-7-9.2-7-13A7 7 0 0 1 7-13C7-9.2 3.2-6.2 2.6-.6A2.6 2.6 0 0 1-2.6-.6Z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
-  transform:translate(-5px,-27px) rotate(8deg) scale(1.05);
-  transition:transform .09s var(--ease),background .09s var(--ease)}
 
 /* ── 打印 ── */
 @media print{
-  .surface,.ulan,.glaze-panel,.site-head,.toc,.heal,.heal-cap,#progress,#fx,#cursor{display:none!important}
+  .surface,.ulan,.glaze-panel,.site-head,.toc,.heal,.heal-cap,#progress,#fx{display:none!important}
   .hero{height:auto}
   .hero-sticky{position:static;height:auto}
   html.js .rv,html.js .mask>.ch{opacity:1!important;transform:none!important}
@@ -1191,7 +1150,13 @@ html[data-theme="ink"].vt-roll.cursor-on,html[data-theme="ink"].vt-roll.cursor-o
    各卷在 deck 下重排进单屏、收紧间距，保证单屏内容完整不被截断；
    过矮的视口（≤640px 高）退回普通滚动，绝不裁切内容。
    ══════════════════════════════════════════════════════════════ */
-html.deck-mode{scroll-snap-type:y mandatory}
+html.deck-mode{scroll-snap-type:y mandatory;
+  /* deck 下几个版面要压到单屏里 —— 差异全收在这里，组件规则只引用令牌 */
+  --fs-fig:clamp(1.1rem,2.1vw,1.7rem);
+  --fs-worktitle:clamp(1rem,1.5vw,1.25rem);
+  --fs-slipnum:clamp(.95rem,1.4vw,1.15rem);
+  --fs-slipname:clamp(.74rem,1vw,.88rem);
+  --fs-decksub:clamp(.92rem,1.2vw,1.02rem)}
 /* deck 下每卷自带上内边距避开顶栏，锚点/跳屏须落在卷的绝对顶端 ——
    抵消全局给锚点留的 scroll-margin-top，否则整屏跳会差一截（落在上一卷尾巴上） */
 html.deck-mode [id]{scroll-margin-top:0}
@@ -1210,37 +1175,33 @@ html.deck-mode .hero{height:100svh}
 html.deck-mode .hero-sticky{height:100svh}
 /* 卷标题在整屏里收一点，给内容让位 */
 html.deck-mode .sec-head{margin-bottom:clamp(4px,.8vh,10px)}
-html.deck-mode .sec-sub{font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.8}
+html.deck-mode .sec-sub{font-size:var(--fs-decksub);line-height:1.8}
 html.deck-mode .sec-title-wrap{margin-bottom:clamp(6px,1vh,12px)!important}
-/* 题签在整屏里压短，卷首不再被标签顶高 */
+/* 题签在整屏里压短，卷首不再被标签顶高。
+   字号不用在这里重写 —— --fs-slipnum / --fs-slipname 已在上面按 deck 重定义，
+   .slip-num / .slip-name 引的是同一个令牌，自己就跟着变了 */
 html.deck-mode .slip{padding:clamp(8px,1.4vh,14px) clamp(5px,.8vw,7px);gap:clamp(5px,1vh,9px)}
-html.deck-mode .slip-num{font-size:clamp(.95rem,1.4vw,1.15rem)}
-html.deck-mode .slip-name{font-size:clamp(.74rem,1vw,.88rem);letter-spacing:.24em}
+html.deck-mode .slip-name{letter-spacing:.24em}
 html.deck-mode .sec-head.in .slip-line{height:clamp(12px,2vh,20px)}
 
-/* ── 壹 · 琉璃：五张色卡一行 + 五件材质一行（deck 下压到单屏）── */
-html.deck-mode #material .sec-sub{display:none}
+/* ── 壹 · 琉璃：五张色卡一行 + 三件材质一行（deck 下压到单屏）── */
 html.deck-mode .glaze-grid{grid-template-columns:repeat(5,1fr);gap:clamp(6px,.9vw,12px)}
 html.deck-mode .glaze-swatch{height:clamp(42px,5.6vh,74px)}
 html.deck-mode .glaze-meta{padding:4px 6px 6px}
-html.deck-mode .glaze-name{font-size:.82rem;margin-bottom:1px}
-html.deck-mode .glaze-py{font-size:.48rem}
-html.deck-mode .glaze-hex{font-size:.52rem;margin-top:2px}
-html.deck-mode .glaze-note{font-size:.54rem;line-height:1.3;margin-top:1px;min-height:0;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-html.deck-mode .glaze-use{margin-top:2px;padding-top:2px;font-size:.48rem}
-html.deck-mode .origin{margin-top:clamp(7px,1vh,12px)}
+html.deck-mode .glaze-name{font-size:var(--fs-5);margin-bottom:1px}
+html.deck-mode .glaze-py{font-size:var(--fs-2)}
+html.deck-mode .glaze-hex{font-size:var(--fs-2);margin-top:2px}
+html.deck-mode .glaze-use{margin-top:2px;padding-top:2px;font-size:var(--fs-2)}
 html.deck-mode .material{margin-top:clamp(9px,1.4vh,18px)}
-html.deck-mode .mat-row{grid-template-columns:repeat(5,1fr);gap:0}
+html.deck-mode .mat-row{grid-template-columns:repeat(3,1fr);gap:0}
 html.deck-mode .mat{padding:clamp(6px,.9vh,11px) clamp(6px,.8vw,10px);
   min-height:clamp(66px,9vh,102px);gap:5px}
-html.deck-mode .mat-name{font-size:.72rem}
-html.deck-mode .mat-desc{font-size:.6rem;line-height:1.4}
+html.deck-mode .mat-name{font-size:var(--fs-4)}
+html.deck-mode .mat-desc{font-size:var(--fs-3);line-height:1.4}
 
-/* ── 贰 · 作品：卷首引导语让位，四件改 2×2，每件图文并排紧凑卡 ── */
-html.deck-mode #work .sec-sub{display:none}
+/* ── 贰 · 作品：四件改 2×2，每件图文并排紧凑卡 ── */
 html.deck-mode #work .sec-title-wrap{margin-bottom:0!important}
-html.deck-mode #work h2.d-l{font-size:clamp(1.25rem,2.2vw,1.7rem);line-height:1.12}
+html.deck-mode #work h2.d-l{font-size:var(--fs-title-work);line-height:1.12}
 html.deck-mode #work .wrap{display:grid;grid-template-columns:1fr 1fr;
   gap:clamp(10px,1.8vw,22px);align-content:center}
 html.deck-mode .work{grid-template-columns:1.35fr 1fr;
@@ -1249,30 +1210,28 @@ html.deck-mode .work.flip .work-visual{order:0}
 html.deck-mode .work-visual{order:0}
 html.deck-mode .specimen{aspect-ratio:16/10;max-height:9vh;width:100%}
 html.deck-mode .work-top{gap:10px;margin-bottom:3px}
-html.deck-mode .work-role{margin-bottom:3px;font-size:.6rem}
-html.deck-mode .work-desc{font-size:.8rem;line-height:1.5;max-width:none;
+html.deck-mode .work-role{margin-bottom:3px;font-size:var(--fs-3)}
+html.deck-mode .work-desc{font-size:var(--fs-5);line-height:1.5;max-width:none;
   display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 html.deck-mode .tradeoff{margin-top:4px;padding:2px 0 2px 9px}
 html.deck-mode .tradeoff b{margin-bottom:4px}
-html.deck-mode .tradeoff p{font-size:.64rem;line-height:1.4;
+html.deck-mode .tradeoff p{font-size:var(--fs-3);line-height:1.4;
   display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 html.deck-mode .tags{margin-top:4px;gap:5px}
-html.deck-mode .tag{font-size:.54rem;padding:2px 6px}
-html.deck-mode .work-title{font-size:clamp(1rem,1.5vw,1.25rem)}
+html.deck-mode .tag{font-size:var(--fs-2);padding:2px 6px}
 html.deck-mode #work .backlink{grid-column:1/-1;justify-self:center;
   margin-top:clamp(8px,1.4vh,16px)!important}
 
 /* ── 叁 · 自述：收紧间距，单屏装下 ── */
 html.deck-mode .about-grid{gap:clamp(10px,1.6vw,26px)}
-html.deck-mode .about-body p{margin-bottom:.18em;font-size:.82rem;line-height:1.46}
-html.deck-mode .skill-list li{padding:3px 0;font-size:.76rem}
+html.deck-mode .about-body p{margin-bottom:.18em;font-size:var(--fs-5);line-height:1.46}
+html.deck-mode .skill-list li{padding:3px 0;font-size:var(--fs-5)}
 html.deck-mode .now{margin-top:clamp(4px,.8vh,10px);padding-top:clamp(4px,.7vh,9px)}
 html.deck-mode .now-list{gap:6px;margin-top:8px}
-html.deck-mode .now-list p{font-size:.72rem;line-height:1.44}
+html.deck-mode .now-list p{font-size:var(--fs-4);line-height:1.44}
 html.deck-mode .figures{margin-top:clamp(5px,.9vh,10px);gap:0}
 html.deck-mode .figure{padding:clamp(5px,.8vh,9px) clamp(6px,.8vw,9px)}
-html.deck-mode .figure b{font-size:clamp(1.1rem,2.1vw,1.7rem)}
-html.deck-mode .fig-note{margin-top:clamp(4px,.6vh,7px);font-size:.64rem;line-height:1.4}
+html.deck-mode .fig-note{margin-top:clamp(4px,.6vh,7px);font-size:var(--fs-3);line-height:1.4}
 html.deck-mode .backlink{margin-top:clamp(7px,1.1vh,13px)!important}
 
 /* ── 肆 · 手记：本就紧凑，略收即可 ── */
@@ -1282,12 +1241,6 @@ html.deck-mode .post{padding:clamp(15px,2.4vh,26px) 0}
 html.deck-mode .socials{margin-top:clamp(26px,3.6vh,44px)}
 html.deck-mode .sign{margin-top:clamp(34px,4.6vh,58px)}
 
-/* 过矮视口：放弃整屏吸附，退回普通滚动，确保内容不被裁切 */
-@media (max-height:640px){
-  html.deck-mode{scroll-snap-type:none;scroll-behavior:auto}
-  html.deck-mode main#main>section,
-  html.deck-mode footer{height:auto;min-height:100svh;scroll-snap-align:none;
-    overflow:visible;justify-content:flex-start;padding-top:calc(var(--nav-h) + var(--inset-t) + 40px)}
-  html.deck-mode .hero{height:auto}
-  html.deck-mode .hero-sticky{height:auto;min-height:100svh}
-}
+/* 过矮 / 过窄的视口不挂 deck-mode（判据在 App.jsx 的 matchMedia：
+   min-width:821px 且 min-height:641px），所以这里不再需要一份「退回普通滚动」的兜底 ——
+   类没挂上，上面这些 html.deck-mode 规则自然全不生效。 */

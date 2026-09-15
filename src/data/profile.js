@@ -20,8 +20,8 @@ export const profile = {
   ],
 
   about: [
-    '我学的是数据科学与大数据技术，但真正花时间的地方在「东西做出来之后好不好用」。玉笺是我投入最多前端精力的项目——纸墨的底子、玻璃的浮层、所见即所得的编辑体验。每一版都在删东西，因为加容易，删难。',
-    '另一条线是把东西真的落到人手上。GojiDB 让我保持对存储与并发的敏感；背呗则把我按在数据上——几千条词表里缺例句、繁简混杂，只能写脚本补齐再逐条抽查。这两件事和做界面看着很远，其实是同一件事：都是在有限的资源里做取舍，只是被限制的东西不同。',
+    '我学的是数据科学与大数据技术，但真正花时间的地方在「东西做出来之后好不好用」。玉笺的材质是纸墨与玻璃，所见即所得；每一版都在删东西，因为加容易，删难。',
+    '另一条线是把东西真的落到人手上。GojiDB 让我保持对存储与并发的敏感；背呗则把我按在数据上——几千条词表里缺例句、繁简混杂，只能写脚本补齐再逐条抽查。都是有限的资源里做取舍，只是被限制的东西不同。',
   ],
 
   skills: [
@@ -58,7 +58,7 @@ export const profile = {
       year: '2026',
       specimen: 'yujian',
       image: '/projects/yujian.jpg',
-      desc: '本地优先的 Markdown 写作工具。文件夹即笔记库，文档就是普通 .md 文件，数据永远可读、可 Git、可迁移。编辑器内核基于 Milkdown Crepe。',
+      desc: '本地优先的 Markdown 写作工具。文件夹即笔记库，文档是普通 .md。',
       tradeoff:
         '用富文本内核换取所见即所得，代价是文档会被自己的 schema 悄悄改写。我的选择是把 schema 压到最小，对未编辑的文档做逐字节原样写回——宁可少一些花哨的节点类型，也不让用户的文件在保存时被动过。',
       tags: ['Electron', 'Vue 3', 'Milkdown', 'TypeScript'],
@@ -85,7 +85,7 @@ export const profile = {
       year: '2025',
       specimen: 'gojidb',
       image: '/projects/gojidb.jpg',
-      desc: '从零实现的类 RocksDB 轻量引擎。核心难点是 LSM-Tree 的分层压缩策略与 WAL 崩溃恢复。',
+      desc: '从零实现的类 RocksDB 轻量引擎。LSM-Tree 分层压缩，WAL 崩溃恢复。',
       tradeoff:
         '分层压缩能把读放大压下来，但写入路径被拉长了：一次写要穿过 WAL、MemTable，再等后台协程把 SSTable 合并下去。我选择牺牲一点单次写延迟，换更稳定的尾延迟——嵌入式场景里，最坏情况比平均值重要。',
       tags: ['Go', 'LSM-Tree', 'WAL', 'TTL'],
@@ -112,7 +112,7 @@ export const profile = {
       year: '2026',
       specimen: 'lucent',
       image: '/projects/lucent-newtab.jpg',
-      desc: '零框架、零依赖的浏览器新标签页——纯 HTML、CSS、JavaScript。雨声、咖啡馆、海浪、篝火这些环境音，全部由 Web Audio API 现场合成，包体里没有音频文件。',
+      desc: '零框架零依赖的新标签页扩展。环境音由 Web Audio 现场合成，包体内无音频文件。',
       tradeoff:
         '不上框架，意味着所有状态同步都要手写：卡片拖拽、设置持久化、跨区域排序，没有响应式系统可以依赖。换来的是两百 KB 以内的包体和秒开——一个每次开新标签页都要看的东西，启动速度就是它的全部体验。',
       tags: ['HTML', 'CSS', 'JavaScript', 'Web Audio'],
@@ -139,7 +139,7 @@ export const profile = {
       year: '2026',
       specimen: 'beibei',
       image: '',
-      desc: '背单词这件事我一直花钱买软件，直到受不了年年续的订阅和调不动的算法——索性自己写一个。React Native + Expo，词表和例句全部落在设备上，地铁里断网也照背。',
+      desc: 'React Native + Expo 背单词应用。词表与例句全部落在设备上，断网可用。',
       tradeoff:
         '真正花时间的不是界面，是数据。原始词库里有的例句缺中文、有的整条是繁体，我写脚本把缺失的中英例句补齐、把繁体统一转成简体，再逐条抽查。复习节奏也没引第三方记忆库——自己写一套间隔重复，宁可朴素但可解释，也不要一个我调不动的黑箱。',
       tags: ['React Native', 'Expo', 'TypeScript', '本地优先'],
@@ -166,7 +166,7 @@ export const profile = {
       year: '2026',
       specimen: '',
       image: '/projects/phantom-video.jpg',
-      desc: '自研 Windows 视频播放器：libmpv 解码内核 + D3D11VA 零拷贝硬解，SDL2 逐像素透明 UI 全部自绘。',
+      desc: 'Windows 视频播放器。libmpv 解码内核 + D3D11VA 零拷贝硬解，UI 全自绘。',
       tradeoff:
         '用现成 UI 框架能省掉大部分工作，但播放器窗口本身就是内容——框架的窗口模型会把它框成一个普通的应用窗口。所以界面每一个像素都自己画在 Win32 之上，代价是拖拽、缩放、全屏这些交互全都要从零写。',
       tags: ['C++17', 'Win32', 'libmpv', 'D3D11VA', 'SDL2'],

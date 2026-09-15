@@ -15,7 +15,7 @@ export default function Closing() {
             <div className="sec-title-wrap">
               <span className="label">Colophon</span>
               <h2 className="d-l"><span className="mask"><span className="ch" style={{ '--i': "0" }}>有想法就写信</span></span></h2>
-              <p className="lead sec-sub">合作、提问，或者只是聊聊某个实现该怎么做——邮件我都会看。</p>
+              <p className="lead sec-sub">合作、提问，或者只是聊聊。</p>
             </div>
           </div>
 

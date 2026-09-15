@@ -20,9 +20,7 @@ export default function Writing() {
             <div className="sec-title-wrap">
               <span className="label">Writing</span>
               <h2 className="d-l"><span className="mask"><span className="ch" style={{ '--i': "0" }}>想清楚才写得出来</span></span></h2>
-              <p className="lead sec-sub">
-                存储、性能、以及一些与代码无关的书。写下来才算真的想清楚了。
-              </p>
+              <p className="lead sec-sub">存储、性能，以及一些与代码无关的书。</p>
             </div>
           </div>
 

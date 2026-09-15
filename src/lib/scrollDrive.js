@@ -149,8 +149,9 @@ export function initScrollDrive(){
 
        ⚠️ deck 下引首愈合由 deckNav 全权驱动（可逆转：往下愈合 / 往上回裂），
        这里不参与 —— 否则整屏停在卷首（y=0）会被算成 h=0，把已合上的又打回裂满。
-       过矮视口（≤640，与 CSS 兜底一致）deckNav 不接管，仍走这里的滚动行程 */
-    var deckOwnsHeal = doc.classList.contains('deck-mode') && window.innerHeight > 640
+       deck-mode 类只在与 deck 版面相称的视口挂上（见 App.jsx 的 matchMedia），
+       所以认类就够了，不必再判一次高度 —— 判据只有那一处，别在这儿复制一份 */
+    var deckOwnsHeal = doc.classList.contains('deck-mode')
     if (hero && !deckOwnsHeal){
       var h = 1
       var range = heroRange > 60 ? heroRange : window.innerHeight * 0.62

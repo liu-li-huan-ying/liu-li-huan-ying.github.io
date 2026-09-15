@@ -3,6 +3,8 @@
    这些要跟着每一页活着（换地色的遮罩、印的滤镜都靠它），所以挂在外壳里，
    而不是挂在首页 —— 换页时不能跟着卸载。
    书耳、目次、卷轴各有自己的文件。 */
+import { INK_DISP, INK_CORE } from '../../lib/theme.js'
+
 export default function Chrome() {
   return (
     <>
@@ -54,35 +56,44 @@ export default function Chrome() {
                从按钮位置把新地色「洇」出来。两张滤镜 / 两个渐变对应两个方向：
                变深（纸→墨）边缘狰狞、位移大；变浅（墨→纸）位移减半、渐变更柔。
                渐变中心即按钮位置（rect 由 JS 居中在此），核心实、边缘虚，
-               最外圈留一档极淡的灰，做出湿痕羽化。 */}
+               最外圈留一档极淡的灰，做出湿痕羽化。
+               ⚠️ 位移幅度不写死在这里 —— 它是 INK_DISP（lib/theme.js）：
+                  JS 的几何计算要拿同一个数把「白核 + 位移」卡在最远角上，
+                  运行时还会按 s 回写 scale（前缘碎度有下限）。改一处即可。 */}
           <filter id="inkDisp" x="-20%" y="-20%" width="140%" height="140%"
                   colorInterpolationFilters="sRGB">
             {/* 频率拔高、八度收到 3：不再是几团大波浪，而是细密的墨指，
                  并顺着宣纸的横纹走（x 频率低于 y），像墨被纸纤维牵着爬 */}
             <feTurbulence id="inkTurb" type="fractalNoise"
                           baseFrequency="0.02 0.055" numOctaves="3" seed="7" result="n"/>
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="62"
+            <feDisplacementMap id="inkDispMap" in="SourceGraphic" in2="n" scale={INK_DISP.ink}
                                xChannelSelector="R" yChannelSelector="G"/>
           </filter>
           <filter id="inkDispSoft" x="-20%" y="-20%" width="140%" height="140%"
                   colorInterpolationFilters="sRGB">
             <feTurbulence id="inkTurbSoft" type="fractalNoise"
                           baseFrequency="0.02 0.055" numOctaves="3" seed="7" result="n"/>
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="34"
+            <feDisplacementMap id="inkDispMapSoft" in="SourceGraphic" in2="n" scale={INK_DISP.soft}
                                xChannelSelector="R" yChannelSelector="G"/>
           </filter>
 
-          {/* 变深：核心实、72% 仍全白、86% 起羽化、100% 全黑 */}
+          {/* 变深：核心实、72% 仍全白、86% 起羽化、100% 全黑。
+               ⚠️ 第二个停点（白核边界）**必须等于 INK_CORE**：
+                  theme.js 的 R 就是按这个比例反推的，白核半径 = INK_CORE × R。
+                  这里若改成别的数（曾经浅色版写 60% 而 R 按 0.70 算），
+                  s=1 时白核够不到最远角，转场收场瞬间那个角会「啪」地跳亮。
+                  深浅两版共用同一个 INK_CORE，差别只在下面中段停点的位置。 */}
           <radialGradient id="inkGrad">
             <stop offset="0%"   stopColor="#fff"/>
-            <stop offset="72%"  stopColor="#fff"/>
+            <stop offset={`${INK_CORE * 100}%`} stopColor="#fff"/>
             <stop offset="86%"  stopColor="#cfcfcf"/>
             <stop offset="100%" stopColor="#000"/>
           </radialGradient>
-          {/* 变浅：同样的结构，但羽化更早更柔，像被清水洗淡 */}
+          {/* 变浅：同样的结构与同一个白核，但中段更靠后、颜色更浅 ——
+               羽化区更长更缓，像被清水洗淡 */}
           <radialGradient id="inkGradSoft">
             <stop offset="0%"   stopColor="#fff"/>
-            <stop offset="60%"  stopColor="#fff"/>
+            <stop offset={`${INK_CORE * 100}%`} stopColor="#fff"/>
             <stop offset="90%"  stopColor="#cccccc"/>
             <stop offset="100%" stopColor="#000"/>
           </radialGradient>

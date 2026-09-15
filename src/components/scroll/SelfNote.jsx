@@ -58,8 +58,7 @@ export default function SelfNote() {
           </div>
 
           <p className="fig-note rv">
-            <b>指标口径</b>　数字出自 GojiDB 自带的 YCSB 基准与百万 KV 载入测试，
-            脚本与原始输出随仓库 <code>bench/</code> 一并提供，可自行复现。
+            <b>指标口径</b>　GojiDB 自带的 YCSB 基准与百万 KV 载入测试。
           </p>
 
           {/* 手卷上只留摘要：完整的那一份（经历、GitHub 提交）在卷外的「关于」页 */}

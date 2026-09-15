@@ -32,13 +32,7 @@ export default function Intro() {
               <span className="seal-slot" style={{ '--w': "31px", '--tilt': "1.7deg" }} data-seal="引首|1|2|zhu" aria-hidden="true"></span>
             </h1>
 
-            <p className="hero-stmt rv" style={{ '--d': "180" }}>
-              我做的多数是自己想用的东西：一个本地优先的写作工具，一个从零写的存储引擎，
-              一个受不了年年续订阅、索性自己写的背单词应用。
-              它们都由我一个人从界面做到存储。
-            </p>
-
-            <dl className="meta rv" style={{ '--d': "280" }}>
+            <dl className="meta rv" style={{ '--d': "120" }}>
               <div>
                 <dt className="label">现居</dt>
                 <dd>{profile.location}</dd>
@@ -57,7 +51,7 @@ export default function Intro() {
               </div>
             </dl>
 
-            <div className="hero-cta rv" style={{ '--d': "360" }}>
+            <div className="hero-cta rv" style={{ '--d': "240" }}>
               <a className="ulink" href="#work">看作品
                 <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
               </a>
@@ -75,7 +69,6 @@ export default function Intro() {
 
           <div className="heal-cap" id="healCap" aria-live="polite">
             <b>裂过，然后合上。</b>
-            <span>玉笺的每一版都是这么来的。</span>
           </div>
         </div>
       </section>

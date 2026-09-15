@@ -1,7 +1,8 @@
 /* 壹 · 琉璃（材质）
    「琉璃幻影」这个名字与玉笺的窑色皮肤是同一批颜色，这一卷把材料摊开：
-   五个色（宣纸 / 墨 / 青瓷 / 朱砂 / 琥珀）+ 五件东西（纤维 / 界格 / 冰裂 / 印 / 墨韵）。
-   色值写在卡片上，是为了以后改配色时有据可依 —— 与 scroll.css 里的令牌一一对应。 */
+   五个色（宣纸 / 墨 / 青瓷 / 朱砂 / 琥珀）+ 三件东西（界格 / 冰裂 / 印）。
+   色值写在卡片上，是为了以后改配色时有据可依 —— 与 scroll.css 里的令牌一一对应。
+   卡片只留「名字 / 拼音 / 色值 / 用途」四项：用途是可核对的，解释不是。 */
 export default function Material() {
   return (
     <>
@@ -12,11 +13,6 @@ export default function Material() {
             <div className="sec-title-wrap">
               <span className="label">Materials</span>
               <h2 className="d-l"><span className="mask"><span className="ch" style={{ '--i': "0" }}>名字先给了我材质</span></span></h2>
-              <p className="lead sec-sub">
-                「琉璃幻影」这个名字里本来就带着釉。加上玉笺——<b>笺就是笺纸</b>，
-                一个在纸上写字的工具——手边的材料是现成的：<b>纸、墨、瓷、印</b>。
-                纸墨承担九成，彩色只留青瓷一种，红只留给印。
-              </p>
             </div>
           </div>
 
@@ -27,7 +23,6 @@ export default function Material() {
                 <span className="glaze-name">宣纸</span>
                 <span className="glaze-py">Xuan Zhi</span>
                 <span className="glaze-hex">#EDE8DD</span>
-                <p className="glaze-note">微暖的纸色，带纤维纹理。长时间盯着看不刺眼。</p>
                 <div className="glaze-use">地色 · 页面基底</div>
               </div>
             </article>
@@ -38,7 +33,6 @@ export default function Material() {
                 <span className="glaze-name">墨</span>
                 <span className="glaze-py">Mo</span>
                 <span className="glaze-hex">#1C1A16</span>
-                <p className="glaze-note">偏暖的墨。纯黑压在纸色上会显脏、显硬。</p>
                 <div className="glaze-use">文字 · 正文与标题</div>
               </div>
             </article>
@@ -49,7 +43,6 @@ export default function Material() {
                 <span className="glaze-name">青瓷</span>
                 <span className="glaze-py">Qing Ci</span>
                 <span className="glaze-hex">#4C6E5A</span>
-                <p className="glaze-note">越窑的温润青灰。整页唯一的彩色，用在细线、序号与链接。</p>
                 <div className="glaze-use">主色 · 唯一的彩色</div>
               </div>
             </article>
@@ -60,7 +53,6 @@ export default function Material() {
                 <span className="glaze-name">朱砂</span>
                 <span className="glaze-py">Zhu Sha</span>
                 <span className="glaze-hex">#A33A2A</span>
-                <p className="glaze-note">印章本来就是红的。整页只有这一处红。</p>
                 <div className="glaze-use">印记 · 仅用于印</div>
               </div>
             </article>
@@ -71,50 +63,36 @@ export default function Material() {
                 <span className="glaze-name">琥珀</span>
                 <span className="glaze-py">Hu Po</span>
                 <span className="glaze-hex">#A9782A</span>
-                <p className="glaze-note">用来标「正在发生」：状态点，以及裂缝合上的那一瞬。</p>
                 <div className="glaze-use">点缀 · 仅状态与愈合</div>
               </div>
             </article>
           </div>
 
-          <div className="origin rv">
-            <p className="small">
-              玉笺的五套窑色皮肤（青瓷 / 天青 / 月白 / 黛 / 琥珀）用的是同一批颜色。
-              先有纸墨，再有的这些色。
-            </p>
-          </div>
-
-          {/* 材质板 */}
+          {/* 材质板：只留三件能说明「这东西怎么做的」的 —— 界格是版面骨架，
+              冰裂是名字的具身，印是唯一的图形标识。纤维与墨韵只是氛围，撤了。 */}
           <div className="material">
             <div className="sec-title-wrap rv" style={{ marginBottom: "clamp(26px,4vh,42px)" }}>
               <span className="label">Materials</span>
-              <h3 className="d-m">除颜色之外的五件东西</h3>
+              <h3 className="d-m">除颜色之外的三件东西</h3>
             </div>
             <div className="mat-row">
               <div className="mat rv">
-                <div className="mat-stage"><span className="m-fiber"></span></div>
-                <div>
-                  <div className="mat-name">宣纸纤维<em>Xuan Paper</em></div>
-                  <p className="mat-desc">一层各向异性的噪点，横向拉伸成纤维。纯色块不至于像塑料。</p>
-                </div>
-              </div>
-              <div className="mat rv" style={{ '--d': "70" }}>
                 <div className="mat-stage"><div className="m-ulan"><i></i><i></i><i></i><i></i><i></i></div></div>
                 <div>
                   <div className="mat-name">乌丝栏<em>Ruled Columns</em></div>
-                  <p className="mat-desc">传统界纸画的竖线，古时用来分栏。这里当界格，给版面立秩序。</p>
+                  <p className="mat-desc">界纸的竖线，古时用来分栏。</p>
                 </div>
               </div>
-              <div className="mat rv" style={{ '--d': "140" }}>
+              <div className="mat rv" style={{ '--d': "70" }}>
                 <div className="mat-stage">
                   <canvas className="m-crack" id="crackleMat" aria-hidden="true"></canvas>
                 </div>
                 <div>
                   <div className="mat-name">冰裂<em>Crackle</em></div>
-                  <p className="mat-desc">哥窑开片的纹路，程序生成：先裂粗铁线，再在每块釉片里裂出细金丝。这里只裂不合。</p>
+                  <p className="mat-desc">哥窑开片，程序生成。这里只裂不合。</p>
                 </div>
               </div>
-              <div className="mat rv" style={{ '--d': "210" }}>
+              <div className="mat rv" style={{ '--d': "140" }}>
                 <div className="mat-stage">
                   <div className="m-seal">
                     <span className="seal-slot" style={{ '--w': "58px", '--tilt': ".7deg" }} data-seal="琉璃幻影|2|2|zhu" aria-hidden="true"></span>
@@ -123,18 +101,18 @@ export default function Material() {
                 </div>
                 <div>
                   <div className="mat-name">印<em>Seal</em></div>
-                  <p className="mat-desc">唯一的图形标识。字形取自小篆，朱文姓名章配白文年号章，年号随干支自动换。</p>
-                </div>
-              </div>
-              <div className="mat rv" style={{ '--d': "280" }}>
-                <div className="mat-stage"><span className="m-wash"></span></div>
-                <div>
-                  <div className="mat-name">墨韵<em>Ink Wash</em></div>
-                  <p className="mat-desc">一摊洇开的水墨。需要柔和的过渡时用它，比渐变更像纸上的东西。</p>
+                  <p className="mat-desc">小篆字形。朱文姓名章配白文年号章。</p>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* 卷末不留解释，留一条能点开的证据 */}
+          <a className="backlink rv" href="https://github.com/liu-li-huan-ying/yujian" target="_blank" rel="noreferrer"
+             style={{ marginTop: 'clamp(26px,3.8vh,42px)', marginBottom: 0 }}>
+            玉笺 · 窑色皮肤
+            <svg width="15" height="9" viewBox="0 0 15 9" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true"><path d="M0 4.5h13M9.4 1 13 4.5 9.4 8"/></svg>
+          </a>
         </div>
       </section>
 

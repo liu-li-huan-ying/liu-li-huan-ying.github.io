@@ -17,10 +17,10 @@ import { getRollTransition } from './rollTransition.js'
    ══════════════════════════════════════════════════════════════ */
 var LAST_STAGE = 7              /* 引首占 0(裂)/1(合)，其后 2..7 依次是六屏 */
 var HEAL_STEP = 0.2             /* 键盘每按一下、折合的愈合增量（约 5 下搓满） */
-var WHEEL_DIV = 600             /* 滚轮 deltaY 折算系数：约 5 个刻度搓满 */
-var TOUCH_DIV = 320             /* 触摸拖动像素折算系数 */
-var INTRO_BUFFER = 0.6         /* 合上后到翻屏之间的「空白容错滚程」（约 3 格），制造段落感、防一滚而过 */
-var MAX_STEP = 0.35            /* 单次手势最多推进的虚拟进度，避免一次猛滚直接跳过愈合/缓冲 */
+var WHEEL_DIV = 300             /* 滚轮 deltaY 折算系数：约 2–3 个刻度搓满（原 600，要滚 5 次才合上） */
+var TOUCH_DIV = 220             /* 触摸拖动像素折算系数 */
+var INTRO_BUFFER = 0.1         /* 合上后到翻屏之间的容错滚程（原 0.6，白白的 3 格空白） */
+var MAX_STEP = 0.5             /* 单次手势最多推进的虚拟进度，仍封顶以免一次猛滚直接跳过愈合 */
 var HEAL_RANGE = 1 + INTRO_BUFFER
 /* 触控板一次轻扫会连发十几条 wheel 事件（每条 deltaY 只有几像素），
    鼠标一格却是上百。所以翻屏不能「一条事件跳一屏」。 */
@@ -111,12 +111,11 @@ export function initDeckNav(drive){
     Promise.resolve(roll.go(els[sectionOfStage(st)], opts).finished).then(done, done)
   }
 
+  /* 「这个视口算不算装得下」由 App.jsx 的 matchMedia 决定，判据只有那一处 ——
+     这里只认类，不再重复判高度；重复判据才是分叉的开始 */
   function guard(){
     if (!root.classList.contains('deck-mode')) return false
     if (document.body.classList.contains('toc-open')) return false
-    /* 与 CSS 的 @media (max-height:640px) 兜底保持一致：过矮视口已退回普通滚动，
-       deckNav 不能再拦截，否则整屏跳会落到非对齐的位置 */
-    if (window.innerHeight <= 640) return false
     return true
   }
 

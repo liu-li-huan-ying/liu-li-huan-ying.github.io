@@ -20,10 +20,6 @@ export default function Works() {
             <div className="sec-title-wrap">
               <span className="label">Selected Work</span>
               <h2 className="d-l"><span className="mask"><span className="ch" style={{ '--i': "0" }}>{NUM[featured.length - 1]}件自己会用的东西</span></span></h2>
-              <p className="lead sec-sub">
-                横跨界面、系统、图形三层。共通的不是技术栈，是取舍的方式——
-                每一件都写清了最费劲的那个决定，以及为此丢掉了什么。
-              </p>
             </div>
           </div>
 
